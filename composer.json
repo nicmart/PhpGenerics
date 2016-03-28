@@ -1,0 +1,35 @@
+{
+    "name": "nicmart/php-generics",
+    "type": "library",
+    "description": "Tools for generic types in php",
+    "keywords": [],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolò Martini",
+            "email": "nicolo@martini.io"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "nikic/php-parser": "~1.4",
+        "phpdocumentor/reflection-docblock": "~2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4"
+    },
+    "autoload": {
+        "psr-4": {
+            "NicMart\\Generics\\": "src/"
+        },
+        "classmap": [
+            "src/Variable/Variables.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NicMart\\Generics\\": "tests"
+        }
+    }
+}
+
