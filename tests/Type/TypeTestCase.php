@@ -63,6 +63,39 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
                     )
                 ),
                 new Type("D\\E\\A\\B")
+            ),
+            array(
+                new RelativeType("C"),
+                new NamespaceContext(
+                    new Namespace_("Ns1\\Ns2\\Ns3"),
+                    array(
+                        new Use_("Ns1", "A"),
+                        new Use_("Ns1\\Ns2", "B"),
+                    )
+                ),
+                new Type("Ns1\\Ns2\\Ns3\\C")
+            ),
+            array(
+                new RelativeType("C\\D"),
+                new NamespaceContext(
+                    new Namespace_("Ns1\\Ns2\\Ns3"),
+                    array(
+                        new Use_("Ns1", "A"),
+                        new Use_("Ns1\\Ns2", "B"),
+                    )
+                ),
+                new Type("Ns1\\Ns2\\Ns3\\C\\D")
+            ),
+            array(
+                new RelativeType("B\\Ns3\\C"),
+                new NamespaceContext(
+                    new Namespace_("M1\\M2"),
+                    array(
+                        new Use_("Ns1", "A"),
+                        new Use_("Ns1\\Ns2", "B"),
+                    )
+                ),
+                new Type("Ns1\\Ns2\\Ns3\\C")
             )
         );
     }
