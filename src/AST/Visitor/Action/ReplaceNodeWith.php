@@ -16,7 +16,7 @@ use PhpParser\Node;
  * Class ReplaceNodeWith
  * @package NicMart\Generics\AST\Visitor\Action
  */
-class ReplaceNodeWith
+class ReplaceNodeWith implements EnterNodeAction, LeaveNodeAction
 {
     /**
      * @var Node

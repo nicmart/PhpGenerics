@@ -11,9 +11,10 @@
 namespace NicMart\Generics\AST\Visitor\Action;
 
 /**
- * Interface VisitorAction
+ * Interface EnterNodeAction
  * @package NicMart\Generics\AST\Visitor\Action
  */
-interface VisitorAction
+interface EnterNodeAction extends VisitorAction
 {
+
 }

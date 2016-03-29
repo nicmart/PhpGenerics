@@ -10,7 +10,11 @@
 
 namespace NicMart\Generics\AST\Visitor\Action;
 
-class RemoveNode implements VisitorAction
+/**
+ * Class RemoveNode
+ * @package NicMart\Generics\AST\Visitor\Action
+ */
+class RemoveNode implements LeaveNodeAction
 {
 
 }

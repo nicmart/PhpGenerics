@@ -14,7 +14,7 @@ namespace NicMart\Generics\AST\Visitor\Action;
  * Class MantainNode
  * @package NicMart\Generics\AST\Visitor\Action
  */
-class MantainNode implements VisitorAction
+class MantainNode implements EnterNodeAction, LeaveNodeAction
 {
 
 }
