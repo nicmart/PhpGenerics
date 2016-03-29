@@ -45,7 +45,7 @@ class ClassCompiler implements Compiler
         $stmts = $this->parser->parse($code);
         $nodeDumper = new NodeDumper();
         //var_dump($nodeDumper->dump($stmts));
-        //var_dump($stmts);
+        var_dump($stmts);
         $traverser = new NodeTraverser();
         $traverser->addVisitor($visitor);
         //$traverser->addVisitor(new NameResolver());
