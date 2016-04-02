@@ -90,6 +90,9 @@ final class NodesList
         return $nodeList->appendList($this);
     }
 
+    /**
+     * @param Node $node
+     */
     private function addNode(Node $node)
     {
         $this->nodes[] = $node;

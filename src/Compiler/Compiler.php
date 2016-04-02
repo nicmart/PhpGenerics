@@ -10,8 +10,25 @@
 
 namespace NicMart\Generics\Compiler;
 
+use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Type\Context\NamespaceContext;
+use PhpParser\Node;
 
+/**
+ * Interface Compiler
+ * @package NicMart\Generics\Compiler
+ */
 interface Compiler
 {
-    public function compile($code, array $typeAssignments);
+    /**
+     * @param Node $node
+     * @param NamespaceContext $namespaceContext
+     * @param TypeAssignmentContext $typeAssignmentContext
+     * @return Node
+     */
+    public function compile(
+        Node $node,
+        NamespaceContext $namespaceContext,
+        TypeAssignmentContext $typeAssignmentContext
+    );
 }

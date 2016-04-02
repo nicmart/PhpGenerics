@@ -121,7 +121,6 @@ class NodesListTest extends \PHPUnit_Framework_TestCase
 
     private function getNode()
     {
-        static $marker = 0;
         $mock = $this->getMock('\PhpParser\Node');
         $mock->marker = spl_object_hash($mock);
 

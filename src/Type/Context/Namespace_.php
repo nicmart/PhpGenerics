@@ -31,6 +31,14 @@ final class Namespace_
     }
 
     /**
+     * @return Namespace_
+     */
+    public static function globalNamespace()
+    {
+        return new self("");
+    }
+
+    /**
      * Namespace_ constructor.
      * @param $namespace
      */

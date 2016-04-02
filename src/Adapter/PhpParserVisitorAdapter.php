@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Adapter;
 
 
-use NicMart\Generics\AST\Visitor\Action\MantainNode;
+use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\AST\Visitor\Action\RemoveNode;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWithList;
@@ -69,7 +69,7 @@ class PhpParserVisitorAdapter extends NodeVisitorAbstract
      */
     private function actionToPhpParserResult(VisitorAction $action)
     {
-        if ($action instanceof MantainNode) {
+        if ($action instanceof MaintainNode) {
             return null;
         }
 

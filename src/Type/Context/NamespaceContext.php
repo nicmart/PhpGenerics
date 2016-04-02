@@ -10,8 +10,6 @@
 
 namespace NicMart\Generics\Type\Context;
 
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\Use_;
 use UnderflowException;
 
 /**
@@ -37,13 +35,21 @@ final class NamespaceContext
     private $usesByName = array();
 
     /**
+     * @return NamespaceContext
+     */
+    public static function emptyContext()
+    {
+        return new self(Namespace_::globalNamespace());
+    }
+
+    /**
      * NamespaceContext constructor.
      * @param Namespace_ $namespace
      * @param Use_[] $uses
      */
     public function __construct(
-            Namespace_ $namespace,
-            array $uses = array()
+        Namespace_ $namespace,
+        array $uses = array()
     ) {
         $this->namespace = $namespace;
 
