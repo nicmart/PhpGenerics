@@ -96,7 +96,14 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
                     )
                 ),
                 new Type("Ns1\\Ns2\\Ns3\\C")
-            )
+            ),
+            array(
+                new RelativeType("string"),
+                new NamespaceContext(
+                    new Namespace_("Ns1")
+                ),
+                new Type("string")
+            ),
         );
     }
 }

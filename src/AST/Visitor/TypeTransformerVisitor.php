@@ -12,13 +12,13 @@ namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
+use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
 use NicMart\Generics\Type\Context\NamespaceContext;
 use NicMart\Generics\Type\RelativeType;
-use NicMart\Generics\Type\Type;
-use PhpParser\Error;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Name;
 
 /**
@@ -41,39 +41,101 @@ class TypeTransformerVisitor implements Visitor
         $this->typeAssignmentContext = $typeAssignmentContext;
     }
 
+    /**
+     * @param Node $node
+     * @return EnterNodeAction
+     */
     public function enterNode(Node $node)
     {
-        if ($node instanceof Expr\StaticCall
+        // We assume the node has already been decorated by NamespaceContextVisitor
+        $nsContext = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
+
+        if ($node instanceof Stmt\Class_) {
+            if (null !== $node->extends) {
+                $node->extends = $this->transformName(
+                    $node->extends,
+                    $nsContext
+                );
+            }
+
+            foreach ($node->implements as &$interface) {
+                $interface = $this->transformName(
+                    $interface,
+                    $nsContext
+                );
+            }
+        } elseif ($node instanceof Stmt\Interface_) {
+            foreach ($node->extends as &$interface) {
+                $interface = $this->transformName($interface, $nsContext);
+            }
+        } elseif ($node instanceof Expr\StaticCall
            || $node instanceof Expr\StaticPropertyFetch
            || $node instanceof Expr\ClassConstFetch
            || $node instanceof Expr\New_
            || $node instanceof Expr\Instanceof_) {
              if ($node->class instanceof Name) {
-                 $node->class = $this->resolveClassName(
+                 $node->class = $this->transformName(
                      $node->class,
-                     $node->getAttribute(NamespaceContextVisitor::ATTR_NAME)
+                     $nsContext
                  );
              }
-         }
-    }
-
-    public function leaveNode(Node $node)
-    {
-        // TODO: Implement leaveNode() method.
-    }
-
-
-    private function resolveClassName(Name $name, NamespaceContext $nsContext)
-    {
-        // don't resolve special class names
-        if (in_array(strtolower($name->toString()), array('self', 'parent', 'static'))) {
-            return $name;
+        } elseif ($node instanceof Stmt\Function_
+            || $node instanceof Stmt\ClassMethod
+            || $node instanceof Expr\Closure
+        ) {
+            $this->transformSignature(
+                $node,
+                $nsContext
+            );
         }
 
+        return new MaintainNode();
+    }
+
+    /**
+     * @param Node $node
+     * @return LeaveNodeAction
+     */
+    public function leaveNode(Node $node)
+    {
+        return new MaintainNode();
+    }
+
+    /**
+     * @param Name $name
+     * @param NamespaceContext $nsContext
+     * @return Name\FullyQualified
+     */
+    private function transformName(Name $name, NamespaceContext $nsContext)
+    {
         $fromType = RelativeType::fromParts($name->parts)->toFullType($nsContext);
         $toType = $this->typeAssignmentContext->transformType($fromType);
 
         return new Name\FullyQualified($toType->parts(), $name->getAttributes());
     }
 
+    /**
+     * @param Node\FunctionLike $function
+     * @param NamespaceContext $nsContext
+     */
+    private function transformSignature(
+        Node\FunctionLike $function,
+        NamespaceContext $nsContext
+    ) {
+        foreach ($function->getParams() as $param) {
+            if ($param->type instanceof Name) {
+                $param->type = $this->transformName(
+                    $param->type,
+                    $nsContext
+                );
+            }
+        }
+
+        if ($function->getReturnType() instanceof Name) {
+            $function->returnType = $this->transformName(
+                $function->returnType,
+                $nsContext
+            );
+        }
+    }
 }

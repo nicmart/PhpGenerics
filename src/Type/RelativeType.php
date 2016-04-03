@@ -34,6 +34,25 @@ final class RelativeType
     private $tail;
 
     /**
+     * @var string[]
+     */
+    private $nativeTypes = array(
+        "string",
+        "int",
+        "callable",
+        "array",
+        "resource",
+        "float",
+        "double",
+        "bool",
+        "void",
+
+        "static",
+        "self",
+        "parent"
+    );
+
+    /**
      * @param string[] $parts
      * @return RelativeType
      */
@@ -49,6 +68,8 @@ final class RelativeType
     public function __construct($name)
     {
         $parts = explode("\\", $name);
+
+        $parts = $this->makeNativeTypeGlobal($name, $parts);
 
         $this->name = $name;
         $this->root = $parts[0];
@@ -94,5 +115,19 @@ final class RelativeType
     public function parts()
     {
         return explode("\\", $this->name);
+    }
+
+    /**
+     * @return array
+     */
+    private function makeNativeTypeGlobal($name, array $parts)
+    {
+        if (!in_array($name, $this->nativeTypes, false)) {
+            return $parts;
+        }
+
+        array_unshift($parts, "");
+
+        return $parts;
     }
 }

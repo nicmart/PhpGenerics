@@ -35,11 +35,12 @@ class NamespaceContextVisitor implements Visitor
      */
     private $currentContext;
 
+    /**
+     * NamespaceContextVisitor constructor.
+     */
     public function __construct()
     {
-        $this->currentContext = new NamespaceContext(
-            new Namespace_("")
-        );
+        $this->currentContext = NamespaceContext::emptyContext();
     }
 
     /**
