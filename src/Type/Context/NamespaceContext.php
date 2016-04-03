@@ -43,6 +43,24 @@ final class NamespaceContext
     }
 
     /**
+     * @param array $parts
+     * @return NamespaceContext
+     */
+    public static function fromNamespaceParts(array $parts)
+    {
+        return new self(Namespace_::fromParts($parts));
+    }
+
+    /**
+     * @param string $namespace
+     * @return NamespaceContext
+     */
+    public static function fromNamespaceName($namespace)
+    {
+        return new self(new Namespace_($namespace));
+    }
+
+    /**
      * NamespaceContext constructor.
      * @param Namespace_ $namespace
      * @param Use_[] $uses

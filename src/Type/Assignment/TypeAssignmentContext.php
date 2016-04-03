@@ -67,6 +67,14 @@ final class TypeAssignmentContext
     }
 
     /**
+     * @return TypeAssignment[]
+     */
+    public function getAssignments()
+    {
+        return $this->assignments;
+    }
+
+    /**
      * @internal
      * @param TypeAssignment $assignment
      */

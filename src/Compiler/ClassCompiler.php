@@ -18,7 +18,7 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
-class ClassCompiler implements Compiler
+class ClassCompiler // implements Compiler
 {
     /**
      * @var Parser
