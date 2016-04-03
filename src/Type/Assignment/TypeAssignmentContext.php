@@ -12,6 +12,7 @@ namespace NicMart\Generics\Type\Assignment;
 
 
 use NicMart\Generics\Type\Type;
+use PhpParser\Node\Name;
 
 final class TypeAssignmentContext
 {
