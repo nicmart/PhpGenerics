@@ -51,7 +51,7 @@ final class TypeAssignmentContext
      */
     public function hasAssignmentFrom(Type $type)
     {
-        return isset($this->assignments[$type->name()]);
+        return isset($this->assignments[$type->fullName()]);
     }
 
     /**
@@ -61,7 +61,7 @@ final class TypeAssignmentContext
     public function transformType(Type $type)
     {
         return $this->hasAssignmentFrom($type)
-            ? $this->assignments[$type->name()]->to()
+            ? $this->assignments[$type->fullName()]->to()
             : $type
         ;
     }
@@ -80,6 +80,6 @@ final class TypeAssignmentContext
      */
     private function addAssignment(TypeAssignment $assignment)
     {
-        $this->assignments[$assignment->from()->name()] = $assignment;
+        $this->assignments[$assignment->from()->fullName()] = $assignment;
     }
 }

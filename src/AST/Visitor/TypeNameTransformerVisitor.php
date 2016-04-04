@@ -18,6 +18,8 @@ use NicMart\Generics\Type\Assignment\NamespaceAssignment;
 use NicMart\Generics\Type\Assignment\NamespaceAssignmentContext;
 use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
 use NicMart\Generics\Type\Context\Namespace_;
+use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Type\RelativeType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
@@ -54,11 +56,22 @@ class TypeNameTransformerVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
+        $action = new MaintainNode();
+
         if ($node instanceof Stmt\Namespace_) {
             $node->name = $this->transformNamespaceName($node->name);
+            return $action;
         }
 
-        return new MaintainNode();
+        if ($node instanceof Stmt\Class_ || $node instanceof Stmt\Interface_) {
+            $node->name = $this->transformClassName(
+                $node->name,
+                $this->getNamespaceContext($node)
+            );
+            return $action;
+        }
+
+        return $action;
     }
 
     /**
@@ -88,6 +101,22 @@ class TypeNameTransformerVisitor implements Visitor
     }
 
     /**
+     * @param Node $node
+     * @return NamespaceContext
+     * @throws \UnexpectedValueException
+     */
+    private function getNamespaceContext(Node $node)
+    {
+        if (!$node->hasAttribute(NamespaceContextVisitor::ATTR_NAME)) {
+            throw new \UnexpectedValueException(
+                "NamespaceContext attribute not found for node"
+            );
+        }
+
+        return $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
+    }
+
+    /**
      * @param Name $name
      * @return Name
      */
@@ -97,5 +126,18 @@ class TypeNameTransformerVisitor implements Visitor
         $to = $this->namespaceAssignmentContext->transformNamespace($from);
 
         return new Name($to->parts());
+    }
+
+    /**
+     * @param string $className
+     * @param NamespaceContext $namespaceContext
+     * @return string
+     */
+    private function transformClassName($className, NamespaceContext $namespaceContext)
+    {
+        $from = RelativeType::fromParts(array($className))->toFullType($namespaceContext);
+        $to = $this->typeAssignmentContext->transformType($from);
+
+        return $to->name();
     }
 }

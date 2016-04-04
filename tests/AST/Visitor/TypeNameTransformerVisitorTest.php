@@ -13,6 +13,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\Type\Assignment\TypeAssignment;
 use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Type\Context\NamespaceContext;
 use NicMart\Generics\Type\Type;
 use PhpParser\BuilderFactory;
 
@@ -60,6 +61,42 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             "B\\C",
             $ns->name->toString()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_transforms_classes()
+    {
+        $nodeFactory = new BuilderFactory();
+        $visitor = new TypeNameTransformerVisitor($this->typeAssignments);
+
+        $class = $nodeFactory->class("Class1")->getNode();
+        $class->setAttribute(
+            NamespaceContextVisitor::ATTR_NAME,
+            NamespaceContext::fromNamespaceName("NS1\\NS2")
+        );
+
+        $visitor->enterNode($class);
+
+        $this->assertEquals(
+            "Class2",
+            $class->name
+        );
+
+
+        $class = $nodeFactory->class("Class3")->getNode();
+        $class->setAttribute(
+            NamespaceContextVisitor::ATTR_NAME,
+            NamespaceContext::fromNamespaceName("NS3")
+        );
+
+        $visitor->enterNode($class);
+
+        $this->assertEquals(
+            "Class4",
+            $class->name
         );
     }
 }

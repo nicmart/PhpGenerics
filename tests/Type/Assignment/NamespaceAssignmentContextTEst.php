@@ -30,6 +30,9 @@ class NamespaceAssignmentContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($context->hasAssignmentFrom(new Namespace_("A")));
     }
 
+    /**
+     * @test
+     */
     public function it_transforms_namespaces()
     {
         $context = new NamespaceAssignmentContext(array(

@@ -23,7 +23,7 @@ final class Type
     /**
      * @var string
      */
-    private $name;
+    private $parts = array();
 
     /**
      * @param array $parts
@@ -40,15 +40,27 @@ final class Type
      */
     public function __construct($fullQualifiedName)
     {
-        $this->name = ltrim((string) $fullQualifiedName, "\\");
+        $fullName = ltrim((string) $fullQualifiedName, "\\");
+        $this->parts = explode("\\", $fullName);
     }
 
     /**
      * @return mixed
      */
+    public function fullName()
+    {
+        return implode("\\", $this->parts);
+    }
+
+    /**
+     * @return string
+     */
     public function name()
     {
-        return $this->name;
+        return count($this->parts)
+            ? $this->parts[count($this->parts) - 1]
+            : ""
+        ;
     }
 
     /**
@@ -56,7 +68,7 @@ final class Type
      */
     public function parts()
     {
-        return explode("\\", $this->name);
+        return $this->parts;
     }
 
     /**
