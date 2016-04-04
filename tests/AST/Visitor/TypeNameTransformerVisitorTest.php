@@ -99,4 +99,40 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             $class->name
         );
     }
+
+    /**
+     * @test
+     */
+    public function it_transforms_interfaces()
+    {
+        $nodeFactory = new BuilderFactory();
+        $visitor = new TypeNameTransformerVisitor($this->typeAssignments);
+
+        $class = $nodeFactory->interface("Class1")->getNode();
+        $class->setAttribute(
+            NamespaceContextVisitor::ATTR_NAME,
+            NamespaceContext::fromNamespaceName("NS1\\NS2")
+        );
+
+        $visitor->enterNode($class);
+
+        $this->assertEquals(
+            "Class2",
+            $class->name
+        );
+
+
+        $class = $nodeFactory->interface("Class3")->getNode();
+        $class->setAttribute(
+            NamespaceContextVisitor::ATTR_NAME,
+            NamespaceContext::fromNamespaceName("NS3")
+        );
+
+        $visitor->enterNode($class);
+
+        $this->assertEquals(
+            "Class4",
+            $class->name
+        );
+    }
 }
