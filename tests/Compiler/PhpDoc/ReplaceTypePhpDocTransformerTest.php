@@ -10,13 +10,17 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
+use NicMart\Generics\Type\Assignment\TypeAssignment;
+use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Type\Type;
 use phpDocumentor\Reflection\DocBlock;
 
 /**
- * Class ReplaceTypePhpDocCompilerTest
+ * Class ReplaceTypePhpDocTransformerTest
  * @package NicMart\Generics\Compiler\PhpDoc
  */
-class ReplaceTypePhpDocCompilerTest extends \PHPUnit_Framework_TestCase
+class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -24,7 +28,7 @@ class ReplaceTypePhpDocCompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_replaces_types()
     {
-        $compiler = new ReplaceTypePhpDocCompiler();
+        $compiler = new ReplaceTypePhpDocTransformer();
 
         $phpdoc = '
             /**
@@ -50,6 +54,17 @@ class ReplaceTypePhpDocCompilerTest extends \PHPUnit_Framework_TestCase
             'Ns1\Ns2\B' => 'F\H'
         );
 
+        $assignments = new TypeAssignmentContext(array(
+            new TypeAssignment(
+                new Type('C\D\E'),
+                new Type('F\G')
+            ),
+            new TypeAssignment(
+                new Type('Ns1\Ns2\B'),
+                new Type('F\H')
+            )
+        ));
+
         $expectedPhpDoc = '
             /**
              * @param F\G|F\H|string $var1 desc1
@@ -64,7 +79,11 @@ class ReplaceTypePhpDocCompilerTest extends \PHPUnit_Framework_TestCase
             $context
         );
 
-        $compiledPhpDoc = $compiler->compile($docBlock, $assignments);
+        $compiledPhpDoc = $compiler->transform(
+            $docBlock,
+            NamespaceContext::emptyContext(),
+            $assignments
+        );
 
         $this->assertDocblockEquals(
             $expectedPhpDoc,
