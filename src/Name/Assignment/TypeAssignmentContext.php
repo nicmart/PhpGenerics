@@ -8,10 +8,10 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Assignment;
+namespace NicMart\Generics\Name\Assignment;
 
 
-use NicMart\Generics\Type\Type;
+use NicMart\Generics\Name\FullName;
 use PhpParser\Node\Name;
 
 final class TypeAssignmentContext
@@ -46,19 +46,19 @@ final class TypeAssignmentContext
     }
 
     /**
-     * @param Type $type
+     * @param FullName $type
      * @return bool
      */
-    public function hasAssignmentFrom(Type $type)
+    public function hasAssignmentFrom(FullName $type)
     {
         return isset($this->assignments[$type->toString()]);
     }
 
     /**
-     * @param Type $type
-     * @return Type
+     * @param FullName $type
+     * @return FullName
      */
-    public function transformType(Type $type)
+    public function transformType(FullName $type)
     {
         return $this->hasAssignmentFrom($type)
             ? $this->assignments[$type->toString()]->to()

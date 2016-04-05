@@ -8,13 +8,14 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Namespace_\Assignment;
+namespace NicMart\Generics\Name\Assignment;
 
+use NicMart\Generics\Name\Context\Namespace_;
 
-use NicMart\Generics\Type\Assignment\NamespaceAssignment;
-use NicMart\Generics\Type\Assignment\NamespaceAssignmentContext;
-use NicMart\Generics\Type\Context\Namespace_;
-
+/**
+ * Class NamespaceAssignmentContextTest
+ * @package NicMart\Generics\Name\Assignment
+ */
 class NamespaceAssignmentContextTest extends \PHPUnit_Framework_TestCase
 {
     /**

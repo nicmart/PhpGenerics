@@ -11,9 +11,9 @@
 namespace NicMart\Generics\Compiler\PhpDoc;
 
 
-use NicMart\Generics\Type\Assignment\NamespaceAssignmentContext;
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Name\Assignment\NamespaceAssignmentContext;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\NamespaceContext;
 use phpDocumentor\Reflection\DocBlock;
 
 interface PhpDocTransformer

@@ -8,13 +8,13 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Assignment;
+namespace NicMart\Generics\Name\Assignment;
 
-use NicMart\Generics\Type\Context\Namespace_;
+use NicMart\Generics\Name\Context\Namespace_;
 
 /**
  * Class TypeAssignment
- * @package NicMart\Generics\Type\Assignment
+ * @package NicMart\Generics\Name\Assignment
  */
 final class NamespaceAssignment
 {

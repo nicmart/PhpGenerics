@@ -8,26 +8,26 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
 
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\Use_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\Use_;
 
 class RelativeTypeTest extends TypeTestCase
 {
     /**
      * @test
      * @dataProvider data
-     * @param RelativeType $relativeType
+     * @param RelativeName $relativeType
      * @param NamespaceContext $context
-     * @param Type $fullType
+     * @param FullName $fullType
      */
     public function it_transforms_to_full_type(
-        RelativeType $relativeType,
+        RelativeName $relativeType,
         NamespaceContext $context,
-        Type $fullType
+        FullName $fullType
     )
     {
         $this->assertEquals(

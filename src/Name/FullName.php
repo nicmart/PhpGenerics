@@ -8,17 +8,17 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Context\Use_;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Use_;
 
 /**
  * Class Type
- * @package NicMart\Generics\Type
+ * @package NicMart\Generics\Name
  */
-final class Type
+final class FullName
 {
     /**
      * @var Path
@@ -27,7 +27,7 @@ final class Type
 
     /**
      * @param string $string
-     * @return Type
+     * @return FullName
      */
     public static function fromString($string)
     {
@@ -77,18 +77,18 @@ final class Type
 
     /**
      * @param Namespace_ $namespace
-     * @return RelativeType
+     * @return RelativeName
      */
     public function toRelativeTypeForNamespace(Namespace_ $namespace)
     {
-        return new RelativeType(
+        return new RelativeName(
             $this->path->from($namespace->path())
         );
     }
 
     /**
      * @param NamespaceContext $context
-     * @return RelativeType
+     * @return RelativeName
      */
     public function toRelativeType(NamespaceContext $context)
     {
@@ -111,8 +111,8 @@ final class Type
         $nsRelativePath = $this->path->from($context->getNamespace()->path());
 
         return $nsRelativePath->length() <= $useRelativePath->length()
-            ? new RelativeType($nsRelativePath)
-            : new RelativeType($useRelativePath)
+            ? new RelativeName($nsRelativePath)
+            : new RelativeName($useRelativePath)
         ;
     }
 }

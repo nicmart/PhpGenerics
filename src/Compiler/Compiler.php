@@ -10,8 +10,8 @@
 
 namespace NicMart\Generics\Compiler;
 
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\NamespaceContext;
 use PhpParser\Node;
 
 /**

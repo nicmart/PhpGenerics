@@ -8,13 +8,13 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Context;
+namespace NicMart\Generics\Name\Context;
 
-use NicMart\Generics\Type\Path;
+use NicMart\Generics\Name\Path;
 
 /**
  * Class Namespace_
- * @package NicMart\Generics\Type\Namespace_
+ * @package NicMart\Generics\Name\Namespace_
  */
 final class Namespace_
 {

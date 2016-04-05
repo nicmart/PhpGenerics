@@ -6,11 +6,11 @@
  * Copyright (C) DXI Ltd
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
 /**
  * Class PathTest
- * @package NicMart\Generics\Type
+ * @package NicMart\Generics\Name
  */
 class PathTest extends \PHPUnit_Framework_TestCase
 {

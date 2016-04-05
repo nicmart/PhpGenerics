@@ -11,10 +11,10 @@
 namespace NicMart\Generics\AST\Visitor;
 
 
-use NicMart\Generics\Type\Assignment\TypeAssignment;
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Type;
+use NicMart\Generics\Name\Assignment\TypeAssignment;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\FullName;
 use PhpParser\BuilderFactory;
 
 class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
@@ -28,12 +28,12 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $this->typeAssignments = new TypeAssignmentContext(array(
             new TypeAssignment(
-                Type::fromString("NS1\\NS2\\Class1"),
-                Type::fromString("A\\Class2")
+                FullName::fromString("NS1\\NS2\\Class1"),
+                FullName::fromString("A\\Class2")
             ),
             new TypeAssignment(
-                Type::fromString("NS3\\Class3"),
-                Type::fromString("B\\C\\Class4")
+                FullName::fromString("NS3\\Class3"),
+                FullName::fromString("B\\C\\Class4")
             ),
         ));
     }

@@ -10,9 +10,9 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\RelativeType;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\RelativeName;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 
@@ -60,7 +60,7 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
 
         $atLeastOneTypeTransformed = false;
         foreach ($fromTypes as $fromType) {
-            $fromRelativeType = RelativeType::fromString($fromType);
+            $fromRelativeType = RelativeName::fromString($fromType);
             $fromType = $fromRelativeType->toFullType($namespaceContext);
             $hasAssignmentFrom = $typeAssignmentContext->hasAssignmentFrom($fromType);
             $atLeastOneTypeTransformed =

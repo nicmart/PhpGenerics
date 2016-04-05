@@ -8,12 +8,12 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
 
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Context\Use_;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Use_;
 
 class TypeTest extends TypeTestCase
 {
@@ -21,14 +21,14 @@ class TypeTest extends TypeTestCase
      *
      * @test
      * @dataProvider data
-     * @param RelativeType $relativeType
+     * @param RelativeName $relativeType
      * @param NamespaceContext $context
-     * @param Type $fullType
+     * @param FullName $fullType
      */
     public function it_transforms_to_relative_type(
-        RelativeType $relativeType,
+        RelativeName $relativeType,
         NamespaceContext $context,
-        Type $fullType
+        FullName $fullType
     )
     {
         $this->assertEquals(
@@ -42,10 +42,10 @@ class TypeTest extends TypeTestCase
      */
     public function it_transforms_to_relative_type_by_ns()
     {
-        $fullType = Type::fromString("Ns1\\Ns2\\T");
+        $fullType = FullName::fromString("Ns1\\Ns2\\T");
 
         $this->assertEquals(
-            RelativeType::fromString("T"),
+            RelativeName::fromString("T"),
             $fullType->toRelativeTypeForNamespace(
                 Namespace_::fromString("Ns1\\Ns2")
             )

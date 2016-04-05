@@ -11,9 +11,9 @@
 namespace NicMart\Generics\AST\Visitor;
 
 
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Context\Use_;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;

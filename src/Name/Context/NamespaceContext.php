@@ -8,16 +8,16 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Context;
+namespace NicMart\Generics\Name\Context;
 
-use NicMart\Generics\Type\Path;
-use NicMart\Generics\Type\SimpleName;
+use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\SimpleName;
 use UnderflowException;
 
 /**
  * Class NamespaceContext
  *
- * @package NicMart\Generics\Type\Context
+ * @package NicMart\Generics\Name\Context
  */
 final class NamespaceContext
 {

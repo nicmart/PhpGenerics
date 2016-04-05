@@ -8,11 +8,11 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Context\Use_;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Use_;
 use PHPUnit_Framework_TestCase;
 
 class TypeTestCase extends PHPUnit_Framework_TestCase
@@ -21,51 +21,51 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                RelativeType::fromString("T"),
+                RelativeName::fromString("T"),
                 new NamespaceContext(
                     Namespace_::fromString("\\")
                 ),
-                Type::fromString("T")
+                FullName::fromString("T")
             ),
             array(
-                RelativeType::fromString("T"),
+                RelativeName::fromString("T"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2")
                 ),
-                Type::fromString("Ns1\\Ns2\\T")
+                FullName::fromString("Ns1\\Ns2\\T")
             ),
             array(
-                RelativeType::fromString("T"),
+                RelativeName::fromString("T"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2"),
                     array(
                         Use_::fromStrings("A\\B\\T")
                     )
                 ),
-                Type::fromString("A\\B\\T")
+                FullName::fromString("A\\B\\T")
             ),
             array(
-                RelativeType::fromString("T"),
+                RelativeName::fromString("T"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2"),
                     array(
                         Use_::fromStrings("A\\B\\C", "T")
                     )
                 ),
-                Type::fromString("A\\B\\C")
+                FullName::fromString("A\\B\\C")
             ),
             array(
-                RelativeType::fromString("Root\\A\\B"),
+                RelativeName::fromString("Root\\A\\B"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2"),
                     array(
                         Use_::fromStrings("D\\E", "Root")
                     )
                 ),
-                Type::fromString("D\\E\\A\\B")
+                FullName::fromString("D\\E\\A\\B")
             ),
             array(
-                RelativeType::fromString("C"),
+                RelativeName::fromString("C"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2\\Ns3"),
                     array(
@@ -73,10 +73,10 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
                         Use_::fromStrings("Ns1\\Ns2", "B"),
                     )
                 ),
-                Type::fromString("Ns1\\Ns2\\Ns3\\C")
+                FullName::fromString("Ns1\\Ns2\\Ns3\\C")
             ),
             array(
-                RelativeType::fromString("C\\D"),
+                RelativeName::fromString("C\\D"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2\\Ns3"),
                     array(
@@ -84,10 +84,10 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
                         Use_::fromStrings("Ns1\\Ns2", "B"),
                     )
                 ),
-                Type::fromString("Ns1\\Ns2\\Ns3\\C\\D")
+                FullName::fromString("Ns1\\Ns2\\Ns3\\C\\D")
             ),
             array(
-                RelativeType::fromString("B\\Ns3\\C"),
+                RelativeName::fromString("B\\Ns3\\C"),
                 new NamespaceContext(
                     Namespace_::fromString("M1\\M2"),
                     array(
@@ -95,14 +95,14 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
                         Use_::fromStrings("Ns1\\Ns2", "B"),
                     )
                 ),
-                Type::fromString("Ns1\\Ns2\\Ns3\\C")
+                FullName::fromString("Ns1\\Ns2\\Ns3\\C")
             ),
             array(
-                RelativeType::fromString("string"),
+                RelativeName::fromString("string"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1")
                 ),
-                Type::fromString("string")
+                FullName::fromString("string")
             ),
         );
     }

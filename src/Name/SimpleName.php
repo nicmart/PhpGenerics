@@ -6,11 +6,11 @@
  * Copyright (C) DXI Ltd
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
 /**
  * Class SimpleName
- * @package NicMart\Generics\Type
+ * @package NicMart\Generics\Name
  */
 final class SimpleName
 {
@@ -37,11 +37,11 @@ final class SimpleName
     }
 
     /**
-     * @return RelativeType
+     * @return RelativeName
      */
     public function toRelativeType()
     {
-        return new RelativeType($this->name);
+        return new RelativeName($this->name);
     }
 
     /**

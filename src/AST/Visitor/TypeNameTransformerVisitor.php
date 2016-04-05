@@ -14,13 +14,13 @@ namespace NicMart\Generics\AST\Visitor;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
-use NicMart\Generics\Type\Assignment\NamespaceAssignment;
-use NicMart\Generics\Type\Assignment\NamespaceAssignmentContext;
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Path;
-use NicMart\Generics\Type\RelativeType;
+use NicMart\Generics\Name\Assignment\NamespaceAssignment;
+use NicMart\Generics\Name\Assignment\NamespaceAssignmentContext;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\RelativeName;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
@@ -136,7 +136,7 @@ class TypeNameTransformerVisitor implements Visitor
      */
     private function transformClassName($className, NamespaceContext $namespaceContext)
     {
-        $fromRelative = new RelativeType(new Path(array($className)));
+        $fromRelative = new RelativeName(new Path(array($className)));
         $from = $fromRelative->toFullType($namespaceContext);
         $to = $this->typeAssignmentContext->transformType($from);
 

@@ -8,39 +8,39 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Assignment;
+namespace NicMart\Generics\Name\Assignment;
 
-use NicMart\Generics\Type\Type;
+use NicMart\Generics\Name\FullName;
 
 /**
  * Class TypeAssignment
- * @package NicMart\Generics\Type\Assignment
+ * @package NicMart\Generics\Name\Assignment
  */
 final class TypeAssignment
 {
     /**
-     * @var Type
+     * @var FullName
      */
     private $from;
 
     /**
-     * @var Type
+     * @var FullName
      */
     private $to;
 
     /**
      * TypeAssignment constructor.
-     * @param Type $from
-     * @param Type $to
+     * @param FullName $from
+     * @param FullName $to
      */
-    public function __construct(Type $from, Type $to)
+    public function __construct(FullName $from, FullName $to)
     {
         $this->from = $from;
         $this->to = $to;
     }
 
     /**
-     * @return Type
+     * @return FullName
      */
     public function from()
     {
@@ -48,7 +48,7 @@ final class TypeAssignment
     }
 
     /**
-     * @return Type
+     * @return FullName
      */
     public function to()
     {

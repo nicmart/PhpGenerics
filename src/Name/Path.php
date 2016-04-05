@@ -6,13 +6,13 @@
  * Copyright (C) DXI Ltd
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 /**
  * Class Path
- * @package NicMart\Generics\Type
+ * @package NicMart\Generics\Name
  */
 final class Path
 {

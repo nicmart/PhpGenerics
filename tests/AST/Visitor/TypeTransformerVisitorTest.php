@@ -10,12 +10,12 @@
 
 namespace NicMart\Generics\AST\Visitor;
 
-use NicMart\Generics\Type\Assignment\TypeAssignment;
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\Namespace_;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Context\Use_;
-use NicMart\Generics\Type\Type;
+use NicMart\Generics\Name\Assignment\TypeAssignment;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\Namespace_;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\FullName;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -194,8 +194,8 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                Type::fromString("NS1\\NS2\\Cls"),
-                Type::fromString("A\\B\\C")
+                FullName::fromString("NS1\\NS2\\Cls"),
+                FullName::fromString("A\\B\\C")
             )
         ));
 
@@ -259,8 +259,8 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                Type::fromString("NS1\\NS2\\Cls"),
-                Type::fromString("A\\B\\C")
+                FullName::fromString("NS1\\NS2\\Cls"),
+                FullName::fromString("A\\B\\C")
             )
         ));
 
@@ -317,8 +317,8 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                Type::fromString("NS1\\NS2\\Cls"),
-                Type::fromString("A\\B\\C")
+                FullName::fromString("NS1\\NS2\\Cls"),
+                FullName::fromString("A\\B\\C")
             )
         ));
 
@@ -347,12 +347,12 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                Type::fromString("NS1\\NS2\\Int1"),
-                Type::fromString("A\\B\\C1")
+                FullName::fromString("NS1\\NS2\\Int1"),
+                FullName::fromString("A\\B\\C1")
             ),
             new TypeAssignment(
-                Type::fromString("NS1\\NS2\\Int2"),
-                Type::fromString("A\\B\\C2")
+                FullName::fromString("NS1\\NS2\\Int2"),
+                FullName::fromString("A\\B\\C2")
             ),
         ));
 

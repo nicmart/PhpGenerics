@@ -10,10 +10,10 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
-use NicMart\Generics\Type\Assignment\TypeAssignment;
-use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
-use NicMart\Generics\Type\Context\NamespaceContext;
-use NicMart\Generics\Type\Type;
+use NicMart\Generics\Name\Assignment\TypeAssignment;
+use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\FullName;
 use phpDocumentor\Reflection\DocBlock;
 
 /**
@@ -56,12 +56,12 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
 
         $assignments = new TypeAssignmentContext(array(
             new TypeAssignment(
-                Type::fromString('C\D\E'),
-                Type::fromString('F\G')
+                FullName::fromString('C\D\E'),
+                FullName::fromString('F\G')
             ),
             new TypeAssignment(
-                Type::fromString('Ns1\Ns2\B'),
-                Type::fromString('F\H')
+                FullName::fromString('Ns1\Ns2\B'),
+                FullName::fromString('F\H')
             )
         ));
 

@@ -8,14 +8,14 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Context;
+namespace NicMart\Generics\Name\Context;
 
-use NicMart\Generics\Type\Path;
-use NicMart\Generics\Type\SimpleName;
+use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\SimpleName;
 
 /**
  * Class Use_
- * @package NicMart\Generics\Type\Php
+ * @package NicMart\Generics\Name\Php
  */
 final class Use_
 {

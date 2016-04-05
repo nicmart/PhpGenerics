@@ -8,15 +8,15 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type;
+namespace NicMart\Generics\Name;
 
-use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\NamespaceContext;
 
 /**
  * Class RelativeType
- * @package NicMart\Generics\Type
+ * @package NicMart\Generics\Name
  */
-final class RelativeType
+final class RelativeName
 {
     /**
      * @var string[]
@@ -43,7 +43,7 @@ final class RelativeType
 
     /**
      * @param string $string
-     * @return RelativeType
+     * @return RelativeName
      */
     public static function fromString($string)
     {
@@ -77,30 +77,30 @@ final class RelativeType
 
     /**
      * @param NamespaceContext $context
-     * @return Type
+     * @return FullName
      * @throws \UnderflowException
      */
     public function toFullType(NamespaceContext $context)
     {
         $path = $this->path;
         if ($path->isRoot()) {
-            return new Type($path);
+            return new FullName($path);
         }
 
         if (in_array($path->name(), $this->nativeTypes)) {
-            return new Type($path);
+            return new FullName($path);
         }
 
         $first = new SimpleName($path->first());
 
         if ($context->hasUse($first)) {
             $use = $context->getUse($first);
-            return new Type($use->path()->append(
+            return new FullName($use->path()->append(
                 $path->from(new Path(array($path->first())))
             ));
         }
 
-        return new Type(
+        return new FullName(
             $context->getNamespace()->path()->append($path)
         );
     }
