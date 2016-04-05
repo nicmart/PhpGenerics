@@ -23,11 +23,11 @@ class NamespaceAssignmentContextTest extends \PHPUnit_Framework_TestCase
     public function it_checks_if_assignment_exists()
     {
         $context = new NamespaceAssignmentContext(array(
-            new NamespaceAssignment(new Namespace_("A\\B"), new Namespace_("C"))
+            new NamespaceAssignment(Namespace_::fromString("A\\B"), Namespace_::fromString("C")),
         ));
 
-        $this->assertTrue($context->hasAssignmentFrom(new Namespace_("A\\B")));
-        $this->assertFalse($context->hasAssignmentFrom(new Namespace_("A")));
+        $this->assertTrue($context->hasAssignmentFrom(Namespace_::fromString("A\\B")));
+        $this->assertFalse($context->hasAssignmentFrom(Namespace_::fromString("A")));
     }
 
     /**
@@ -36,23 +36,23 @@ class NamespaceAssignmentContextTest extends \PHPUnit_Framework_TestCase
     public function it_transforms_namespaces()
     {
         $context = new NamespaceAssignmentContext(array(
-            new NamespaceAssignment(new Namespace_("A\\B"), new Namespace_("C")),
-            new NamespaceAssignment(new Namespace_("B\\C"), new Namespace_("D\\E")),
+            new NamespaceAssignment(Namespace_::fromString("A\\B"), Namespace_::fromString("C")),
+            new NamespaceAssignment(Namespace_::fromString("B\\C"), Namespace_::fromString("D\\E")),
         ));
 
         $this->assertEquals(
-            new Namespace_("C"),
-            $context->transformNamespace(new Namespace_("A\\B"))
+            Namespace_::fromString("C"),
+            $context->transformNamespace(Namespace_::fromString("A\\B"))
         );
 
         $this->assertEquals(
-            new Namespace_("D\\E"),
-            $context->transformNamespace(new Namespace_("\\B\\C"))
+            Namespace_::fromString("D\\E"),
+            $context->transformNamespace(Namespace_::fromString("\\B\\C"))
         );
 
         $this->assertEquals(
-            new Namespace_("Ns\\Nss"),
-            $context->transformNamespace(new Namespace_("Ns\\Nss"))
+            Namespace_::fromString("Ns\\Nss"),
+            $context->transformNamespace(Namespace_::fromString("Ns\\Nss"))
         );
     }
 }

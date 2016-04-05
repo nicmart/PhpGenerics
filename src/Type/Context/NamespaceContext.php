@@ -10,6 +10,8 @@
 
 namespace NicMart\Generics\Type\Context;
 
+use NicMart\Generics\Type\Path;
+use NicMart\Generics\Type\SimpleName;
 use UnderflowException;
 
 /**
@@ -32,7 +34,7 @@ final class NamespaceContext
     /**
      * @var Use_[]
      */
-    private $usesByName = array();
+    private $usesByPath = array();
 
     /**
      * @return NamespaceContext
@@ -57,7 +59,7 @@ final class NamespaceContext
      */
     public static function fromNamespaceName($namespace)
     {
-        return new self(new Namespace_($namespace));
+        return new self(Namespace_::fromString($namespace));
     }
 
     /**
@@ -93,49 +95,49 @@ final class NamespaceContext
     }
 
     /**
-     * @param string $alias
+     * @param SimpleName $alias
      * @return bool
      */
-    public function hasUse($alias)
+    public function hasUse(SimpleName $alias)
     {
-        return isset($this->usesByAliases[$alias]);
+        return isset($this->usesByAliases[$alias->name()]);
     }
 
     /**
-     * @param string $alias
+     * @param SimpleName $alias
      * @return Use_
      * @throws UnderflowException
      */
-    public function getUse($alias)
+    public function getUse(SimpleName $alias)
     {
         if (!$this->hasUse($alias)) {
             throw new UnderflowException("Undefined use statement for alias $alias");
         }
 
-        return $this->usesByAliases[$alias];
+        return $this->usesByAliases[$alias->name()];
     }
 
     /**
-     * @param string $name
+     * @param Path $path
      * @return bool
      */
-    public function hasUseByName($name)
+    public function hasUseByPath(Path $path)
     {
-        return isset($this->usesByName[$name]);
+        return isset($this->usesByPath[$path->toString()]);
     }
 
     /**
-     * @param string $name
+     * @param Path $path
      * @return Use_
      * @throws UnderflowException
      */
-    public function getUseByName($name)
+    public function getUseByPath(Path $path)
     {
-        if (!$this->hasUseByName($name)) {
-            throw new UnderflowException("Undefined use statement for name $name");
+        if (!$this->hasUseByPath($path)) {
+            throw new UnderflowException("Undefined use statement for path {$path->toString()}");
         }
 
-        return $this->usesByName[$name];
+        return $this->usesByPath[$path->toString()];
     }
 
     /**
@@ -169,7 +171,7 @@ final class NamespaceContext
      */
     private function addUse(Use_ $use)
     {
-        $this->usesByAliases[$use->alias()] = $use;
-        $this->usesByName[$use->name()] = $use;
+        $this->usesByAliases[$use->alias()->name()] = $use;
+        $this->usesByPath[$use->path()->toString()] = $use;
     }
 }

@@ -55,7 +55,7 @@ final class NamespaceAssignmentContext
      */
     public function hasAssignmentFrom(Namespace_ $namespace)
     {
-        return isset($this->assignments[$namespace->name()]);
+        return isset($this->assignments[$namespace->toString()]);
     }
 
     /**
@@ -65,7 +65,7 @@ final class NamespaceAssignmentContext
     public function transformNamespace(Namespace_ $namespace)
     {
         return $this->hasAssignmentFrom($namespace)
-            ? $this->assignments[$namespace->name()]->to()
+            ? $this->assignments[$namespace->toString()]->to()
             : $namespace
         ;
     }
@@ -84,6 +84,6 @@ final class NamespaceAssignmentContext
      */
     private function addAssignment(NamespaceAssignment $assignment)
     {
-        $this->assignments[$assignment->from()->name()] = $assignment;
+        $this->assignments[$assignment->from()->toString()] = $assignment;
     }
 }

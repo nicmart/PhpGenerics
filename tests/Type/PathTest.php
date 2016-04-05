@@ -117,6 +117,31 @@ class PathTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_gets_from()
+    {
+        $path = new Path(array("a", "b", "c", "d"));
+
+        $this->assertEquals(
+            new Path(array("c", "d")),
+            $path->from(new Path(array("a", "b")))
+        );
+
+        $this->assertEquals(
+            $path,
+            $path->from(new Path(array("c", "b")))
+        );
+
+        $path = new Path(array("a"));
+
+        $this->assertEquals(
+            new Path(array()),
+            $path->from(new Path(array("a")))
+        );
+    }
+
+    /**
+     * @test
+     */
     public function it_converts_to_string()
     {
         $path = new Path(array("a", "b", "c"));

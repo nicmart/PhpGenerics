@@ -19,6 +19,7 @@ use NicMart\Generics\Type\Assignment\NamespaceAssignmentContext;
 use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
 use NicMart\Generics\Type\Context\Namespace_;
 use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Type\Path;
 use NicMart\Generics\Type\RelativeType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -125,7 +126,7 @@ class TypeNameTransformerVisitor implements Visitor
         $from = Namespace_::fromParts($name->parts);
         $to = $this->namespaceAssignmentContext->transformNamespace($from);
 
-        return new Name($to->parts());
+        return new Name($to->path()->parts());
     }
 
     /**
@@ -135,9 +136,10 @@ class TypeNameTransformerVisitor implements Visitor
      */
     private function transformClassName($className, NamespaceContext $namespaceContext)
     {
-        $from = RelativeType::fromParts(array($className))->toFullType($namespaceContext);
+        $fromRelative = new RelativeType(new Path(array($className)));
+        $from = $fromRelative->toFullType($namespaceContext);
         $to = $this->typeAssignmentContext->transformType($from);
 
-        return $to->name();
+        return $to->name()->name();
     }
 }

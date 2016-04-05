@@ -21,54 +21,50 @@ use NicMart\Generics\Type\Context\Use_;
 final class Type
 {
     /**
-     * @var string
+     * @var Path
      */
-    private $parts = array();
+    private $path;
 
     /**
-     * @param array $parts
+     * @param string $string
      * @return Type
      */
-    public static function fromParts(array $parts)
+    public static function fromString($string)
     {
-        return new self(implode("\\", $parts));
+        return new self(Path::fromString($string));
     }
 
     /**
      * Type constructor.
-     * @param $fullQualifiedName
+     * @param Path $path
      */
-    public function __construct($fullQualifiedName)
+    public function __construct(Path $path)
     {
-        $fullName = ltrim((string) $fullQualifiedName, "\\");
-        $this->parts = explode("\\", $fullName);
+        $this->path = $path;
     }
 
     /**
      * @return mixed
      */
-    public function fullName()
+    public function toString()
     {
-        return implode("\\", $this->parts);
+        return $this->path->toString("\\");
     }
 
     /**
-     * @return string
+     * @return SimpleName
      */
     public function name()
     {
-        return count($this->parts)
-            ? $this->parts[count($this->parts) - 1]
-            : ""
-        ;
+        return new SimpleName($this->path->name());
     }
 
     /**
-     * @return array
+     * @return Path
      */
-    public function parts()
+    public function path()
     {
-        return $this->parts;
+        return $this->path;
     }
 
     /**
@@ -76,7 +72,7 @@ final class Type
      */
     public function namespace_()
     {
-        return Namespace_::fromParts(array_slice($this->parts(), 0, -1));
+        return new Namespace_($this->path()->up());
     }
 
     /**
@@ -85,18 +81,9 @@ final class Type
      */
     public function toRelativeTypeForNamespace(Namespace_ $namespace)
     {
-        $parts = $this->parts();
-        $nsParts = $namespace->parts();
-        $numParts = min(count($parts), count($nsParts));
-
-        for ($i = 0; $i < $numParts; $i++) {
-            if ($parts[$i] != $nsParts[$i]) {
-                break;
-            }
-            unset($parts[$i]);
-        }
-
-        return RelativeType::fromParts(array_values($parts));
+        return new RelativeType(
+            $this->path->from($namespace->path())
+        );
     }
 
     /**
@@ -105,29 +92,27 @@ final class Type
      */
     public function toRelativeType(NamespaceContext $context)
     {
-        $parts = $this->parts();
-        $useRelativeNameParts = $this->parts();
+        $useRelativePath = $this->path;
 
-        for ($i = 0, $totParts = count($parts); $i <= $totParts; $i++) {
-            $prefix = implode("\\", array_slice($parts, 0, $totParts -$i));
-            if ($context->hasUseByName($prefix)) {
-                $useRelativeNameParts = array_merge(
-                    array($context->getUseByName($prefix)->alias()),
-                    array_slice($parts, $totParts - $i)
+        for (
+            $prefix = $this->path;
+            !$prefix->isRoot();
+            $prefix = $prefix->up()
+        ) {
+            if ($context->hasUseByPath($prefix)) {
+                $alias = $context->getUseByPath($prefix)->alias()->toPath();
+                $useRelativePath = $alias->append(
+                    $this->path()->from($prefix)
                 );
                 break;
             }
         }
 
-        $nsRelatativeParts = $this
-            ->toRelativeTypeForNamespace($context->getNamespace())
-            ->parts()
-        ;
+        $nsRelativePath = $this->path->from($context->getNamespace()->path());
 
-        return count($nsRelatativeParts) <= count($useRelativeNameParts)
-            ? RelativeType::fromParts($nsRelatativeParts)
-            : RelativeType::fromParts($useRelativeNameParts)
+        return $nsRelativePath->length() <= $useRelativePath->length()
+            ? new RelativeType($nsRelativePath)
+            : new RelativeType($useRelativePath)
         ;
-
     }
 }

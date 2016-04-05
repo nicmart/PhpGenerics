@@ -58,7 +58,7 @@ class NamespaceContextVisitorTest extends \PHPUnit_Framework_TestCase
 
         $this->visitor->enterNode($class);
         $this->assertEquals(
-            new NamespaceContext(new Namespace_("A\\B\\C")),
+            new NamespaceContext(Namespace_::fromString("A\\B\\C")),
             $class->getAttribute(NamespaceContextVisitor::ATTR_NAME)
         );
 
@@ -70,7 +70,7 @@ class NamespaceContextVisitorTest extends \PHPUnit_Framework_TestCase
 
         $this->visitor->enterNode($func);
         $this->assertEquals(
-            new NamespaceContext(new Namespace_("A\\E\\F")),
+            new NamespaceContext(Namespace_::fromString("A\\E\\F")),
             $func->getAttribute(NamespaceContextVisitor::ATTR_NAME)
         );
     }
@@ -89,7 +89,7 @@ class NamespaceContextVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             NamespaceContext::emptyContext()
                 ->withUse(
-                    new Use_("A\\B", "C")
+                    Use_::fromStrings("A\\B", "C")
                 )
             ,
             $new->getAttribute(NamespaceContextVisitor::ATTR_NAME)

@@ -21,33 +21,34 @@ class TypeAssignmentContextTest extends \PHPUnit_Framework_TestCase
     public function it_checks_if_assignment_exists()
     {
         $context = new TypeAssignmentContext(array(
-            new TypeAssignment(new Type("A\\B"), new Type("C"))
+
+            new TypeAssignment(Type::fromString("A\\B"), Type::fromString("C"))
         ));
 
-        $this->assertTrue($context->hasAssignmentFrom(new Type("A\\B")));
-        $this->assertFalse($context->hasAssignmentFrom(new Type("A")));
+        $this->assertTrue($context->hasAssignmentFrom(Type::fromString("A\\B")));
+        $this->assertFalse($context->hasAssignmentFrom(Type::fromString("A")));
     }
 
     public function it_transforms_types()
     {
         $context = new TypeAssignmentContext(array(
-            new TypeAssignment(new Type("A\\B"), new Type("C")),
-            new TypeAssignment(new Type("B\\C"), new Type("D\\E")),
+            new TypeAssignment(Type::fromString("A\\B"), Type::fromString("C")),
+            new TypeAssignment(Type::fromString("B\\C"), Type::fromString("D\\E")),
         ));
 
         $this->assertEquals(
-            new Type("C"),
-            $context->transformType(new Type("A\\B"))
+            Type::fromString("C"),
+            $context->transformType(Type::fromString("A\\B"))
         );
 
         $this->assertEquals(
-            new Type("D\\E"),
-            $context->transformType(new Type("\\B\\C"))
+            Type::fromString("D\\E"),
+            $context->transformType(Type::fromString("\\B\\C"))
         );
 
         $this->assertEquals(
-            new Type("Ns\\Object"),
-            $context->transformType(new Type("Ns\\Object"))
+            Type::fromString("Ns\\Object"),
+            $context->transformType(Type::fromString("Ns\\Object"))
         );
     }
 }

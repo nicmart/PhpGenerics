@@ -19,7 +19,7 @@ final class Path
     /**
      * @var string[]
      */
-    private $parts;
+    private $parts = array();
 
     /**
      * Returns the root path object
@@ -47,6 +47,10 @@ final class Path
     {
         $path = ltrim((string) $path, $separator);
 
+        if (!$path) {
+            return self::root();
+        }
+
         return new self(explode($separator, $path));
     }
 
@@ -54,13 +58,11 @@ final class Path
      * Path constructor.
      * @param string[] $parts
      */
-    public function __construct(array $parts)
+    public function __construct(array $parts = array())
     {
         foreach ($parts as &$part) {
-            $part = (string) $part;
+            $this->parts[] = (string) $part;
         }
-
-        $this->parts = $parts;
     }
 
     /**
@@ -93,6 +95,19 @@ final class Path
     }
 
     /**
+     * @return string
+     */
+    public function first()
+    {
+        if ($this->isRoot()) {
+            // @todo create domain exception
+            throw new \UnderflowException("Root path does not have first part");
+        }
+
+        return $this->parts[0];
+    }
+
+    /**
      * @return Path
      */
     public function up()
@@ -106,7 +121,10 @@ final class Path
      */
     public function down($name)
     {
-        return new self(array_merge($this->parts, (string) $name));
+        $parts = $this->parts;
+        $parts[] = (string) $name;
+
+        return new self($parts);
     }
 
     /**
@@ -125,7 +143,7 @@ final class Path
     {
         $parts1 = $this->parts();
         $parts2 = $path->parts();
-        $min = max(count($parts1), count($parts2));
+        $min = min(count($parts1), count($parts2));
         $commonAncestorParts = array();
 
         for ($i = 0; $i < $min; $i++) {
@@ -136,6 +154,24 @@ final class Path
         }
 
         return new self($commonAncestorParts);
+    }
+
+    /**
+     * @param Path $path
+     * @return Path
+     */
+    public function from(Path $path)
+    {
+        $ancestor = $path->ancestor($this);
+
+        if ($path->length() != $ancestor->length()) {
+            return $this;
+        }
+
+        return new self(array_slice(
+            $this->parts,
+            $ancestor->length()
+        ));
     }
 
     /**
@@ -157,5 +193,23 @@ final class Path
     public function prepend(Path $path)
     {
         return $path->append($this);
+    }
+
+    /**
+     * @param string $separator
+     * @return string
+     */
+    public function toString($separator = "\\")
+    {
+        return implode($separator, $this->parts());
+    }
+
+    /**
+     * @param string $separator
+     * @return string
+     */
+    public function toAbsoluteString($separator = "\\")
+    {
+        return $separator . $this->toString($separator);
     }
 }

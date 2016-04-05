@@ -42,12 +42,12 @@ class TypeTest extends TypeTestCase
      */
     public function it_transforms_to_relative_type_by_ns()
     {
-        $fullType = new Type("Ns1\\Ns2\\T");
+        $fullType = Type::fromString("Ns1\\Ns2\\T");
 
         $this->assertEquals(
-            new RelativeType("T"),
+            RelativeType::fromString("T"),
             $fullType->toRelativeTypeForNamespace(
-                new Namespace_("Ns1\\Ns2")
+                Namespace_::fromString("Ns1\\Ns2")
             )
         );
     }

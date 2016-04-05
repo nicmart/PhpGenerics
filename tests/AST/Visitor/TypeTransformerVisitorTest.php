@@ -187,15 +187,15 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
     public function dataClass()
     {
-        $contextNs = new NamespaceContext(new Namespace_("NS1\\NS2"));
+        $contextNs = new NamespaceContext(Namespace_::fromString("NS1\\NS2"));
         $contextUse = NamespaceContext::emptyContext()->withUse(
-            new Use_("NS1\\NS2\\Cls")
+            Use_::fromStrings("NS1\\NS2\\Cls")
         );
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                new Type("NS1\\NS2\\Cls"),
-                new Type("A\\B\\C")
+                Type::fromString("NS1\\NS2\\Cls"),
+                Type::fromString("A\\B\\C")
             )
         ));
 
@@ -252,15 +252,15 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function dataSignatures()
     {
         $nodeFactory = new BuilderFactory();
-        $contextNs = new NamespaceContext(new Namespace_("NS1\\NS2"));
+        $contextNs = new NamespaceContext(Namespace_::fromString("NS1\\NS2"));
         $contextUse = NamespaceContext::emptyContext()->withUse(
-            new Use_("NS1\\NS2\\Cls")
+            Use_::fromStrings("NS1\\NS2\\Cls")
         );
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                new Type("NS1\\NS2\\Cls"),
-                new Type("A\\B\\C")
+                Type::fromString("NS1\\NS2\\Cls"),
+                Type::fromString("A\\B\\C")
             )
         ));
 
@@ -310,15 +310,15 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function dataClassExtensions()
     {
         $nodeFactory = new BuilderFactory();
-        $contextNs = new NamespaceContext(new Namespace_("NS1\\NS2"));
+        $contextNs = new NamespaceContext(Namespace_::fromString("NS1\\NS2"));
         $contextUse = NamespaceContext::emptyContext()->withUse(
-            new Use_("NS1\\NS2\\Cls")
+            Use_::fromStrings("NS1\\NS2\\Cls")
         );
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                new Type("NS1\\NS2\\Cls"),
-                new Type("A\\B\\C")
+                Type::fromString("NS1\\NS2\\Cls"),
+                Type::fromString("A\\B\\C")
             )
         ));
 
@@ -339,20 +339,20 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function dataClassImplements()
     {
         $nodeFactory = new BuilderFactory();
-        $contextNs = new NamespaceContext(new Namespace_("NS1\\NS2"));
+        $contextNs = new NamespaceContext(Namespace_::fromString("NS1\\NS2"));
         $contextUse = NamespaceContext::emptyContext()->withUse(
-            new Use_("NS1\\NS2\\Int1"),
-            new Use_("NS1\\NS2\\Int2")
+            Use_::fromStrings("NS1\\NS2\\Int1"),
+            Use_::fromStrings("NS1\\NS2\\Int2")
         );
 
         $assignmentContext = new TypeAssignmentContext(array(
             new TypeAssignment(
-                new Type("NS1\\NS2\\Int1"),
-                new Type("A\\B\\C1")
+                Type::fromString("NS1\\NS2\\Int1"),
+                Type::fromString("A\\B\\C1")
             ),
             new TypeAssignment(
-                new Type("NS1\\NS2\\Int2"),
-                new Type("A\\B\\C2")
+                Type::fromString("NS1\\NS2\\Int2"),
+                Type::fromString("A\\B\\C2")
             ),
         ));
 

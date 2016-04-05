@@ -28,12 +28,12 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $this->typeAssignments = new TypeAssignmentContext(array(
             new TypeAssignment(
-                new Type("NS1\\NS2\\Class1"),
-                new Type("A\\Class2")
+                Type::fromString("NS1\\NS2\\Class1"),
+                Type::fromString("A\\Class2")
             ),
             new TypeAssignment(
-                new Type("NS3\\Class3"),
-                new Type("B\\C\\Class4")
+                Type::fromString("NS3\\Class3"),
+                Type::fromString("B\\C\\Class4")
             ),
         ));
     }

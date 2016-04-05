@@ -19,21 +19,6 @@ use NicMart\Generics\Type\Context\NamespaceContext;
 final class RelativeType
 {
     /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $root;
-
-    /**
-     * @var string[]
-     */
-    private $tail;
-
-    /**
      * @var string[]
      */
     private $nativeTypes = array(
@@ -51,37 +36,43 @@ final class RelativeType
         "self",
         "parent"
     );
+    /**
+     * @var Path
+     */
+    private $path;
 
     /**
-     * @param string[] $parts
-     * @return RelativeType
+     * @param string $string
+     * @return Type
      */
-    public static function fromParts(array $parts)
+    public static function fromString($string)
     {
-        return new self(implode("\\", $parts));
+        return new self(Path::fromString($string));
     }
 
     /**
      * RelativeType constructor.
-     * @param $name
+     * @param Path $path
      */
-    public function __construct($name)
+    public function __construct(Path $path)
     {
-        $parts = explode("\\", $name);
-
-        $parts = $this->makeNativeTypeGlobal($name, $parts);
-
-        $this->name = $name;
-        $this->root = $parts[0];
-        $this->tail = array_slice($parts, 1);
+        $this->path = $path;
     }
 
     /**
-     * @return string
+     * @return SimpleName
      */
     public function name()
     {
-        return $this->name;
+        return new SimpleName($this->path->name());
+    }
+
+    /**
+     * @return Path
+     */
+    public function path()
+    {
+        return $this->path;
     }
 
     /**
@@ -91,43 +82,26 @@ final class RelativeType
      */
     public function toFullType(NamespaceContext $context)
     {
-        if ($this->root === "") {
-            return new Type($this->name());
+        $path = $this->path;
+        if ($path->isRoot()) {
+            return new Type($path);
         }
 
-        if ($context->hasUse($this->root)) {
-            return Type::fromParts(array_merge(
-                array($context->getUse($this->root)->name()),
-                $this->tail
+        if (in_array($path->name(), $this->nativeTypes)) {
+            return new Type($path);
+        }
+
+        $first = new SimpleName($path->first());
+
+        if ($context->hasUse($first)) {
+            $use = $context->getUse($first);
+            return new Type($use->path()->append(
+                $path->from(new Path(array($path->first())))
             ));
         }
 
-        return Type::fromParts(array(
-            $context->getNamespace()->name(),
-            $this->name()
-        ));
-    }
-
-
-    /**
-     * @return array
-     */
-    public function parts()
-    {
-        return explode("\\", $this->name);
-    }
-
-    /**
-     * @return array
-     */
-    private function makeNativeTypeGlobal($name, array $parts)
-    {
-        if (!in_array($name, $this->nativeTypes, false)) {
-            return $parts;
-        }
-
-        array_unshift($parts, "");
-
-        return $parts;
+        return new Type(
+            $context->getNamespace()->path()->append($path)
+        );
     }
 }

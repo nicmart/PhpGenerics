@@ -15,6 +15,7 @@ use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Type\Assignment\TypeAssignmentContext;
 use NicMart\Generics\Type\Context\NamespaceContext;
+use NicMart\Generics\Type\Path;
 use NicMart\Generics\Type\RelativeType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -108,10 +109,11 @@ class TypeTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $fromType = RelativeType::fromParts($name->parts)->toFullType($nsContext);
+        $relativeType = new RelativeType(new Path($name->parts));
+        $fromType = $relativeType->toFullType($nsContext);
         $toType = $this->typeAssignmentContext->transformType($fromType);
 
-        return new Name\FullyQualified($toType->parts(), $name->getAttributes());
+        return new Name\FullyQualified($toType->path()->parts(), $name->getAttributes());
     }
 
     /**

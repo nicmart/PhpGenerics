@@ -10,6 +10,9 @@
 
 namespace NicMart\Generics\Type\Context;
 
+use NicMart\Generics\Type\Path;
+use NicMart\Generics\Type\SimpleName;
+
 /**
  * Class Use_
  * @package NicMart\Generics\Type\Php
@@ -27,36 +30,46 @@ final class Use_
     private $alias;
 
     /**
+     * @var Path
+     */
+    private $path;
+
+    /**
+     * @param $pathString
+     * @param $nameString
+     * @return Use_
+     */
+    public static function fromStrings(
+        $pathString,
+        $nameString = null
+    ) {
+        return new self(
+            Path::fromString($pathString),
+            isset($nameString) ? new SimpleName($nameString) : null
+        );
+    }
+
+    /**
      * Use_ constructor.
-     * @param $name
-     * @param null $alias
+     * @param Path $path
+     * @param SimpleName $alias
      */
-    public function __construct($name, $alias = null)
+    public function __construct(Path $path, SimpleName $alias = null)
     {
-        // Must be always a global path
-        $this->name = ltrim($name, "\\");
-        $parts = explode("\\", $name);
-        $this->alias = $alias ?: $parts[count($parts) - 1];
+        $this->alias = $alias ?:  new SimpleName($path->name());
+        $this->path = $path;
     }
 
     /**
-     * @return string
+     * @return Path
      */
-    public function name()
+    public function path()
     {
-        return $this->name;
+        return $this->path;
     }
 
     /**
-     * @return array
-     */
-    public function nameParts()
-    {
-        return explode("\\", $this->name);
-    }
-
-    /**
-     * @return string
+     * @return SimpleName
      */
     public function alias()
     {

@@ -10,6 +10,8 @@
 
 namespace NicMart\Generics\Type\Context;
 
+use NicMart\Generics\Type\Path;
+
 /**
  * Class Namespace_
  * @package NicMart\Generics\Type\Namespace_
@@ -17,17 +19,26 @@ namespace NicMart\Generics\Type\Context;
 final class Namespace_
 {
     /**
-     * @var string
+     * @var Path
      */
-    private $namespace;
+    private $path;
 
     /**
-     * @param array $parts
+     * @param string $string
+     * @return Namespace_
+     */
+    public static function fromString($string)
+    {
+        return new self(Path::fromString($string));
+    }
+
+    /**
+     * @param string[] $parts
      * @return Namespace_
      */
     public static function fromParts(array $parts)
     {
-        return new self(implode("\\", $parts));
+        return new self(new Path($parts));
     }
 
     /**
@@ -35,32 +46,37 @@ final class Namespace_
      */
     public static function globalNamespace()
     {
-        return new self("");
+        static $global;
+        if (!$global) {
+            $global = new self(new Path());
+        }
+
+        return $global;
     }
 
     /**
      * Namespace_ constructor.
-     * @param $namespace
+     * @param Path $path
      */
-    public function __construct($namespace)
+    public function __construct(Path $path)
     {
-        $this->namespace = ltrim((string) $namespace, "\\");
+        $this->path = $path;
     }
 
     /**
      * @return string
      */
-    public function name()
+    public function toString()
     {
-        return $this->namespace;
+        return $this->path->toString("\\");
     }
 
     /**
-     * @return array
+     * @return Path
      */
-    public function parts()
+    public function path()
     {
-        return explode("\\", $this->namespace);
+        return $this->path;
     }
 
     /**
@@ -69,18 +85,8 @@ final class Namespace_
      */
     public function commonAncestor(Namespace_ $namespace)
     {
-        $parts1 = $this->parts();
-        $parts2 = $namespace->parts();
-        $min = max(count($parts1), count($parts2));
-        $commonAncestorParts = array();
-
-        for ($i = 0; $i < $min; $i++) {
-            if ($parts1[$i] != $parts2[$i]) {
-                break;
-            }
-            $commonAncestorParts[] = $parts1[$i];
-        }
-
-        return Namespace_::fromParts($commonAncestorParts);
+        return new self(
+            $this->path()->ancestor($namespace->path())
+        );
     }
 }

@@ -21,88 +21,88 @@ class TypeTestCase extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                new RelativeType("T"),
+                RelativeType::fromString("T"),
                 new NamespaceContext(
-                    new Namespace_("\\")
+                    Namespace_::fromString("\\")
                 ),
-                new Type("T")
+                Type::fromString("T")
             ),
             array(
-                new RelativeType("T"),
+                RelativeType::fromString("T"),
                 new NamespaceContext(
-                    new Namespace_("Ns1\\Ns2")
+                    Namespace_::fromString("Ns1\\Ns2")
                 ),
-                new Type("Ns1\\Ns2\\T")
+                Type::fromString("Ns1\\Ns2\\T")
             ),
             array(
-                new RelativeType("T"),
+                RelativeType::fromString("T"),
                 new NamespaceContext(
-                    new Namespace_("Ns1\\Ns2"),
+                    Namespace_::fromString("Ns1\\Ns2"),
                     array(
-                        new Use_("A\\B\\T")
+                        Use_::fromStrings("A\\B\\T")
                     )
                 ),
-                new Type("A\\B\\T")
+                Type::fromString("A\\B\\T")
             ),
             array(
-                new RelativeType("T"),
+                RelativeType::fromString("T"),
                 new NamespaceContext(
-                    new Namespace_("Ns1\\Ns2"),
+                    Namespace_::fromString("Ns1\\Ns2"),
                     array(
-                        new Use_("A\\B\\C", "T")
+                        Use_::fromStrings("A\\B\\C", "T")
                     )
                 ),
-                new Type("A\\B\\C")
+                Type::fromString("A\\B\\C")
             ),
             array(
-                new RelativeType("Root\\A\\B"),
+                RelativeType::fromString("Root\\A\\B"),
                 new NamespaceContext(
-                    new Namespace_("Ns1\\Ns2"),
+                    Namespace_::fromString("Ns1\\Ns2"),
                     array(
-                        new Use_("D\\E", "Root")
+                        Use_::fromStrings("D\\E", "Root")
                     )
                 ),
-                new Type("D\\E\\A\\B")
+                Type::fromString("D\\E\\A\\B")
             ),
             array(
-                new RelativeType("C"),
+                RelativeType::fromString("C"),
                 new NamespaceContext(
-                    new Namespace_("Ns1\\Ns2\\Ns3"),
+                    Namespace_::fromString("Ns1\\Ns2\\Ns3"),
                     array(
-                        new Use_("Ns1", "A"),
-                        new Use_("Ns1\\Ns2", "B"),
+                        Use_::fromStrings("Ns1", "A"),
+                        Use_::fromStrings("Ns1\\Ns2", "B"),
                     )
                 ),
-                new Type("Ns1\\Ns2\\Ns3\\C")
+                Type::fromString("Ns1\\Ns2\\Ns3\\C")
             ),
             array(
-                new RelativeType("C\\D"),
+                RelativeType::fromString("C\\D"),
                 new NamespaceContext(
-                    new Namespace_("Ns1\\Ns2\\Ns3"),
+                    Namespace_::fromString("Ns1\\Ns2\\Ns3"),
                     array(
-                        new Use_("Ns1", "A"),
-                        new Use_("Ns1\\Ns2", "B"),
+                        Use_::fromStrings("Ns1", "A"),
+                        Use_::fromStrings("Ns1\\Ns2", "B"),
                     )
                 ),
-                new Type("Ns1\\Ns2\\Ns3\\C\\D")
+                Type::fromString("Ns1\\Ns2\\Ns3\\C\\D")
             ),
             array(
-                new RelativeType("B\\Ns3\\C"),
+                RelativeType::fromString("B\\Ns3\\C"),
                 new NamespaceContext(
-                    new Namespace_("M1\\M2"),
+                    Namespace_::fromString("M1\\M2"),
                     array(
-                        new Use_("Ns1", "A"),
-                        new Use_("Ns1\\Ns2", "B"),
+                        Use_::fromStrings("Ns1", "A"),
+                        Use_::fromStrings("Ns1\\Ns2", "B"),
                     )
                 ),
-                new Type("Ns1\\Ns2\\Ns3\\C")
+                Type::fromString("Ns1\\Ns2\\Ns3\\C")
             ),
             array(
-                new RelativeType("string"),
+                RelativeType::fromString("string"),
                 new NamespaceContext(
-                    new Namespace_("Ns1")
+                    Namespace_::fromString("Ns1")
                 ),
-                new Type("string")
+                Type::fromString("string")
             ),
         );
     }
