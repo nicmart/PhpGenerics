@@ -56,12 +56,12 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
 
         $assignments = new TypeAssignmentContext(array(
             new TypeAssignment(
-                new Type('C\D\E'),
-                new Type('F\G')
+                Type::fromString('C\D\E'),
+                Type::fromString('F\G')
             ),
             new TypeAssignment(
-                new Type('Ns1\Ns2\B'),
-                new Type('F\H')
+                Type::fromString('Ns1\Ns2\B'),
+                Type::fromString('F\H')
             )
         ));
 

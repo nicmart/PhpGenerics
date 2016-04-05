@@ -60,7 +60,7 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
 
         $atLeastOneTypeTransformed = false;
         foreach ($fromTypes as $fromType) {
-            $fromRelativeType = new RelativeType($fromType);
+            $fromRelativeType = RelativeType::fromString($fromType);
             $fromType = $fromRelativeType->toFullType($namespaceContext);
             $hasAssignmentFrom = $typeAssignmentContext->hasAssignmentFrom($fromType);
             $atLeastOneTypeTransformed =
@@ -71,7 +71,7 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
                 ? $typeAssignmentContext->transformType($fromType)
                 : $fromType
             ;
-            $toTypes[] = $toType->fullName();
+            $toTypes[] = $toType->toString();
         }
 
         if ($atLeastOneTypeTransformed) {

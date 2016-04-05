@@ -43,7 +43,7 @@ final class RelativeType
 
     /**
      * @param string $string
-     * @return Type
+     * @return RelativeType
      */
     public static function fromString($string)
     {
