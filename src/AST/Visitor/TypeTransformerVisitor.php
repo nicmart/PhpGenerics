@@ -13,8 +13,9 @@ namespace NicMart\Generics\AST\Visitor;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
-use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Path;
 use NicMart\Generics\Name\RelativeName;
 use PhpParser\Node;
@@ -29,15 +30,15 @@ use PhpParser\Node\Name;
 class TypeTransformerVisitor implements Visitor
 {
     /**
-     * @var TypeAssignmentContext
+     * @var NameAssignmentContext
      */
     private $typeAssignmentContext;
 
     /**
      * TypeTransformerVisitor constructor.
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      */
-    public function __construct(TypeAssignmentContext $typeAssignmentContext)
+    public function __construct(NameAssignmentContext $typeAssignmentContext)
     {
         $this->typeAssignmentContext = $typeAssignmentContext;
     }
@@ -109,9 +110,9 @@ class TypeTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $relativeType = new RelativeName(new Path($name->parts));
-        $fromType = $nsContext->qualifyRelativeName($relativeType);
-        $toType = $this->typeAssignmentContext->transformType($fromType);
+        $toType = $this->typeAssignmentContext->transformType(
+            $this->getFullName($name, $nsContext)
+        );
 
         return new Name\FullyQualified($toType->path()->parts(), $name->getAttributes());
     }
@@ -139,5 +140,20 @@ class TypeTransformerVisitor implements Visitor
                 $nsContext
             );
         }
+    }
+
+    /**
+     * @param Name $name
+     * @param NamespaceContext $nsContext
+     * @return FullName
+     */
+    private function getFullName(Name $name, NamespaceContext $nsContext)
+    {
+        if ($name->isFullyQualified()) {
+            return new FullName(new Path($name->parts));
+        }
+
+        $relativeName = new RelativeName(new Path($name->parts));
+        return $nsContext->qualifyRelativeName($relativeName);
     }
 }

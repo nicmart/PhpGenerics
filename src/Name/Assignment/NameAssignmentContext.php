@@ -14,16 +14,16 @@ namespace NicMart\Generics\Name\Assignment;
 use NicMart\Generics\Name\FullName;
 use PhpParser\Node\Name;
 
-final class TypeAssignmentContext
+final class NameAssignmentContext
 {
     /**
-     * @var TypeAssignment[]
+     * @var NameAssignment[]
      */
     private $assignments = array();
 
     /**
      * TypeAssignmentContext constructor.
-     * @param TypeAssignment[] $assignments
+     * @param NameAssignment[] $assignments
      */
     public function __construct(array $assignments)
     {
@@ -33,10 +33,10 @@ final class TypeAssignmentContext
     }
 
     /**
-     * @param TypeAssignment $assignment
-     * @return TypeAssignmentContext
+     * @param NameAssignment $assignment
+     * @return NameAssignmentContext
      */
-    public function withAssignment(TypeAssignment $assignment)
+    public function withAssignment(NameAssignment $assignment)
     {
         $new = clone $this;
 
@@ -67,7 +67,7 @@ final class TypeAssignmentContext
     }
 
     /**
-     * @return TypeAssignment[]
+     * @return NameAssignment[]
      */
     public function getAssignments()
     {
@@ -76,9 +76,9 @@ final class TypeAssignmentContext
 
     /**
      * @internal
-     * @param TypeAssignment $assignment
+     * @param NameAssignment $assignment
      */
-    private function addAssignment(TypeAssignment $assignment)
+    private function addAssignment(NameAssignment $assignment)
     {
         $this->assignments[$assignment->from()->toString()] = $assignment;
     }

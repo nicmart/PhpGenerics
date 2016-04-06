@@ -10,8 +10,8 @@
 
 namespace NicMart\Generics\AST\Visitor;
 
-use NicMart\Generics\Name\Assignment\TypeAssignment;
-use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Assignment\NameAssignment;
+use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
@@ -29,14 +29,14 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
      * @test
      * @param Node $node
      * @param NamespaceContext[] $nsContexts
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      * @param $expectedClass
      * @param null $msg
      */
     public function it_transforms_classes(
         Node $node,
         array $nsContexts,
-        TypeAssignmentContext $typeAssignmentContext,
+        NameAssignmentContext $typeAssignmentContext,
         $expectedClass,
         $msg = null
     ) {
@@ -64,7 +64,7 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
      * @test
      * @param Node $node
      * @param NamespaceContext[] $nsContexts
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      * @param string[] $expectedParamsClasses
      * @param string $expectedReturnClass
      * @param null $msg
@@ -72,7 +72,7 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function it_transforms_signatures(
         Node $node,
         array $nsContexts,
-        TypeAssignmentContext $typeAssignmentContext,
+        NameAssignmentContext $typeAssignmentContext,
         array $expectedParamsClasses,
         $expectedReturnClass = "",
         $msg = null
@@ -111,14 +111,14 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
      * @test
      * @param Stmt\Class_ $node
      * @param NamespaceContext[] $nsContexts
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      * @param string $expectedExtends
      * @param null $msg
      */
     public function it_transforms_class_extends(
         Stmt\Class_ $node,
         array $nsContexts,
-        TypeAssignmentContext $typeAssignmentContext,
+        NameAssignmentContext $typeAssignmentContext,
         $expectedExtends,
         $msg = null
     ) {
@@ -147,14 +147,14 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
      * @test
      * @param Node $node
      * @param NamespaceContext[] $nsContexts
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      * @param string[] $expectedInterfaces
      * @param null $msg
      */
     public function it_transforms_interface_lists(
         Node $node,
         array $nsContexts,
-        TypeAssignmentContext $typeAssignmentContext,
+        NameAssignmentContext $typeAssignmentContext,
         array $expectedInterfaces,
         $msg = null
     ) {
@@ -192,8 +192,8 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             Use_::fromStrings("NS1\\NS2\\Cls")
         );
 
-        $assignmentContext = new TypeAssignmentContext(array(
-            new TypeAssignment(
+        $assignmentContext = new NameAssignmentContext(array(
+            new NameAssignment(
                 FullName::fromString("NS1\\NS2\\Cls"),
                 FullName::fromString("A\\B\\C")
             )
@@ -206,6 +206,13 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 $assignmentContext,
                 "A\\B\\C",
                 "New expressions transformation"
+            ),
+            array(
+                new Expr\New_(new Name\FullyQualified("NS1\\NS2\\Cls")),
+                array($contextNs, $contextUse),
+                $assignmentContext,
+                "A\\B\\C",
+                "New expressions transformation with fq name"
             ),
             array(
                 new Expr\Instanceof_(
@@ -257,8 +264,8 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             Use_::fromStrings("NS1\\NS2\\Cls")
         );
 
-        $assignmentContext = new TypeAssignmentContext(array(
-            new TypeAssignment(
+        $assignmentContext = new NameAssignmentContext(array(
+            new NameAssignment(
                 FullName::fromString("NS1\\NS2\\Cls"),
                 FullName::fromString("A\\B\\C")
             )
@@ -315,8 +322,8 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             Use_::fromStrings("NS1\\NS2\\Cls")
         );
 
-        $assignmentContext = new TypeAssignmentContext(array(
-            new TypeAssignment(
+        $assignmentContext = new NameAssignmentContext(array(
+            new NameAssignment(
                 FullName::fromString("NS1\\NS2\\Cls"),
                 FullName::fromString("A\\B\\C")
             )
@@ -345,12 +352,12 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             Use_::fromStrings("NS1\\NS2\\Int2")
         );
 
-        $assignmentContext = new TypeAssignmentContext(array(
-            new TypeAssignment(
+        $assignmentContext = new NameAssignmentContext(array(
+            new NameAssignment(
                 FullName::fromString("NS1\\NS2\\Int1"),
                 FullName::fromString("A\\B\\C1")
             ),
-            new TypeAssignment(
+            new NameAssignment(
                 FullName::fromString("NS1\\NS2\\Int2"),
                 FullName::fromString("A\\B\\C2")
             ),

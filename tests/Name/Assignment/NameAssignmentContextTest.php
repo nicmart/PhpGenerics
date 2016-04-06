@@ -16,16 +16,16 @@ use NicMart\Generics\Name\FullName;
  * Class TypeAssignmentContextTest
  * @package NicMart\Generics\Name\Assignment
  */
-class TypeAssignmentContextTest extends \PHPUnit_Framework_TestCase
+class NameAssignmentContextTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function it_checks_if_assignment_exists()
     {
-        $context = new TypeAssignmentContext(array(
+        $context = new NameAssignmentContext(array(
 
-            new TypeAssignment(FullName::fromString("A\\B"), FullName::fromString("C"))
+            new NameAssignment(FullName::fromString("A\\B"), FullName::fromString("C"))
         ));
 
         $this->assertTrue($context->hasAssignmentFrom(FullName::fromString("A\\B")));
@@ -34,9 +34,9 @@ class TypeAssignmentContextTest extends \PHPUnit_Framework_TestCase
 
     public function it_transforms_types()
     {
-        $context = new TypeAssignmentContext(array(
-            new TypeAssignment(FullName::fromString("A\\B"), FullName::fromString("C")),
-            new TypeAssignment(FullName::fromString("B\\C"), FullName::fromString("D\\E")),
+        $context = new NameAssignmentContext(array(
+            new NameAssignment(FullName::fromString("A\\B"), FullName::fromString("C")),
+            new NameAssignment(FullName::fromString("B\\C"), FullName::fromString("D\\E")),
         ));
 
         $this->assertEquals(

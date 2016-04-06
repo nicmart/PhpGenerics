@@ -16,7 +16,7 @@ use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\Assignment\NamespaceAssignment;
 use NicMart\Generics\Name\Assignment\NamespaceAssignmentContext;
-use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Path;
@@ -32,7 +32,7 @@ use PhpParser\Node\Stmt;
 class TypeNameTransformerVisitor implements Visitor
 {
     /**
-     * @var TypeAssignmentContext
+     * @var NameAssignmentContext
      */
     private $typeAssignmentContext;
 
@@ -43,9 +43,9 @@ class TypeNameTransformerVisitor implements Visitor
 
     /**
      * TypeNameTransformerVisitor constructor.
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      */
-    public function __construct(TypeAssignmentContext $typeAssignmentContext)
+    public function __construct(NameAssignmentContext $typeAssignmentContext)
     {
         $this->typeAssignmentContext = $typeAssignmentContext;
         $this->namespaceAssignmentContext = $this->getNamespaceAssignments();

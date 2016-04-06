@@ -46,7 +46,7 @@ class ClassCompilerTest extends \PHPUnit_Framework_TestCase
                  * asdasdasdads
                  * @param T $x
                  */
-                function foo(A $x);
+                function foo(\A $x);
 
 
                 private function bar(T $y);

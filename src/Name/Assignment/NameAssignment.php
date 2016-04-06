@@ -16,7 +16,7 @@ use NicMart\Generics\Name\FullName;
  * Class TypeAssignment
  * @package NicMart\Generics\Name\Assignment
  */
-final class TypeAssignment
+final class NameAssignment
 {
     /**
      * @var FullName

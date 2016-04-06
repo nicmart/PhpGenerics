@@ -10,8 +10,8 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
-use NicMart\Generics\Name\Assignment\TypeAssignment;
-use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Assignment\NameAssignment;
+use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use phpDocumentor\Reflection\DocBlock;
@@ -35,6 +35,7 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
              * @param A|B|string $var1 desc1
              * @param B $var2 desc2
              * @param C $var3
+             * @param \C\D\E $var4
              * @return A
              */
         ';
@@ -49,17 +50,12 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $assignments = array(
-            'C\D\E' => 'F\G',
-            'Ns1\Ns2\B' => 'F\H'
-        );
-
-        $assignments = new TypeAssignmentContext(array(
-            new TypeAssignment(
+        $assignments = new NameAssignmentContext(array(
+            new NameAssignment(
                 FullName::fromString('C\D\E'),
                 FullName::fromString('F\G')
             ),
-            new TypeAssignment(
+            new NameAssignment(
                 FullName::fromString('Ns1\Ns2\B'),
                 FullName::fromString('F\H')
             )
@@ -70,6 +66,7 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
              * @param F\G|F\H|string $var1 desc1
              * @param F\H $var2 desc2
              * @param C $var3
+             * @param F\G $var4
              * @return F\G
              */
         ';

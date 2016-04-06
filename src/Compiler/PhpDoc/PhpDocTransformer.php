@@ -12,7 +12,7 @@ namespace NicMart\Generics\Compiler\PhpDoc;
 
 
 use NicMart\Generics\Name\Assignment\NamespaceAssignmentContext;
-use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use phpDocumentor\Reflection\DocBlock;
 
@@ -21,12 +21,12 @@ interface PhpDocTransformer
     /**
      * @param DocBlock $docBlock
      * @param NamespaceContext $namespaceContext
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      * @return DocBlock
      */
     public function transform(
         DocBlock $docBlock,
         NamespaceContext $namespaceContext,
-        TypeAssignmentContext $typeAssignmentContext
+        NameAssignmentContext $typeAssignmentContext
     );
 }

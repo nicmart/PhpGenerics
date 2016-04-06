@@ -10,7 +10,7 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
-use NicMart\Generics\Name\Assignment\TypeAssignmentContext;
+use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\RelativeName;
 use phpDocumentor\Reflection\DocBlock;
@@ -25,13 +25,13 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
     /**
      * @param DocBlock $docBlock
      * @param NamespaceContext $namespaceContext
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      * @return DocBlock
      */
     public function transform(
         DocBlock $docBlock,
         NamespaceContext $namespaceContext,
-        TypeAssignmentContext $typeAssignmentContext
+        NameAssignmentContext $typeAssignmentContext
     ) {
         foreach ($docBlock->getTags() as $tag) {
             if (!$tag instanceof ReturnTag) {
@@ -47,12 +47,12 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
     /**
      * @param ReturnTag $tag
      * @param NamespaceContext $namespaceContext
-     * @param TypeAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $typeAssignmentContext
      */
     private function transformType(
         ReturnTag $tag,
         NamespaceContext $namespaceContext,
-        TypeAssignmentContext $typeAssignmentContext
+        NameAssignmentContext $typeAssignmentContext
     ) {
         $fromTypes = $tag->getTypes();
 
@@ -61,7 +61,7 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
         $atLeastOneTypeTransformed = false;
         foreach ($fromTypes as $fromType) {
             $fromRelativeType = RelativeName::fromString($fromType);
-            $fromType = $fromRelativeType->toFullType($namespaceContext);
+            $fromType = $namespaceContext->qualifyRelativeName($fromRelativeType);
             $hasAssignmentFrom = $typeAssignmentContext->hasAssignmentFrom($fromType);
             $atLeastOneTypeTransformed =
                 $atLeastOneTypeTransformed
