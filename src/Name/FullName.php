@@ -74,15 +74,4 @@ final class FullName
     {
         return new Namespace_(new FullName($this->path()->up()));
     }
-
-    /**
-     * @param Namespace_ $namespace
-     * @return RelativeName
-     */
-    public function toRelativeTypeForNamespace(Namespace_ $namespace)
-    {
-        return new RelativeName(
-            $this->path->from($namespace->name())
-        );
-    }
 }
