@@ -10,7 +10,9 @@
 
 namespace NicMart\Generics\Name\Context;
 
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 
 /**
@@ -20,52 +22,48 @@ use NicMart\Generics\Name\SimpleName;
 final class Use_
 {
     /**
-     * @var string
-     */
-    private $name;
-
-    /**
      * @var null
      */
     private $alias;
 
     /**
-     * @var Path
+     * @var FullName
      */
-    private $path;
+    private $name;
 
     /**
-     * @param $pathString
-     * @param $nameString
+     * @param string $name
+     * @param string $alias
      * @return Use_
      */
     public static function fromStrings(
-        $pathString,
-        $nameString = null
+        $name,
+        $alias = null
     ) {
         return new self(
-            Path::fromString($pathString),
-            isset($nameString) ? new SimpleName($nameString) : null
+            FullName::fromString($name),
+            isset($alias) ? new SimpleName($alias) : null
         );
     }
 
     /**
-     * Use_ constructor.
-     * @param Path $path
+     * Use_ constructor
+     *
+     * @param FullName $name
      * @param SimpleName $alias
      */
-    public function __construct(Path $path, SimpleName $alias = null)
+    public function __construct(FullName $name, SimpleName $alias = null)
     {
-        $this->alias = $alias ?:  new SimpleName($path->name());
-        $this->path = $path;
+        $this->alias = $alias ?: $name->name();
+        $this->name = $name;
     }
 
     /**
-     * @return Path
+     * @return FullName
      */
-    public function path()
+    public function name()
     {
-        return $this->path;
+        return $this->name;
     }
 
     /**
@@ -74,5 +72,50 @@ final class Use_
     public function alias()
     {
         return $this->alias;
+    }
+
+    /**
+     * @param RelativeName $relativeName
+     * @return FullName
+     */
+    public function qualifyRelativeName(RelativeName $relativeName)
+    {
+        $relativePath = $relativeName->path();
+        if (!$relativePath->length()) {
+            return new FullName($relativePath);
+        }
+
+        $first = $relativeName->path()->first();
+
+        if ($first != $this->alias->toString()) {
+            return new FullName($relativePath);
+        }
+
+        return new FullName(
+            $this->name()->path()->append(
+                $relativePath->tail()
+            )
+        );
+    }
+
+    /**
+     * @param FullName $fullName
+     * @return RelativeName
+     */
+    public function simplifyFullName(FullName $fullName)
+    {
+        $aliasPath = $this->alias->toPath();
+        $thisPath = $this->name->path();
+        $fullNamePath = $fullName->path();
+
+        if (!$thisPath->isPrefixOf($fullNamePath)) {
+            return new RelativeName($fullNamePath);
+        }
+
+        return new RelativeName(
+            $aliasPath->append(
+                $fullNamePath->from($thisPath)
+            )
+        );
     }
 }

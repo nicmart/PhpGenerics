@@ -110,7 +110,7 @@ class TypeTransformerVisitor implements Visitor
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
         $relativeType = new RelativeName(new Path($name->parts));
-        $fromType = $relativeType->toFullType($nsContext);
+        $fromType = $nsContext->qualifyRelativeName($relativeType);
         $toType = $this->typeAssignmentContext->transformType($fromType);
 
         return new Name\FullyQualified($toType->path()->parts(), $name->getAttributes());

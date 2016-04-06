@@ -25,13 +25,13 @@ final class SimpleName
      */
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->name = (string) $name;
     }
 
     /**
      * @return string
      */
-    public function name()
+    public function toString()
     {
         return $this->name;
     }
@@ -41,7 +41,7 @@ final class SimpleName
      */
     public function toRelativeType()
     {
-        return new RelativeName($this->name);
+        return new RelativeName(Path::fromString($this->name));
     }
 
     /**

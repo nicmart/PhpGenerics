@@ -10,7 +10,9 @@
 
 namespace NicMart\Generics\Name\Context;
 
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 use UnderflowException;
 
@@ -34,7 +36,7 @@ final class NamespaceContext
     /**
      * @var Use_[]
      */
-    private $usesByPath = array();
+    private $usesByName = array();
 
     /**
      * @return NamespaceContext
@@ -100,7 +102,7 @@ final class NamespaceContext
      */
     public function hasUse(SimpleName $alias)
     {
-        return isset($this->usesByAliases[$alias->name()]);
+        return isset($this->usesByAliases[$alias->toString()]);
     }
 
     /**
@@ -114,30 +116,29 @@ final class NamespaceContext
             throw new UnderflowException("Undefined use statement for alias $alias");
         }
 
-        return $this->usesByAliases[$alias->name()];
+        return $this->usesByAliases[$alias->toString()];
     }
 
     /**
-     * @param Path $path
+     * @param FullName $name
      * @return bool
      */
-    public function hasUseByPath(Path $path)
+    public function hasUseByName(FullName $name)
     {
-        return isset($this->usesByPath[$path->toString()]);
+        return isset($this->usesByName[$name->toString()]);
     }
 
     /**
-     * @param Path $path
+     * @param FullName $name
      * @return Use_
-     * @throws UnderflowException
      */
-    public function getUseByPath(Path $path)
+    public function getUseByName(FullName $name)
     {
-        if (!$this->hasUseByPath($path)) {
-            throw new UnderflowException("Undefined use statement for path {$path->toString()}");
+        if (!$this->hasUseByName($name)) {
+            throw new UnderflowException("Undefined use statement for name {$name->toString()}");
         }
 
-        return $this->usesByPath[$path->toString()];
+        return $this->usesByName[$name->toString()];
     }
 
     /**
@@ -167,11 +168,61 @@ final class NamespaceContext
     }
 
     /**
+     * @param RelativeName $relativeName
+     * @return FullName
+     */
+    public function qualifyRelativeName(RelativeName $relativeName)
+    {
+        $relativePath = $relativeName->path();
+        if ($relativePath->isRoot()) {
+            return new FullName($relativePath);
+        }
+
+        $first = new SimpleName($relativePath->first());
+
+        if ($this->hasUse($first)) {
+            return $this->getUse($first)->qualifyRelativeName($relativeName);
+        }
+
+        return $this->namespace->qualifyName($relativeName);
+    }
+
+    /**
+     * @param FullName $fullName
+     * @return RelativeName
+     */
+    public function simplifyFullName(FullName $fullName)
+    {
+        $namePath = $fullName->path();
+        $useRelativeName = new RelativeName($namePath);
+
+        for (
+            $prefix = $namePath, $prefixString = $prefix->toString();
+            !$prefix->isRoot();
+            $prefix = $prefix->up(), $prefixString = $prefix->toString()
+        ) {
+            if (isset($this->usesByName[$prefixString])) {
+                $useRelativeName = $this->usesByName[$prefixString]
+                    ->simplifyFullName($fullName)
+                ;
+                break;
+            }
+        }
+
+        $nsRelativeName = $this->namespace->simplifyName($fullName);
+
+        return $nsRelativeName->path()->length() <= $useRelativeName->path()->length()
+            ? $nsRelativeName
+            : $useRelativeName
+        ;
+    }
+
+    /**
      * @param Use_ $use
      */
     private function addUse(Use_ $use)
     {
-        $this->usesByAliases[$use->alias()->name()] = $use;
-        $this->usesByPath[$use->path()->toString()] = $use;
+        $this->usesByAliases[$use->alias()->toString()] = $use;
+        $this->usesByName[$use->name()->toString()] = $use;
     }
 }

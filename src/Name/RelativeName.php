@@ -76,32 +76,14 @@ final class RelativeName
     }
 
     /**
-     * @param NamespaceContext $context
-     * @return FullName
-     * @throws \UnderflowException
+     * @return bool
      */
-    public function toFullType(NamespaceContext $context)
+    public function isNative()
     {
-        $path = $this->path;
-        if ($path->isRoot()) {
-            return new FullName($path);
-        }
-
-        if (in_array($path->name(), $this->nativeTypes)) {
-            return new FullName($path);
-        }
-
-        $first = new SimpleName($path->first());
-
-        if ($context->hasUse($first)) {
-            $use = $context->getUse($first);
-            return new FullName($use->path()->append(
-                $path->from(new Path(array($path->first())))
-            ));
-        }
-
-        return new FullName(
-            $context->getNamespace()->path()->append($path)
-        );
+        $path = $this->path();
+        return
+            $path->length() == 1
+            && in_array($path->first(), $this->nativeTypes)
+        ;
     }
 }

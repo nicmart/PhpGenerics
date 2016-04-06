@@ -174,4 +174,19 @@ class PathTest extends \PHPUnit_Framework_TestCase
             $path->toAbsoluteString(".")
         );
     }
+
+    /**
+     * @test
+     */
+    public function it_checks_if_prefix_of()
+    {
+        $path = new Path(array("a", "b", "c"));
+        $path1 = new Path(array("a", "b"));
+        $path2 = new Path(array("a", "b", "c", "d"));
+        $path3 = new Path(array("a", "c"));
+
+        $this->assertTrue($path1->isPrefixOf($path));
+        $this->assertFalse($path2->isPrefixOf($path));
+        $this->assertFalse($path3->isPrefixOf($path));
+    }
 }

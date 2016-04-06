@@ -72,7 +72,7 @@ final class FullName
      */
     public function namespace_()
     {
-        return new Namespace_($this->path()->up());
+        return new Namespace_(new FullName($this->path()->up()));
     }
 
     /**
@@ -82,37 +82,7 @@ final class FullName
     public function toRelativeTypeForNamespace(Namespace_ $namespace)
     {
         return new RelativeName(
-            $this->path->from($namespace->path())
+            $this->path->from($namespace->name())
         );
-    }
-
-    /**
-     * @param NamespaceContext $context
-     * @return RelativeName
-     */
-    public function toRelativeType(NamespaceContext $context)
-    {
-        $useRelativePath = $this->path;
-
-        for (
-            $prefix = $this->path;
-            !$prefix->isRoot();
-            $prefix = $prefix->up()
-        ) {
-            if ($context->hasUseByPath($prefix)) {
-                $alias = $context->getUseByPath($prefix)->alias()->toPath();
-                $useRelativePath = $alias->append(
-                    $this->path()->from($prefix)
-                );
-                break;
-            }
-        }
-
-        $nsRelativePath = $this->path->from($context->getNamespace()->path());
-
-        return $nsRelativePath->length() <= $useRelativePath->length()
-            ? new RelativeName($nsRelativePath)
-            : new RelativeName($useRelativePath)
-        ;
     }
 }

@@ -15,7 +15,7 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use PHPUnit_Framework_TestCase;
 
-class TypeTestCase extends PHPUnit_Framework_TestCase
+class NameTestCase extends PHPUnit_Framework_TestCase
 {
     public function data()
     {

@@ -126,7 +126,7 @@ class TypeNameTransformerVisitor implements Visitor
         $from = Namespace_::fromParts($name->parts);
         $to = $this->namespaceAssignmentContext->transformNamespace($from);
 
-        return new Name($to->path()->parts());
+        return new Name($to->name()->path()->parts());
     }
 
     /**
@@ -137,9 +137,9 @@ class TypeNameTransformerVisitor implements Visitor
     private function transformClassName($className, NamespaceContext $namespaceContext)
     {
         $fromRelative = new RelativeName(new Path(array($className)));
-        $from = $fromRelative->toFullType($namespaceContext);
+        $from = $namespaceContext->qualifyRelativeName($fromRelative);
         $to = $this->typeAssignmentContext->transformType($from);
 
-        return $to->name()->name();
+        return $to->name()->toString();
     }
 }

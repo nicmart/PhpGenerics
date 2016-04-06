@@ -10,7 +10,9 @@
 
 namespace NicMart\Generics\Name\Context;
 
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\RelativeName;
 
 /**
  * Class Namespace_
@@ -19,9 +21,9 @@ use NicMart\Generics\Name\Path;
 final class Namespace_
 {
     /**
-     * @var Path
+     * @var FullName
      */
-    private $path;
+    private $name;
 
     /**
      * @param string $string
@@ -29,7 +31,7 @@ final class Namespace_
      */
     public static function fromString($string)
     {
-        return new self(Path::fromString($string));
+        return new self(FullName::fromString($string));
     }
 
     /**
@@ -38,7 +40,7 @@ final class Namespace_
      */
     public static function fromParts(array $parts)
     {
-        return new self(new Path($parts));
+        return new self(new FullName(new Path($parts)));
     }
 
     /**
@@ -47,8 +49,9 @@ final class Namespace_
     public static function globalNamespace()
     {
         static $global;
+
         if (!$global) {
-            $global = new self(new Path());
+            $global = new self(new FullName(new Path));
         }
 
         return $global;
@@ -56,11 +59,11 @@ final class Namespace_
 
     /**
      * Namespace_ constructor.
-     * @param Path $path
+     * @param FullName $name
      */
-    public function __construct(Path $path)
+    public function __construct(FullName $name)
     {
-        $this->path = $path;
+        $this->name = $name;
     }
 
     /**
@@ -68,25 +71,58 @@ final class Namespace_
      */
     public function toString()
     {
-        return $this->path->toString("\\");
+        return $this->name->toString();
     }
 
     /**
-     * @return Path
+     * @return FullName
      */
-    public function path()
+    public function name()
     {
-        return $this->path;
+        return $this->name;
+    }
+
+    /**
+     * @param RelativeName $name
+     * @return FullName
+     */
+    public function qualifyName(RelativeName $name)
+    {
+        if ($name->isNative()) {
+            return new FullName($name->path());
+        }
+
+        return new FullName(
+            $this->name->path()->append($name->path())
+        );
+    }
+
+    /**
+     * @param FullName $name
+     * @return RelativeName
+     */
+    public function simplifyName(FullName $name)
+    {
+        $nsPath = $this->name->path();
+        $namePath = $name->path();
+
+        if (!$nsPath->isPrefixOf($namePath)) {
+            return new RelativeName($namePath);
+        }
+
+        return new RelativeName(
+            $namePath->from($nsPath)
+        );
     }
 
     /**
      * @param Namespace_ $namespace
      * @return Namespace_
      */
-    public function commonAncestor(Namespace_ $namespace)
+    public function ancestor(Namespace_ $namespace)
     {
-        return new self(
-            $this->path()->ancestor($namespace->path())
-        );
+        return new self(new FullName(
+            $this->name->path()->ancestor($namespace->name->path())
+        ));
     }
 }

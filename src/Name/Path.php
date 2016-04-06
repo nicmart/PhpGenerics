@@ -82,6 +82,25 @@ final class Path
     }
 
     /**
+     * @param Path $path
+     * @return bool
+     */
+    public function isPrefixOf(self $path)
+    {
+        if ($this->length() > $path->length()) {
+            return false;
+        }
+
+        foreach ($this->parts as $i => $part) {
+            if ($path->parts[$i] != $part) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @return string
      */
     public function name()
@@ -105,6 +124,14 @@ final class Path
         }
 
         return $this->parts[0];
+    }
+
+    /**
+     * @return Path
+     */
+    public function tail()
+    {
+        return new self(array_slice($this->parts, 1));
     }
 
     /**
