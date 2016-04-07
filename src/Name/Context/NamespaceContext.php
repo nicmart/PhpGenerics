@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 use UnderflowException;
@@ -173,12 +173,11 @@ final class NamespaceContext
      */
     public function qualifyRelativeName(RelativeName $relativeName)
     {
-        $relativePath = $relativeName->path();
-        if ($relativePath->isRoot()) {
-            return new FullName($relativePath);
+        if ($relativeName->isRoot()) {
+            return $relativeName->toFullName();
         }
 
-        $first = new SimpleName($relativePath->first());
+        $first = $relativeName->first();
 
         if ($this->hasUse($first)) {
             return $this->getUse($first)->qualifyRelativeName($relativeName);
@@ -193,25 +192,22 @@ final class NamespaceContext
      */
     public function simplifyFullName(FullName $fullName)
     {
-        $namePath = $fullName->path();
-        $useRelativeName = new RelativeName($namePath);
+        $useRelativeName = $fullName->toRelative();
 
         for (
-            $prefix = $namePath, $prefixString = $prefix->toString();
+            $prefix = $fullName;
             !$prefix->isRoot();
-            $prefix = $prefix->up(), $prefixString = $prefix->toString()
+            $prefix = $prefix->up()
         ) {
-            if (isset($this->usesByName[$prefixString])) {
-                $useRelativeName = $this->usesByName[$prefixString]
-                    ->simplifyFullName($fullName)
-                ;
+            if ($this->hasUseByName($prefix)) {
+                $useRelativeName = $this->getUseByName($prefix)->simplifyFullName($fullName);
                 break;
             }
         }
 
         $nsRelativeName = $this->namespace->simplifyName($fullName);
 
-        return $nsRelativeName->path()->length() <= $useRelativeName->path()->length()
+        return $nsRelativeName->length() <= $useRelativeName->length()
             ? $nsRelativeName
             : $useRelativeName
         ;

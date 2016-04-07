@@ -16,7 +16,7 @@ use NicMart\Generics\Name\Context\NamespaceContext;
  * Class RelativeType
  * @package NicMart\Generics\Name
  */
-final class RelativeName
+final class RelativeName extends Name
 {
     /**
      * @var string[]
@@ -36,54 +36,24 @@ final class RelativeName
         "self",
         "parent"
     );
-    /**
-     * @var Path
-     */
-    private $path;
-
-    /**
-     * @param string $string
-     * @return RelativeName
-     */
-    public static function fromString($string)
-    {
-        return new self(Path::fromString($string));
-    }
-
-    /**
-     * RelativeType constructor.
-     * @param Path $path
-     */
-    public function __construct(Path $path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @return SimpleName
-     */
-    public function name()
-    {
-        return new SimpleName($this->path->name());
-    }
-
-    /**
-     * @return Path
-     */
-    public function path()
-    {
-        return $this->path;
-    }
 
     /**
      * @return bool
      */
     public function isNative()
     {
-        $path = $this->path();
+        $parts = $this->parts();
         return
-            $path->length() == 1
-            && in_array($path->first(), $this->nativeTypes)
+            count($parts) == 1
+            && in_array($parts[0], $this->nativeTypes)
         ;
+    }
+
+    /**
+     * @return FullName
+     */
+    public function toFullName()
+    {
+        return new FullName($this->parts());
     }
 }

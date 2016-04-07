@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 
 /**
@@ -40,7 +40,7 @@ final class Namespace_
      */
     public static function fromParts(array $parts)
     {
-        return new self(new FullName(new Path($parts)));
+        return new self(new FullName($parts));
     }
 
     /**
@@ -51,7 +51,7 @@ final class Namespace_
         static $global;
 
         if (!$global) {
-            $global = new self(new FullName(new Path));
+            $global = new self(new FullName());
         }
 
         return $global;
@@ -89,12 +89,10 @@ final class Namespace_
     public function qualifyName(RelativeName $name)
     {
         if ($name->isNative()) {
-            return new FullName($name->path());
+            return new FullName($name->parts());
         }
 
-        return new FullName(
-            $this->name->path()->append($name->path())
-        );
+        return $this->name->append($name);
     }
 
     /**
@@ -103,16 +101,11 @@ final class Namespace_
      */
     public function simplifyName(FullName $name)
     {
-        $nsPath = $this->name->path();
-        $namePath = $name->path();
-
-        if (!$nsPath->isPrefixOf($namePath)) {
-            return new RelativeName($namePath);
+        if (!$this->name->isPrefixOf($name)) {
+            return new RelativeName($name->parts());
         }
 
-        return new RelativeName(
-            $namePath->from($nsPath)
-        );
+        return $name->from($this->name)->toRelative();
     }
 
     /**
@@ -121,8 +114,6 @@ final class Namespace_
      */
     public function ancestor(Namespace_ $namespace)
     {
-        return new self(new FullName(
-            $this->name->path()->ancestor($namespace->name->path())
-        ));
+        return new self($this->name->ancestor($namespace->name()));
     }
 }

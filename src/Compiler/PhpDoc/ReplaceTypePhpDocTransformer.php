@@ -68,7 +68,7 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
                 || $hasAssignmentFrom
             ;
             $toType = $hasAssignmentFrom
-                ? $typeAssignmentContext->transformType($fromType)
+                ? $typeAssignmentContext->transformName($fromType)
                 : $fromType
             ;
             $toTypes[] = $toType->toString();

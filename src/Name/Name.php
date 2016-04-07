@@ -9,12 +9,13 @@
 namespace NicMart\Generics\Name;
 
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
  * Class Path
  * @package NicMart\Generics\Name
  */
-final class Path
+abstract class Name
 {
     /**
      * @var string[]
@@ -24,42 +25,45 @@ final class Path
     /**
      * Returns the root path object
      *
-     * @return Path
+     * @return static
      */
     public static function root()
     {
         static $root = null;
 
         if (!$root) {
-            $root = new self(array());
+            $root = new static(array());
         }
 
         return $root;
     }
 
     /**
-     * @param string $path
+     * @param string $name
      * @param string $separator
      *
-     * @return Path
+     * @return static
      */
-    public static function fromString($path, $separator = "\\")
+    public static function fromString($name, $separator = "\\")
     {
-        $path = ltrim((string) $path, $separator);
+        $name = ltrim((string) $name, $separator);
 
-        if (!$path) {
+        if (!$name) {
             return self::root();
         }
 
-        return new self(explode($separator, $path));
+        return new static(explode($separator, $name));
     }
 
     /**
      * Path constructor.
      * @param string[] $parts
      */
-    public function __construct(array $parts = array())
+    final public function __construct(array $parts = array())
     {
+        $this->assertValidClass();
+        $this->assertValidParts($parts);
+
         foreach ($parts as &$part) {
             $this->parts[] = (string) $part;
         }
@@ -82,17 +86,17 @@ final class Path
     }
 
     /**
-     * @param Path $path
+     * @param Name|static $name
      * @return bool
      */
-    public function isPrefixOf(self $path)
+    public function isPrefixOf(Name $name)
     {
-        if ($this->length() > $path->length()) {
+        if ($this->length() > $name->length()) {
             return false;
         }
 
         foreach ($this->parts as $i => $part) {
-            if ($path->parts[$i] != $part) {
+            if ($name->parts[$i] != $part) {
                 return false;
             }
         }
@@ -101,20 +105,20 @@ final class Path
     }
 
     /**
-     * @return string
+     * @return SimpleName
      */
-    public function name()
+    public function last()
     {
         if ($this->isRoot()) {
             // @todo create domain exception
             throw new \UnderflowException("Root path does not have names");
         }
 
-        return $this->parts[$this->length() - 1];
+        return new SimpleName($this->parts[$this->length() - 1]);
     }
 
     /**
-     * @return string
+     * @return SimpleName
      */
     public function first()
     {
@@ -123,35 +127,35 @@ final class Path
             throw new \UnderflowException("Root path does not have first part");
         }
 
-        return $this->parts[0];
+        return new SimpleName($this->parts[0]);
     }
 
     /**
-     * @return Path
+     * @return static
      */
     public function tail()
     {
-        return new self(array_slice($this->parts, 1));
+        return new static(array_slice($this->parts, 1));
     }
 
     /**
-     * @return Path
+     * @return static
      */
     public function up()
     {
-        return new self(array_slice($this->parts, 0, -1));
+        return new static(array_slice($this->parts, 0, -1));
     }
 
     /**
      * @param string $name
-     * @return Path
+     * @return static
      */
     public function down($name)
     {
         $parts = $this->parts;
         $parts[] = (string) $name;
 
-        return new self($parts);
+        return new static($parts);
     }
 
     /**
@@ -163,13 +167,13 @@ final class Path
     }
 
     /**
-     * @param Path $path
-     * @return Path
+     * @param Name $name
+     * @return static
      */
-    public function ancestor(self $path)
+    public function ancestor(Name $name)
     {
         $parts1 = $this->parts();
-        $parts2 = $path->parts();
+        $parts2 = $name->parts();
         $min = min(count($parts1), count($parts2));
         $commonAncestorParts = array();
 
@@ -180,46 +184,46 @@ final class Path
             $commonAncestorParts[] = $parts1[$i];
         }
 
-        return new self($commonAncestorParts);
+        return new static($commonAncestorParts);
     }
 
     /**
-     * @param Path $path
-     * @return Path
+     * @param Name $name
+     * @return static
      */
-    public function from(Path $path)
+    public function from(Name $name)
     {
-        $ancestor = $path->ancestor($this);
+        $ancestor = $name->ancestor($this);
 
-        if ($path->length() != $ancestor->length()) {
+        if ($name->length() != $ancestor->length()) {
             return $this;
         }
 
-        return new self(array_slice(
+        return new static(array_slice(
             $this->parts,
             $ancestor->length()
         ));
     }
 
     /**
-     * @param Path $path
-     * @return Path
+     * @param Name $name
+     * @return Name
      */
-    public function append(Path $path)
+    public function append(Name $name)
     {
-        return new self(array_merge(
+        return new static(array_merge(
             $this->parts(),
-            $path->parts()
+            $name->parts()
         ));
     }
 
     /**
-     * @param Path $path
-     * @return Path
+     * @param Name $name
+     * @return Name
      */
-    public function prepend(Path $path)
+    public function prepend(Name $name)
     {
-        return $path->append($this);
+        return $name->append($this);
     }
 
     /**
@@ -238,5 +242,32 @@ final class Path
     public function toAbsoluteString($separator = "\\")
     {
         return $separator . $this->toString($separator);
+    }
+
+    /**
+     * @return bool
+     */
+    private function assertValidClass()
+    {
+        if (
+               $this instanceof FullName
+            || $this instanceof RelativeName
+        ) {
+            return true;
+        }
+
+        throw new RuntimeException("Invalid name class");
+    }
+
+    /**
+     * @return bool
+     */
+    private function assertValidParts(array $parts)
+    {
+        if ($this instanceof SimpleName && count($parts) != 1) {
+            throw new RuntimeException(
+                "Simple Names must be composed by just one part"
+            );
+        }
     }
 }

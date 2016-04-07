@@ -16,7 +16,6 @@ use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Path;
 use NicMart\Generics\Name\RelativeName;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -110,11 +109,11 @@ class TypeTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $toType = $this->typeAssignmentContext->transformType(
+        $toType = $this->typeAssignmentContext->transformName(
             $this->getFullName($name, $nsContext)
         );
 
-        return new Name\FullyQualified($toType->path()->parts(), $name->getAttributes());
+        return new Name\FullyQualified($toType->parts(), $name->getAttributes());
     }
 
     /**
@@ -150,10 +149,10 @@ class TypeTransformerVisitor implements Visitor
     private function getFullName(Name $name, NamespaceContext $nsContext)
     {
         if ($name->isFullyQualified()) {
-            return new FullName(new Path($name->parts));
+            return new FullName($name->parts);
         }
 
-        $relativeName = new RelativeName(new Path($name->parts));
+        $relativeName = new RelativeName($name->parts);
         return $nsContext->qualifyRelativeName($relativeName);
     }
 }

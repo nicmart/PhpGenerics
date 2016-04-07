@@ -46,23 +46,23 @@ final class NameAssignmentContext
     }
 
     /**
-     * @param FullName $type
+     * @param FullName $name
      * @return bool
      */
-    public function hasAssignmentFrom(FullName $type)
+    public function hasAssignmentFrom(FullName $name)
     {
-        return isset($this->assignments[$type->toString()]);
+        return isset($this->assignments[$name->toString()]);
     }
 
     /**
-     * @param FullName $type
+     * @param FullName $name
      * @return FullName
      */
-    public function transformType(FullName $type)
+    public function transformName(FullName $name)
     {
-        return $this->hasAssignmentFrom($type)
-            ? $this->assignments[$type->toString()]->to()
-            : $type
+        return $this->hasAssignmentFrom($name)
+            ? $this->assignments[$name->toString()]->to()
+            : $name
         ;
     }
 

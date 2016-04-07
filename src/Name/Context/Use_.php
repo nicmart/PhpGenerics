@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Path;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 
@@ -54,7 +54,7 @@ final class Use_
      */
     public function __construct(FullName $name, SimpleName $alias = null)
     {
-        $this->alias = $alias ?: $name->name();
+        $this->alias = $alias ?: $name->last();
         $this->name = $name;
     }
 
@@ -80,22 +80,17 @@ final class Use_
      */
     public function qualifyRelativeName(RelativeName $relativeName)
     {
-        $relativePath = $relativeName->path();
-        if (!$relativePath->length()) {
-            return new FullName($relativePath);
+        if (!$relativeName->length()) {
+            return $relativeName->toFullName();
         }
 
-        $first = $relativeName->path()->first();
+        $first = $relativeName->first();
 
-        if ($first != $this->alias->toString()) {
-            return new FullName($relativePath);
+        if ($first != $this->alias) {
+            return $relativeName->toFullName();
         }
 
-        return new FullName(
-            $this->name()->path()->append(
-                $relativePath->tail()
-            )
-        );
+        return $this->name()->append($relativeName->tail());
     }
 
     /**
@@ -104,18 +99,12 @@ final class Use_
      */
     public function simplifyFullName(FullName $fullName)
     {
-        $aliasPath = $this->alias->toPath();
-        $thisPath = $this->name->path();
-        $fullNamePath = $fullName->path();
-
-        if (!$thisPath->isPrefixOf($fullNamePath)) {
-            return new RelativeName($fullNamePath);
+        if (!$this->name->isPrefixOf($fullName)) {
+            return $fullName->toRelative();
         }
 
-        return new RelativeName(
-            $aliasPath->append(
-                $fullNamePath->from($thisPath)
-            )
+        return $this->alias->toRelativeName()->append(
+            $fullName->from($this->name)
         );
     }
 }

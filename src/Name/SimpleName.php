@@ -39,16 +39,8 @@ final class SimpleName
     /**
      * @return RelativeName
      */
-    public function toRelativeType()
+    public function toRelativeName()
     {
-        return new RelativeName(Path::fromString($this->name));
-    }
-
-    /**
-     * @return Path
-     */
-    public function toPath()
-    {
-        return new Path(array($this->name));
+        return new RelativeName(array($this->name));
     }
 }

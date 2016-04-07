@@ -19,7 +19,6 @@ use NicMart\Generics\Name\Assignment\NamespaceAssignmentContext;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Path;
 use NicMart\Generics\Name\RelativeName;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -93,8 +92,8 @@ class TypeNameTransformerVisitor implements Visitor
 
         foreach ($this->typeAssignmentContext->getAssignments() as $typeAssignment) {
             $assignments[] = new NamespaceAssignment(
-                $typeAssignment->from()->namespace_(),
-                $typeAssignment->to()->namespace_()
+                new Namespace_($typeAssignment->from()->up()),
+                new Namespace_($typeAssignment->to()->up())
             );
         }
 
@@ -126,7 +125,7 @@ class TypeNameTransformerVisitor implements Visitor
         $from = Namespace_::fromParts($name->parts);
         $to = $this->namespaceAssignmentContext->transformNamespace($from);
 
-        return new Name($to->name()->path()->parts());
+        return new Name($to->name()->parts());
     }
 
     /**
@@ -136,10 +135,10 @@ class TypeNameTransformerVisitor implements Visitor
      */
     private function transformClassName($className, NamespaceContext $namespaceContext)
     {
-        $fromRelative = new RelativeName(new Path(array($className)));
+        $fromRelative = new RelativeName((array($className)));
         $from = $namespaceContext->qualifyRelativeName($fromRelative);
-        $to = $this->typeAssignmentContext->transformType($from);
+        $to = $this->typeAssignmentContext->transformName($from);
 
-        return $to->name()->toString();
+        return $to->last()->toString();
     }
 }

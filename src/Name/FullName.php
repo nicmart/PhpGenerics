@@ -18,60 +18,13 @@ use NicMart\Generics\Name\Context\Use_;
  * Class Type
  * @package NicMart\Generics\Name
  */
-final class FullName
+final class FullName extends Name
 {
     /**
-     * @var Path
+     * @return RelativeName
      */
-    private $path;
-
-    /**
-     * @param string $string
-     * @return FullName
-     */
-    public static function fromString($string)
+    public function toRelative()
     {
-        return new self(Path::fromString($string));
-    }
-
-    /**
-     * Type constructor.
-     * @param Path $path
-     */
-    public function __construct(Path $path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function toString()
-    {
-        return $this->path->toString("\\");
-    }
-
-    /**
-     * @return SimpleName
-     */
-    public function name()
-    {
-        return new SimpleName($this->path->name());
-    }
-
-    /**
-     * @return Path
-     */
-    public function path()
-    {
-        return $this->path;
-    }
-
-    /**
-     * @return Namespace_
-     */
-    public function namespace_()
-    {
-        return new Namespace_(new FullName($this->path()->up()));
+        return new RelativeName($this->parts());
     }
 }
