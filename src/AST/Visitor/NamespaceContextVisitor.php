@@ -75,6 +75,6 @@ class NamespaceContextVisitor implements Visitor
 
     public function leaveNode(Node $node)
     {
-        // TODO: Implement leaveNode() method.
+        return new MaintainNode();
     }
 }
