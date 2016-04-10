@@ -46,7 +46,7 @@ class PhpParserDocToPhpdocTest extends \PHPUnit_Framework_TestCase
                 "Ns1\\Ns2",
                 array(
                     "B" => "A",
-                     "E" => "C\\D"
+                    "E" => "C\\D"
                 )
             )
         );

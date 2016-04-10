@@ -10,23 +10,23 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
-
-use NicMart\Generics\Name\Assignment\NamespaceAssignmentContext;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use phpDocumentor\Reflection\DocBlock;
+use PhpParser\Comment\Doc;
 
+/**
+ * Interface PhpDocTransformer
+ * @package NicMart\Generics\Compiler\PhpDoc
+ */
 interface PhpDocTransformer
 {
     /**
-     * @param DocBlock $docBlock
+     * @param Doc $docBlock
      * @param NamespaceContext $namespaceContext
-     * @param NameAssignmentContext $nameAssignmentContext
-     * @return DocBlock
+     * @return Doc
      */
     public function transform(
-        DocBlock $docBlock,
-        NamespaceContext $namespaceContext,
-        NameAssignmentContext $nameAssignmentContext
+        Doc $docBlock,
+        NamespaceContext $namespaceContext
     );
 }
