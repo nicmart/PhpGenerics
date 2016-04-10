@@ -10,11 +10,15 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
+use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
+use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\FullName;
 use phpDocumentor\Reflection\DocBlock;
+use PhpParser\Comment\Doc;
 
 /**
  * Class ReplaceTypePhpDocTransformerTest
@@ -28,9 +32,18 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_replaces_types()
     {
-        $compiler = new ReplaceTypePhpDocTransformer();
+        $assignments = NameAssignmentContext::fromStrings(array(
+            'C\D\E' => 'F\G',
+            'Ns1\Ns2\B' => 'F\H'
+        ));
 
-        $phpdoc = '
+        $compiler = new ReplaceTypePhpDocTransformer(
+            $assignments,
+            $transformer = new PhpParserDocToPhpdoc(),
+            new DocBlock\Serializer()
+        );
+
+        $phpdoc = new Doc('
             /**
              * @param A|B|string $var1 desc1
              * @param B $var2 desc2
@@ -38,30 +51,16 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
              * @param \C\D\E $var4
              * @return A
              */
-        ';
+        ');
 
-        $docBlock = new DocBlock(
-            $phpdoc,
-            $context = new DocBlock\Context(
-                "Ns1\\Ns2",
-                 array(
-                     'A' => 'C\D\E',
-                 )
+        $nsContext = new NamespaceContext(
+            Namespace_::fromString("Ns1\\Ns2"),
+            array(
+                Use_::fromStrings('C\D\E', 'A')
             )
         );
 
-        $assignments = new NameAssignmentContext(array(
-            new NameAssignment(
-                FullName::fromString('C\D\E'),
-                FullName::fromString('F\G')
-            ),
-            new NameAssignment(
-                FullName::fromString('Ns1\Ns2\B'),
-                FullName::fromString('F\H')
-            )
-        ));
-
-        $expectedPhpDoc = '
+        $expectedPhpDoc = new Doc('
             /**
              * @param F\G|F\H|string $var1 desc1
              * @param F\H $var2 desc2
@@ -69,22 +68,16 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
              * @param F\G $var4
              * @return F\G
              */
-        ';
-
-        $expectedPhpDoc = new DocBlock(
-            $expectedPhpDoc,
-            $context
-        );
+        ');
 
         $compiledPhpDoc = $compiler->transform(
-            $docBlock,
-            NamespaceContext::emptyContext(),
-            $assignments
+            $phpdoc,
+            $nsContext
         );
 
         $this->assertDocblockEquals(
-            $expectedPhpDoc,
-            $compiledPhpDoc
+            $transformer->transform($expectedPhpDoc, $nsContext),
+            $transformer->transform($compiledPhpDoc, $nsContext)
         );
     }
 

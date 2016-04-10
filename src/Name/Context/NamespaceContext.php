@@ -168,8 +168,25 @@ final class NamespaceContext
     }
 
     /**
+     * @param string $nameString
+     * @return FullName
+     * @throws \UnderflowException
+     */
+    public function qualifyRelativeNameFromString($nameString)
+    {
+        if (substr($nameString, 0, 1) == "\\") {
+            return FullName::fromString($nameString);
+        }
+
+        return $this->qualifyRelativeName(
+            RelativeName::fromString($nameString)
+        );
+    }
+
+    /**
      * @param RelativeName $relativeName
      * @return FullName
+     * @throws \UnderflowException
      */
     public function qualifyRelativeName(RelativeName $relativeName)
     {

@@ -31,16 +31,16 @@ class PhpParserDocToPhpdoc
     {
         $namespace = $namespaceContext->getNamespace()->toString();
 
-        $uses = array();
+        $aliases = array();
         foreach ($namespaceContext->getUsesByAliases() as $alias => $use) {
-            $uses[$use->alias()->toString()] = $use->name()->toString();
+            $aliases[$use->alias()->toString()] = $use->name()->toString();
         }
 
         return new DocBlock(
             $phpdoc->getText(),
             new DocBlock\Context(
                 $namespace,
-                $uses
+                $aliases
             )
         );
     }
