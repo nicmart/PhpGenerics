@@ -22,6 +22,24 @@ final class NameAssignmentContext
     private $assignments = array();
 
     /**
+     * @param array $assignments
+     * @return NameAssignmentContext
+     */
+    public static function fromStrings(array $assignments)
+    {
+        $parsedAssignments = array();
+
+        foreach ($assignments as $from => $to) {
+            $parsedAssignments[] = new NameAssignment(
+                FullName::fromString($from),
+                FullName::fromString($to)
+            );
+        }
+
+        return new self($parsedAssignments);
+    }
+
+    /**
      * TypeAssignmentContext constructor.
      * @param NameAssignment[] $assignments
      */

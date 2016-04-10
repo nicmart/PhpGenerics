@@ -54,4 +54,28 @@ class NameAssignmentContextTest extends \PHPUnit_Framework_TestCase
             $context->transformName(FullName::fromString("Ns\\Object"))
         );
     }
+
+    /**
+     * @test
+     */
+    public function it_constructs_from_simple_strings()
+    {
+        $context = NameAssignmentContext::fromStrings(array(
+            "A\\B" => "C",
+            "D" => "E\\F"
+        ));
+
+        $expected = new NameAssignmentContext(array(
+            new NameAssignment(
+                FullName::fromString("A\\B"),
+                FullName::fromString("C")
+            ),
+            new NameAssignment(
+                FullName::fromString("D"),
+                FullName::fromString("E\\F")
+            ),
+        ));
+
+        $this->assertEquals($expected, $context);
+    }
 }
