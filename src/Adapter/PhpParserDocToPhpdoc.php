@@ -33,7 +33,7 @@ class PhpParserDocToPhpdoc
 
         $uses = array();
         foreach ($namespaceContext->getUsesByAliases() as $alias => $use) {
-            $uses[$use->name()->toString()] = $use->alias()->toString();
+            $uses[$use->alias()->toString()] = $use->name()->toString();
         }
 
         return new DocBlock(

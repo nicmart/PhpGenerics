@@ -45,8 +45,8 @@ class PhpParserDocToPhpdocTest extends \PHPUnit_Framework_TestCase
             new DocBlock\Context(
                 "Ns1\\Ns2",
                 array(
-                    "A" => "B",
-                    "C\\D" => "E"
+                    "B" => "A",
+                     "E" => "C\\D"
                 )
             )
         );
