@@ -22,7 +22,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Name;
 
-class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
+class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider dataClass
@@ -40,7 +40,7 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $expectedClass,
         $msg = null
     ) {
-        $visitor = new TypeTransformerVisitor(
+        $visitor = new TypeUsageTransformerVisitor(
             $typeAssignmentContext
         );
 
@@ -77,7 +77,7 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $expectedReturnClass = "",
         $msg = null
     ) {
-        $visitor = new TypeTransformerVisitor(
+        $visitor = new TypeUsageTransformerVisitor(
             $typeAssignmentContext
         );
 
@@ -122,7 +122,7 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $expectedExtends,
         $msg = null
     ) {
-        $visitor = new TypeTransformerVisitor(
+        $visitor = new TypeUsageTransformerVisitor(
             $typeAssignmentContext
         );
 
@@ -158,7 +158,7 @@ class TypeTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         array $expectedInterfaces,
         $msg = null
     ) {
-        $visitor = new TypeTransformerVisitor(
+        $visitor = new TypeUsageTransformerVisitor(
             $typeAssignmentContext
         );
 

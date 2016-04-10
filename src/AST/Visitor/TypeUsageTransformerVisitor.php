@@ -23,10 +23,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Name;
 
 /**
- * Class TypeTransformerVisitor
+ * Class TypeUsageTransformerVisitor
  * @package NicMart\Generics\AST\Visitor
  */
-class TypeTransformerVisitor implements Visitor
+class TypeUsageTransformerVisitor implements Visitor
 {
     /**
      * @var NameAssignmentContext
@@ -34,7 +34,7 @@ class TypeTransformerVisitor implements Visitor
     private $typeAssignmentContext;
 
     /**
-     * TypeTransformerVisitor constructor.
+     * TypeUsageTransformerVisitor constructor.
      * @param NameAssignmentContext $typeAssignmentContext
      */
     public function __construct(NameAssignmentContext $typeAssignmentContext)

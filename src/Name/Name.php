@@ -62,7 +62,6 @@ abstract class Name
     final public function __construct(array $parts = array())
     {
         $this->assertValidClass();
-        $this->assertValidParts($parts);
 
         foreach ($parts as &$part) {
             $this->parts[] = (string) $part;
@@ -257,17 +256,5 @@ abstract class Name
         }
 
         throw new RuntimeException("Invalid name class");
-    }
-
-    /**
-     * @return bool
-     */
-    private function assertValidParts(array $parts)
-    {
-        if ($this instanceof SimpleName && count($parts) != 1) {
-            throw new RuntimeException(
-                "Simple Names must be composed by just one part"
-            );
-        }
     }
 }

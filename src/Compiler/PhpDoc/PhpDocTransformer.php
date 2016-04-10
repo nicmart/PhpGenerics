@@ -21,12 +21,12 @@ interface PhpDocTransformer
     /**
      * @param DocBlock $docBlock
      * @param NamespaceContext $namespaceContext
-     * @param NameAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $nameAssignmentContext
      * @return DocBlock
      */
     public function transform(
         DocBlock $docBlock,
         NamespaceContext $namespaceContext,
-        NameAssignmentContext $typeAssignmentContext
+        NameAssignmentContext $nameAssignmentContext
     );
 }

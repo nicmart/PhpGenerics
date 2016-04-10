@@ -25,20 +25,20 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
     /**
      * @param DocBlock $docBlock
      * @param NamespaceContext $namespaceContext
-     * @param NameAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $nameAssignmentContext
      * @return DocBlock
      */
     public function transform(
         DocBlock $docBlock,
         NamespaceContext $namespaceContext,
-        NameAssignmentContext $typeAssignmentContext
+        NameAssignmentContext $nameAssignmentContext
     ) {
         foreach ($docBlock->getTags() as $tag) {
             if (!$tag instanceof ReturnTag) {
                 continue;
             }
 
-            $this->transformType($tag, $namespaceContext, $typeAssignmentContext);
+            $this->transformType($tag, $namespaceContext, $nameAssignmentContext);
         }
 
         return $docBlock;
@@ -59,6 +59,7 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
         $toTypes = array();
 
         $atLeastOneTypeTransformed = false;
+
         foreach ($fromTypes as $fromType) {
             $fromRelativeType = RelativeName::fromString($fromType);
             $fromType = $namespaceContext->qualifyRelativeName($fromRelativeType);

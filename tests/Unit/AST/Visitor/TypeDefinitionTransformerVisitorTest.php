@@ -17,7 +17,7 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use PhpParser\BuilderFactory;
 
-class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
+class TypeDefinitionTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var NameAssignmentContext
@@ -44,7 +44,7 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function it_transforms_namespace()
     {
         $nodeFactory = new BuilderFactory();
-        $visitor = new TypeNameTransformerVisitor($this->typeAssignments);
+        $visitor = new TypeDefinitionTransformerVisitor($this->typeAssignments);
 
         $ns = $nodeFactory->namespace("NS1\\NS2")->getNode();
 
@@ -70,7 +70,7 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function it_transforms_classes()
     {
         $nodeFactory = new BuilderFactory();
-        $visitor = new TypeNameTransformerVisitor($this->typeAssignments);
+        $visitor = new TypeDefinitionTransformerVisitor($this->typeAssignments);
 
         $class = $nodeFactory->class("Class1")->getNode();
         $class->setAttribute(
@@ -106,7 +106,7 @@ class TypeNameTransformerVisitorTest extends \PHPUnit_Framework_TestCase
     public function it_transforms_interfaces()
     {
         $nodeFactory = new BuilderFactory();
-        $visitor = new TypeNameTransformerVisitor($this->typeAssignments);
+        $visitor = new TypeDefinitionTransformerVisitor($this->typeAssignments);
 
         $class = $nodeFactory->interface("Class1")->getNode();
         $class->setAttribute(
