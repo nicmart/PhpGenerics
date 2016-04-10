@@ -36,6 +36,11 @@ class TypeDefinitionTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 FullName::fromString("B\\C\\Class4")
             ),
         ));
+
+        $this->typeAssignments = NameAssignmentContext::fromStrings(array(
+            "NS1\\NS2\\Class1" => "A\\Class2",
+            "NS3\\Class3" => "B\\C\\Class4"
+        ));
     }
 
     /**
@@ -52,6 +57,14 @@ class TypeDefinitionTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             "A",
+            $ns->name->toString()
+        );
+
+        $ns = $nodeFactory->namespace("NS3")->getNode();
+        $visitor->enterNode($ns);
+
+        $this->assertEquals(
+            "B\\C",
             $ns->name->toString()
         );
 

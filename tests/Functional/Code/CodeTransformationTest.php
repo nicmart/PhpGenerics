@@ -11,13 +11,17 @@
 namespace NicMart\Generics\Code;
 
 
+use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
+use NicMart\Generics\Compiler\PhpDoc\ReplaceTypePhpDocTransformer;
 use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\FullName;
+use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -41,18 +45,13 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         var_dump($statements);
 
-        $assignments = new NameAssignmentContext(array(
-            new NameAssignment(
-                FullName::fromString('\NicMart\Generics\Variable\T'),
-                FullName::fromString('stdClass')
-            )
+
+        $assignments = NameAssignmentContext::fromStrings(array(
+            '\NicMart\Generics\Variable\T' => 'stdClass'
         ));
 
-        $typeDefAssignments = new NameAssignmentContext(array(
-            new NameAssignment(
-                FullName::fromString('\NicMart\Generics\Example\Option\Option'),
-                FullName::fromString('OptionOfStdClass')
-            )
+        $typeDefAssignments = NameAssignmentContext::fromStrings(array(
+            '\NicMart\Generics\Example\Option\Option' => 'OptionOfStdClass'
         ));
 
         $traverser = new NodeTraverser();
@@ -60,14 +59,26 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new NamespaceContextVisitor())
         );
+
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
                 $assignments
             ))
         );
+
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new TypeDefinitionTransformerVisitor(
                 $typeDefAssignments
+            ))
+        );
+
+        $traverser->addVisitor(
+            new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
+                new ReplaceTypePhpDocTransformer(
+                    $assignments,
+                    new PhpParserDocToPhpdoc(),
+                    new Serializer()
+                )
             ))
         );
 
