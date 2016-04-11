@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of php-generics
+ * This file is part of library-template
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,37 +10,40 @@
 
 namespace NicMart\Generics\Example\Option;
 
+use NicMart\Generics\Example\Option\Option«T»;
+use NicMart\Generics\Variable\T;
+
 /**
- * Class SomeTest
- * @package NicMart\Generics\Example\Option
+ * Class Some
+ * @package NicMart\Generics\Example
  */
-class SomeTest implements OptionTest
+class Some«T» implements Option«T»
 {
     /**
-     * @var Test
+     * @var T
      */
     private $value;
 
     /**
      * Some constructor.
-     * @param Test $value
+     * @param T $value
      */
-    public function __construct(Test $value)
+    public function __construct(T $value)
     {
         $this->value = $value;
     }
 
     /**
-     * @param Test $else
-     * @return Test
+     * @param T $else
+     * @return T
      */
-    public function getOrElse(Test $else)
+    public function getOrElse(T $else)
     {
         return $this->value;
     }
 
     /**
-     * @return Test
+     * @return T
      */
     public function get()
     {

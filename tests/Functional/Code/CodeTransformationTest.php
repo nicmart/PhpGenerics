@@ -36,7 +36,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
     public function it_transforms_php_code()
     {
         $code = file_get_contents(
-            __DIR__ . "/../../../src/Example/Option/Option.php"
+            __DIR__ . "/../../../src/Example/Option/Option«T».php"
         );
 
         $parser = new Parser(new Lexer());

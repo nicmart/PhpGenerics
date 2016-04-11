@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of php-generics
+ * This file is part of library-template
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,17 +10,12 @@
 
 namespace NicMart\Generics\Example\Option;
 
-/**
- * Class NoneTest
- * @package NicMart\Generics\Example\Option
- */
-class NoneTest implements OptionTest
+use NicMart\Generics\Example\Option\Option;
+use NicMart\Generics\Variable\T;
+
+class None«T» implements Option«T»
 {
-    /**
-     * @param Test $else
-     * @return Test
-     */
-    public function getOrElse(Test $else)
+    public function getOrElse(T $else)
     {
         return $else;
     }

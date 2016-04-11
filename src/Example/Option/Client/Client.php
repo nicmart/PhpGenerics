@@ -10,12 +10,11 @@
 
 namespace NicMart\Generics\Example\Option\Client;
 
-
-use NicMart\Generics\Example\Option\Option;
+use NicMart\Generics\Example\Option\Option«Test»;
 
 class Client
 {
-    public function testOptionTest(Option $option)
+    public function testOptionTest(Option«Test» $option)
     {
 
     }

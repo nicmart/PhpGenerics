@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of php-generics
+ * This file is part of library-template
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,15 +10,18 @@
 
 namespace NicMart\Generics\Example\Option;
 
+use NicMart\Generics\Generic;
+use NicMart\Generics\Variable\T;
+
 /**
- * Interface OptionTest
- * @package NicMart\Generics\Example\Option
+ * Interface Option
+ * @package NicMart\Generics\Example
  */
-interface OptionTest
+interface Option«T» extends Generic
 {
     /**
-     * @param Test $else
+     * @param T $else
      * @return mixed
      */
-    public function getOrElse(Test $else);
+    public function getOrElse(T $else);
 }
