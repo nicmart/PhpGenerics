@@ -17,6 +17,7 @@ use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\Transformer\NameTransformer;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
@@ -29,17 +30,17 @@ use PhpParser\Node\Name;
 class TypeUsageTransformerVisitor implements Visitor
 {
     /**
-     * @var NameAssignmentContext
+     * @var NameTransformer
      */
-    private $nameAssignmentContext;
+    private $nameTransformer;
 
     /**
      * TypeUsageTransformerVisitor constructor.
-     * @param NameAssignmentContext $nameAssignmentContext
+     * @param NameTransformer $nameTransformer
      */
-    public function __construct(NameAssignmentContext $nameAssignmentContext)
+    public function __construct(NameTransformer $nameTransformer)
     {
-        $this->nameAssignmentContext = $nameAssignmentContext;
+        $this->nameTransformer = $nameTransformer;
     }
 
     /**
@@ -109,7 +110,7 @@ class TypeUsageTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $toType = $this->nameAssignmentContext->transform(
+        $toType = $this->nameTransformer->transform(
             $this->getFullName($name, $nsContext)
         );
 

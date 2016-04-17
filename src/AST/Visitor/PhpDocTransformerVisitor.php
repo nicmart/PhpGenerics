@@ -10,13 +10,8 @@
 
 namespace NicMart\Generics\AST\Visitor;
 
-
-use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
-use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Compiler\PhpDoc\PhpDocTransformer;
-use NicMart\Generics\Compiler\PhpDoc\ReplaceTypePhpDocTransformer;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 
