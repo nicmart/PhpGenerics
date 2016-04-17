@@ -11,18 +11,26 @@
 namespace NicMart\Generics\Compiler\PhpDoc;
 
 use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\FullName;
 use PhpParser\Comment\Doc;
 
 /**
  * Class SimplifyNamesPhpDocTransformer
  * @package NicMart\Generics\Compiler\PhpDoc
  */
-class SimplifyNamesPhpDocTransformer implements PhpDocTransformer
+class SimplifyNamesPhpDocTransformer extends AbstractPhpDocTransformer
 {
-    public function transform(
-        Doc $docBlock,
+    /**
+     * @param string $type
+     * @param NamespaceContext $namespaceContext
+     * @return string
+     */
+    protected function transformType(
+        $type,
         NamespaceContext $namespaceContext
     ) {
-        // TODO: Implement transform() method.
+        $from = FullName::fromString($type);
+
+        return $namespaceContext->simplify($from)->toString();
     }
 }

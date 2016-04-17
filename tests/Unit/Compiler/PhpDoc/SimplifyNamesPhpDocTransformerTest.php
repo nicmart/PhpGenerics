@@ -36,7 +36,7 @@ class SimplifyNamesPhpDocTransformerTest extends \PHPUnit_Framework_TestCase
 
         $phpdoc = new Doc('
             /**
-             * @param Ns1\Ns2\Class1 $var1 desc1
+             * @param \Ns1\Ns2\Class1 $var1 desc1
              * @param \A\B\C $var2 desc2
              * @param Boh $var3
              */

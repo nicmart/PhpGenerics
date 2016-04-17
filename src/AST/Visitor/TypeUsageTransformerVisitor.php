@@ -31,15 +31,15 @@ class TypeUsageTransformerVisitor implements Visitor
     /**
      * @var NameAssignmentContext
      */
-    private $typeAssignmentContext;
+    private $nameAssignmentContext;
 
     /**
      * TypeUsageTransformerVisitor constructor.
-     * @param NameAssignmentContext $typeAssignmentContext
+     * @param NameAssignmentContext $nameAssignmentContext
      */
-    public function __construct(NameAssignmentContext $typeAssignmentContext)
+    public function __construct(NameAssignmentContext $nameAssignmentContext)
     {
-        $this->typeAssignmentContext = $typeAssignmentContext;
+        $this->nameAssignmentContext = $nameAssignmentContext;
     }
 
     /**
@@ -109,7 +109,7 @@ class TypeUsageTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $toType = $this->typeAssignmentContext->transform(
+        $toType = $this->nameAssignmentContext->transform(
             $this->getFullName($name, $nsContext)
         );
 
