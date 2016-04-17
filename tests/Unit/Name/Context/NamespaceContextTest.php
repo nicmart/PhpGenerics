@@ -30,7 +30,7 @@ class NamespaceContextTest extends NameTestCase
     {
         $this->assertEquals(
             $fullName,
-            $context->qualifyRelativeName($relativeName)
+            $context->qualify($relativeName)
         );
     }
 
@@ -50,7 +50,7 @@ class NamespaceContextTest extends NameTestCase
     {
         $this->assertEquals(
             $relativeName,
-            $context->simplifyFullName($fullName)
+            $context->simplify($fullName)
         );
     }
 }

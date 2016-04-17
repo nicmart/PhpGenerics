@@ -28,6 +28,10 @@ use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\PrettyPrinterTest;
 
+/**
+ * Class CodeTransformationTest
+ * @package NicMart\Generics\Code
+ */
 class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -46,12 +50,13 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         var_dump($statements);
 
 
-        $assignments = NameAssignmentContext::fromStrings(array(
-            '\NicMart\Generics\Variable\T' => 'stdClass'
+        $typeUsageAssignment = NameAssignmentContext::fromStrings(array(
+            '\NicMart\Generics\Variable\T' => '\MyNamespace\MyClass'
         ));
 
         $typeDefAssignments = NameAssignmentContext::fromStrings(array(
-            '\NicMart\Generics\Example\Option\Option' => 'OptionOfStdClass'
+            '\NicMart\Generics\Example\Option\Option«T»' =>
+            '\NicMart\Generics\Example\Option\Option«MyClass»'
         ));
 
         $traverser = new NodeTraverser();
@@ -62,7 +67,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
-                $assignments
+                $typeUsageAssignment
             ))
         );
 
@@ -75,7 +80,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
-                    $assignments,
+                    $typeUsageAssignment,
                     new PhpParserDocToPhpdoc(),
                     new Serializer()
                 )

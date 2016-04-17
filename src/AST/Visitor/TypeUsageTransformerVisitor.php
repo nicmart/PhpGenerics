@@ -109,7 +109,7 @@ class TypeUsageTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $toType = $this->typeAssignmentContext->transformName(
+        $toType = $this->typeAssignmentContext->transform(
             $this->getFullName($name, $nsContext)
         );
 
@@ -153,6 +153,6 @@ class TypeUsageTransformerVisitor implements Visitor
         }
 
         $relativeName = new RelativeName($name->parts);
-        return $nsContext->qualifyRelativeName($relativeName);
+        return $nsContext->qualify($relativeName);
     }
 }

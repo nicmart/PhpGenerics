@@ -16,27 +16,17 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
-use PhpParser\Comment\Doc;
 
 /**
  * Class ReplaceTypePhpDocTransformer
  * @package NicMart\Generics\Compiler\PhpDoc
  */
-class ReplaceTypePhpDocTransformer implements PhpDocTransformer
+class ReplaceTypePhpDocTransformer extends AbstractPhpDocTransformer
 {
     /**
      * @var NameAssignmentContext
      */
     private $nameAssignmentContext;
-    /**
-     * @var PhpParserDocToPhpdoc
-     */
-    private $docToPhpdoc;
-    /**
-     * @var DocBlock\Serializer
-     */
-    private $docBlockSerializer;
 
     /**
      * ReplaceTypePhpDocTransformer constructor.
@@ -49,77 +39,29 @@ class ReplaceTypePhpDocTransformer implements PhpDocTransformer
         PhpParserDocToPhpdoc $docToPhpdoc,
         DocBlock\Serializer $docBlockSerializer
     ) {
+        parent::__construct($docToPhpdoc, $docBlockSerializer);
         $this->nameAssignmentContext = $nameAssignmentContext;
-        $this->docToPhpdoc = $docToPhpdoc;
-        $this->docBlockSerializer = $docBlockSerializer;
     }
 
     /**
-     * @param Doc $docBlock
+     * @param string $type
      * @param NamespaceContext $namespaceContext
-     * @return Doc
-     * @throws \InvalidArgumentException
+     * @return string
      */
-    public function transform(
-        Doc $docBlock,
+    protected function transformType(
+        $type,
         NamespaceContext $namespaceContext
     ) {
-        $phpDocBlock = $this->docToPhpdoc->transform(
-           $docBlock,
-           $namespaceContext
-        );
+        $fromType = FullName::fromString($type);
+        $hasAssignmentFrom = $this->nameAssignmentContext
+            ->hasAssignmentFrom($fromType)
+        ;
 
-        foreach ($phpDocBlock->getTags() as $tag) {
-            if (!$tag instanceof ReturnTag) {
-                continue;
-            }
+        $toType = $hasAssignmentFrom
+            ? $this->nameAssignmentContext->transform($fromType)
+            : $fromType
+        ;
 
-            $this->transformType(
-                $tag,
-                $namespaceContext
-            );
-        }
-
-        return new Doc(
-            $this->docBlockSerializer->getDocComment($phpDocBlock)
-        );
-    }
-
-    /**
-     * @param ReturnTag $tag
-     * @param NamespaceContext $namespaceContext
-     */
-    private function transformType(
-        ReturnTag $tag,
-        NamespaceContext $namespaceContext
-    ) {
-        $fromTypes = $tag->getTypes();
-
-        $toTypes = array();
-
-        $atLeastOneTypeTransformed = false;
-
-        foreach ($fromTypes as $fromType) {
-            $fromType = FullName::fromString($fromType);
-            $hasAssignmentFrom = $this->nameAssignmentContext
-                ->hasAssignmentFrom($fromType)
-            ;
-            $atLeastOneTypeTransformed =
-                $atLeastOneTypeTransformed
-                || $hasAssignmentFrom
-            ;
-            $toType = $hasAssignmentFrom
-                ? $this->nameAssignmentContext->transformName($fromType)
-                : $fromType
-            ;
-            $toTypes[] = $toType->toString();
-        }
-
-        if ($atLeastOneTypeTransformed) {
-            ReturnTagTypeReplacer::setType(
-                $tag,
-                implode("|", $toTypes)
-            );
-        }
+        return $toType->toAbsoluteString();
     }
 }

@@ -22,6 +22,20 @@ use PhpParser\Comment\Doc;
 class PhpParserDocToPhpdoc
 {
     /**
+     * @var bool
+     */
+    private $buildContext;
+
+    /**
+     * PhpParserDocToPhpdoc constructor.
+     * @param bool $buildContext
+     */
+    public function __construct($buildContext = true)
+    {
+        $this->buildContext = (bool) $buildContext;
+    }
+
+    /**
      * @param Doc $phpdoc
      * @param NamespaceContext $namespaceContext
      * @return DocBlock
@@ -29,6 +43,12 @@ class PhpParserDocToPhpdoc
      */
     public function transform(Doc $phpdoc, NamespaceContext $namespaceContext)
     {
+        $phpdocText = $phpdoc->getText();
+
+        if (!$this->buildContext) {
+            return new DocBlock($phpdocText);
+        }
+
         $namespace = $namespaceContext->getNamespace()->toString();
 
         $aliases = array();

@@ -23,6 +23,25 @@ abstract class Name
     private $parts = array();
 
     /**
+     * @var string[]
+     */
+    private $nativeTypes = array(
+        "string",
+        "int",
+        "callable",
+        "array",
+        "resource",
+        "float",
+        "double",
+        "bool",
+        "void",
+
+        "static",
+        "self",
+        "parent"
+    );
+
+    /**
      * Returns the root path object
      *
      * @return static
@@ -240,7 +259,23 @@ abstract class Name
      */
     public function toAbsoluteString($separator = "\\")
     {
+        if ($this->isNative()) {
+            return $this->toString($separator);
+        }
+
         return $separator . $this->toString($separator);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNative()
+    {
+        $parts = $this->parts();
+        return
+            count($parts) == 1
+            && in_array($parts[0], $this->nativeTypes)
+        ;
     }
 
     /**

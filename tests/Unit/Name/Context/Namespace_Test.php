@@ -27,7 +27,7 @@ class Namespace_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             FullName::fromString("A\\B\\C\\D"),
-            $ns->qualifyName($relative)
+            $ns->qualify($relative)
         );
     }
 
@@ -41,7 +41,7 @@ class Namespace_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             FullName::fromString("string"),
-            $ns->qualifyName($relative)
+            $ns->qualify($relative)
         );
     }
 
@@ -55,7 +55,7 @@ class Namespace_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             RelativeName::fromString("C\\D"),
-            $ns->simplifyName($name)
+            $ns->simplify($name)
         );
     }
 }

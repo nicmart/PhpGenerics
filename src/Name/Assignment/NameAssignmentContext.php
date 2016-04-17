@@ -12,9 +12,14 @@ namespace NicMart\Generics\Name\Assignment;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Transformer\NameTransformer;
 use PhpParser\Node\Name;
 
-final class NameAssignmentContext
+/**
+ * Class NameAssignmentContext
+ * @package NicMart\Generics\Name\Assignment
+ */
+final class NameAssignmentContext implements NameTransformer
 {
     /**
      * @var NameAssignment[]
@@ -76,7 +81,7 @@ final class NameAssignmentContext
      * @param FullName $name
      * @return FullName
      */
-    public function transformName(FullName $name)
+    public function transform(FullName $name)
     {
         return $this->hasAssignmentFrom($name)
             ? $this->assignments[$name->toString()]->to()

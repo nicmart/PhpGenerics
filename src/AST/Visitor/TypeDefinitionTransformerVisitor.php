@@ -123,7 +123,7 @@ class TypeDefinitionTransformerVisitor implements Visitor
     private function transformNamespaceName(Name $name)
     {
         $from = new FullName($name->parts);
-        $to = $this->namespaceAssignmentContext->transformName($from);
+        $to = $this->namespaceAssignmentContext->transform($from);
 
         return new Name($to->parts());
     }
@@ -136,8 +136,8 @@ class TypeDefinitionTransformerVisitor implements Visitor
     private function transformClassName($className, NamespaceContext $namespaceContext)
     {
         $fromRelative = new RelativeName((array($className)));
-        $from = $namespaceContext->qualifyRelativeName($fromRelative);
-        $to = $this->typeAssignmentContext->transformName($from);
+        $from = $namespaceContext->qualify($fromRelative);
+        $to = $this->typeAssignmentContext->transform($from);
 
         return $to->last()->toString();
     }

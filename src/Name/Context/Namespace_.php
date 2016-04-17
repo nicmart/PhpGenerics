@@ -13,12 +13,14 @@ namespace NicMart\Generics\Name\Context;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\Transformer\NameQualifier;
+use NicMart\Generics\Name\Transformer\NameSimplifier;
 
 /**
  * Class Namespace_
  * @package NicMart\Generics\Name\Namespace_
  */
-final class Namespace_
+final class Namespace_ implements NameSimplifier, NameQualifier
 {
     /**
      * @var FullName
@@ -86,7 +88,7 @@ final class Namespace_
      * @param RelativeName $name
      * @return FullName
      */
-    public function qualifyName(RelativeName $name)
+    public function qualify(RelativeName $name)
     {
         if ($name->isNative()) {
             return new FullName($name->parts());
@@ -99,7 +101,7 @@ final class Namespace_
      * @param FullName $name
      * @return RelativeName
      */
-    public function simplifyName(FullName $name)
+    public function simplify(FullName $name)
     {
         if (!$this->name->isPrefixOf($name)) {
             return new RelativeName($name->parts());

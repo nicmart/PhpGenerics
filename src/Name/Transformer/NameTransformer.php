@@ -8,21 +8,20 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Name;
+namespace NicMart\Generics\Name\Transformer;
 
-use NicMart\Generics\Name\Context\NamespaceContext;
+
+use NicMart\Generics\Name\FullName;
 
 /**
- * Class RelativeType
- * @package NicMart\Generics\Name
+ * Interface NameTransformer
+ * @package NicMart\Generics\Name\Transformer
  */
-final class RelativeName extends Name
+interface NameTransformer
 {
     /**
+     * @param FullName $name
      * @return FullName
      */
-    public function toFullName()
-    {
-        return new FullName($this->parts());
-    }
+    public function transform(FullName $name);
 }

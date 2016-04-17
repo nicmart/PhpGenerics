@@ -29,21 +29,21 @@ class Use_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             FullName::fromString("A\\B\\C\\D"),
-            $use->qualifyRelativeName($relativeName)
+            $use->qualify($relativeName)
         );
 
         $relativeName = RelativeName::fromString("Alias");
 
         $this->assertEquals(
             FullName::fromString("A\\B\\C"),
-            $use->qualifyRelativeName($relativeName)
+            $use->qualify($relativeName)
         );
 
         $relativeName = RelativeName::fromString("A\\C");
 
         $this->assertEquals(
             FullName::fromString("A\\C"),
-            $use->qualifyRelativeName($relativeName)
+            $use->qualify($relativeName)
         );
     }
 
@@ -61,21 +61,21 @@ class Use_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             RelativeName::fromString("Alias\\D"),
-            $use->simplifyFullName($fullName)
+            $use->simplify($fullName)
         );
 
         $fullName = FullName::fromString("A\\B\\C");
 
         $this->assertEquals(
             RelativeName::fromString("Alias"),
-            $use->simplifyFullName($fullName)
+            $use->simplify($fullName)
         );
 
         $fullName = FullName::fromString("B\\A\\C");
 
         $this->assertEquals(
             RelativeName::fromString("B\\A\\C"),
-            $use->simplifyFullName($fullName)
+            $use->simplify($fullName)
         );
     }
 }

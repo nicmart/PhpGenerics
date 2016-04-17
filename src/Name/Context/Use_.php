@@ -14,12 +14,14 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
+use NicMart\Generics\Name\Transformer\NameQualifier;
+use NicMart\Generics\Name\Transformer\NameSimplifier;
 
 /**
  * Class Use_
  * @package NicMart\Generics\Name\Php
  */
-final class Use_
+final class Use_ implements NameSimplifier, NameQualifier
 {
     /**
      * @var null
@@ -78,7 +80,7 @@ final class Use_
      * @param RelativeName $relativeName
      * @return FullName
      */
-    public function qualifyRelativeName(RelativeName $relativeName)
+    public function qualify(RelativeName $relativeName)
     {
         if (!$relativeName->length()) {
             return $relativeName->toFullName();
@@ -97,7 +99,7 @@ final class Use_
      * @param FullName $fullName
      * @return RelativeName
      */
-    public function simplifyFullName(FullName $fullName)
+    public function simplify(FullName $fullName)
     {
         if (!$this->name->isPrefixOf($fullName)) {
             return $fullName->toRelative();

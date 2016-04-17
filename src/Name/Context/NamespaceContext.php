@@ -14,6 +14,8 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
+use NicMart\Generics\Name\Transformer\NameQualifier;
+use NicMart\Generics\Name\Transformer\NameSimplifier;
 use UnderflowException;
 
 /**
@@ -21,7 +23,7 @@ use UnderflowException;
  *
  * @package NicMart\Generics\Name\Context
  */
-final class NamespaceContext
+final class NamespaceContext implements NameSimplifier, NameQualifier
 {
     /**
      * @var Namespace_
@@ -172,13 +174,13 @@ final class NamespaceContext
      * @return FullName
      * @throws \UnderflowException
      */
-    public function qualifyRelativeNameFromString($nameString)
+    public function qualifyFromString($nameString)
     {
         if (substr($nameString, 0, 1) == "\\") {
             return FullName::fromString($nameString);
         }
 
-        return $this->qualifyRelativeName(
+        return $this->qualify(
             RelativeName::fromString($nameString)
         );
     }
@@ -188,7 +190,7 @@ final class NamespaceContext
      * @return FullName
      * @throws \UnderflowException
      */
-    public function qualifyRelativeName(RelativeName $relativeName)
+    public function qualify(RelativeName $relativeName)
     {
         if ($relativeName->isRoot()) {
             return $relativeName->toFullName();
@@ -197,17 +199,17 @@ final class NamespaceContext
         $first = $relativeName->first();
 
         if ($this->hasUse($first)) {
-            return $this->getUse($first)->qualifyRelativeName($relativeName);
+            return $this->getUse($first)->qualify($relativeName);
         }
 
-        return $this->namespace->qualifyName($relativeName);
+        return $this->namespace->qualify($relativeName);
     }
 
     /**
      * @param FullName $fullName
      * @return RelativeName
      */
-    public function simplifyFullName(FullName $fullName)
+    public function simplify(FullName $fullName)
     {
         $useRelativeName = $fullName->toRelative();
 
@@ -217,12 +219,12 @@ final class NamespaceContext
             $prefix = $prefix->up()
         ) {
             if ($this->hasUseByName($prefix)) {
-                $useRelativeName = $this->getUseByName($prefix)->simplifyFullName($fullName);
+                $useRelativeName = $this->getUseByName($prefix)->simplify($fullName);
                 break;
             }
         }
 
-        $nsRelativeName = $this->namespace->simplifyName($fullName);
+        $nsRelativeName = $this->namespace->simplify($fullName);
 
         return $nsRelativeName->length() <= $useRelativeName->length()
             ? $nsRelativeName

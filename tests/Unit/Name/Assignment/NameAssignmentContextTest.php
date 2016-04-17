@@ -41,17 +41,17 @@ class NameAssignmentContextTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             FullName::fromString("C"),
-            $context->transformName(FullName::fromString("A\\B"))
+            $context->transform(FullName::fromString("A\\B"))
         );
 
         $this->assertEquals(
             FullName::fromString("D\\E"),
-            $context->transformName(FullName::fromString("\\B\\C"))
+            $context->transform(FullName::fromString("\\B\\C"))
         );
 
         $this->assertEquals(
             FullName::fromString("Ns\\Object"),
-            $context->transformName(FullName::fromString("Ns\\Object"))
+            $context->transform(FullName::fromString("Ns\\Object"))
         );
     }
 

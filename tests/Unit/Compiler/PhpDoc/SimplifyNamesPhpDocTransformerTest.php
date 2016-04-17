@@ -10,21 +10,17 @@
 
 namespace NicMart\Generics\Compiler\PhpDoc;
 
+
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
-use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
-use NicMart\Generics\Name\FullName;
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Comment\Doc;
 
-/**
- * Class ReplaceTypePhpDocTransformerTest
- * @package NicMart\Generics\Compiler\PhpDoc
- */
-class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
+class SimplifyNamesPhpDocTransformerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -32,42 +28,32 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function it_replaces_types()
     {
-        $assignments = NameAssignmentContext::fromStrings(array(
-            'C\D\E' => 'F\G',
-            'Ns1\Ns2\B' => 'F\H'
-        ));
-
-        $nsContext = new NamespaceContext(
-            Namespace_::fromString("Ns1\\Ns2"),
-            array(
-                Use_::fromStrings('C\D\E', 'A')
-            )
-        );
-
-        $compiler = new ReplaceTypePhpDocTransformer(
-            $assignments,
-            $transformer = new PhpParserDocToPhpdoc(),
-            new DocBlock\Serializer()
+        $transformer = new PhpParserDocToPhpdoc();
+        $compiler = new SimplifyNamesPhpDocTransformer(
+            $transformer,
+            new Serializer()
         );
 
         $phpdoc = new Doc('
             /**
-             * @param A|B|string $var1 desc1
-             * @param B $var2 desc2
-             * @param C $var3
-             * @param \C\D\E $var4
-             * @return A
+             * @param Ns1\Ns2\Class1 $var1 desc1
+             * @param \A\B\C $var2 desc2
+             * @param Boh $var3
              */
         ');
 
+        $nsContext = new NamespaceContext(
+            Namespace_::fromString("Ns1\\Ns2"),
+            array(
+                Use_::fromStrings('A\B\C', 'D')
+            )
+        );
 
         $expectedPhpDoc = new Doc('
             /**
-             * @param \F\G|\F\H|string $var1 desc1
-             * @param \F\H $var2 desc2
-             * @param C $var3
-             * @param \F\G $var4
-             * @return \F\G
+             * @param Class1 $var1 desc1
+             * @param D $var2 desc2
+             * @param Boh $var3
              */
         ');
 

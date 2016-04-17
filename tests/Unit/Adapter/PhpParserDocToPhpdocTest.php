@@ -23,9 +23,9 @@ class PhpParserDocToPhpdocTest extends \PHPUnit_Framework_TestCase
      * @test
      * @throws \InvalidArgumentException
      */
-    public function it_transforms()
+    public function it_transforms_with_context()
     {
-        $transformer = new PhpParserDocToPhpdoc();
+        $transformer = new PhpParserDocToPhpdoc(true);
         $doc = new Doc('
             /**
              * @param string $x Bla bla
@@ -49,6 +49,33 @@ class PhpParserDocToPhpdocTest extends \PHPUnit_Framework_TestCase
                     "E" => "C\\D"
                 )
             )
+        );
+
+        $this->assertEquals(
+            $expected,
+            $transformer->transform($doc, $nsContext)
+        );
+    }
+
+    /**
+     * @test
+     * @throws \InvalidArgumentException
+     */
+    public function it_transforms_without_context()
+    {
+        $transformer = new PhpParserDocToPhpdoc(false);
+        $doc = new Doc('
+            /**
+             * @param string $x Bla bla
+             */
+        ');
+
+        $nsContext = new NamespaceContext(
+            Namespace_::fromString("Ns1\\Ns2")
+        );
+
+        $expected = new DocBlock(
+            $doc->getText()
         );
 
         $this->assertEquals(
