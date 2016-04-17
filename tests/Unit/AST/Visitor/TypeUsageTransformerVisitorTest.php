@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\AST\Visitor;
 
+use NicMart\Generics\AST\Name\FullNamePhpParserNameTransformer;
 use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
@@ -41,7 +42,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            $typeAssignmentContext
+            new FullNamePhpParserNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -78,7 +79,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            $typeAssignmentContext
+            new FullNamePhpParserNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -123,7 +124,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            $typeAssignmentContext
+            new FullNamePhpParserNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -159,7 +160,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            $typeAssignmentContext
+            new FullNamePhpParserNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {

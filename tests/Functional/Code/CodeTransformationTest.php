@@ -13,6 +13,7 @@ namespace NicMart\Generics\Code;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
+use NicMart\Generics\AST\Name\FullNamePhpParserNameTransformer;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
@@ -67,7 +68,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
-                $typeUsageAssignment
+                new FullNamePhpParserNameTransformer($typeUsageAssignment)
             ))
         );
 

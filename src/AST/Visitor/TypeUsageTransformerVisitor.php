@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\AST\Visitor;
 
+use NicMart\Generics\AST\Name\PhpParserNameTransformer;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
@@ -30,17 +31,18 @@ use PhpParser\Node\Name;
 class TypeUsageTransformerVisitor implements Visitor
 {
     /**
-     * @var NameTransformer
+     * @var PhpParserNameTransformer
      */
-    private $nameTransformer;
+    private $phpParserNameTransformer;
 
     /**
      * TypeUsageTransformerVisitor constructor.
-     * @param NameTransformer $nameTransformer
+     * @param PhpParserNameTransformer $phpParserNameTransformer
      */
-    public function __construct(NameTransformer $nameTransformer)
-    {
-        $this->nameTransformer = $nameTransformer;
+    public function __construct(
+        PhpParserNameTransformer $phpParserNameTransformer
+    ) {
+        $this->phpParserNameTransformer = $phpParserNameTransformer;
     }
 
     /**
@@ -110,11 +112,10 @@ class TypeUsageTransformerVisitor implements Visitor
      */
     private function transformName(Name $name, NamespaceContext $nsContext)
     {
-        $toType = $this->nameTransformer->transform(
-            $this->getFullName($name, $nsContext)
+        return $this->phpParserNameTransformer->transform(
+            $name,
+            $nsContext
         );
-
-        return new Name\FullyQualified($toType->parts(), $name->getAttributes());
     }
 
     /**
