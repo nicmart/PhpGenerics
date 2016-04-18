@@ -14,15 +14,15 @@ use NicMart\Generics\AST\Name\PhpParserNameTransformer;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Transformer\NameTransformer;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Name;
+
 
 /**
  * Class TypeUsageTransformerVisitor
@@ -31,18 +31,18 @@ use PhpParser\Node\Name;
 class TypeUsageTransformerVisitor implements Visitor
 {
     /**
-     * @var PhpParserNameTransformer
+     * @var NameTransformer
      */
-    private $phpParserNameTransformer;
+    private $nameTransformer;
 
     /**
      * TypeUsageTransformerVisitor constructor.
-     * @param PhpParserNameTransformer $phpParserNameTransformer
+     * @param NameTransformer $nameTransformer
      */
     public function __construct(
-        PhpParserNameTransformer $phpParserNameTransformer
+        NameTransformer $nameTransformer
     ) {
-        $this->phpParserNameTransformer = $phpParserNameTransformer;
+        $this->nameTransformer = $nameTransformer;
     }
 
     /**
@@ -77,7 +77,7 @@ class TypeUsageTransformerVisitor implements Visitor
            || $node instanceof Expr\ClassConstFetch
            || $node instanceof Expr\New_
            || $node instanceof Expr\Instanceof_) {
-             if ($node->class instanceof Name) {
+             if ($node->class instanceof Node\Name ) {
                  $node->class = $this->transformName(
                      $node->class,
                      $nsContext
@@ -106,16 +106,43 @@ class TypeUsageTransformerVisitor implements Visitor
     }
 
     /**
-     * @param Name $name
+     * @param Node\Name  $name
      * @param NamespaceContext $nsContext
-     * @return Name\FullyQualified
+     * @return Node\Name\FullyQualified
      */
-    private function transformName(Name $name, NamespaceContext $nsContext)
+    private function transformName(Node\Name $name, NamespaceContext $nsContext)
     {
-        return $this->phpParserNameTransformer->transform(
-            $name,
-            $nsContext
+        return $this->fromNameToPhpName(
+            $this->nameTransformer->transformName(
+                $this->fromPhpNameToName($name),
+                $nsContext
+            )
         );
+    }
+
+    /**
+     * @param Node\Name $name
+     * @return Name
+     */
+    private function fromPhpNameToName(Node\Name  $name)
+    {
+        if ($name->isFullyQualified()) {
+            return new FullName($name->parts);
+        }
+
+        return new RelativeName($name->parts);
+    }
+
+    /**
+     * @param Name $name
+     * @return Node\Name
+     */
+    private function fromNameToPhpName(Name $name)
+    {
+        return $name instanceof FullName
+            ? new Node\Name\FullyQualified($name->parts())
+            : new Node\Name($name->parts())
+        ;
     }
 
     /**
@@ -127,7 +154,7 @@ class TypeUsageTransformerVisitor implements Visitor
         NamespaceContext $nsContext
     ) {
         foreach ($function->getParams() as $param) {
-            if ($param->type instanceof Name) {
+            if ($param->type instanceof Node\Name ) {
                 $param->type = $this->transformName(
                     $param->type,
                     $nsContext
@@ -135,26 +162,11 @@ class TypeUsageTransformerVisitor implements Visitor
             }
         }
 
-        if ($function->getReturnType() instanceof Name) {
+        if ($function->getReturnType() instanceof Node\Name ) {
             $function->returnType = $this->transformName(
                 $function->returnType,
                 $nsContext
             );
         }
-    }
-
-    /**
-     * @param Name $name
-     * @param NamespaceContext $nsContext
-     * @return FullName
-     */
-    private function getFullName(Name $name, NamespaceContext $nsContext)
-    {
-        if ($name->isFullyQualified()) {
-            return new FullName($name->parts);
-        }
-
-        $relativeName = new RelativeName($name->parts);
-        return $nsContext->qualify($relativeName);
     }
 }

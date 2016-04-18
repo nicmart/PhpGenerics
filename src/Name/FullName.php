@@ -27,4 +27,13 @@ final class FullName extends Name
     {
         return new RelativeName($this->parts());
     }
+
+
+    /**
+     * @return bool
+     */
+    public function isFullName()
+    {
+        return true;
+    }
 }

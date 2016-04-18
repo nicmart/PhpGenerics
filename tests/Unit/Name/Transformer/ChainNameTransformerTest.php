@@ -8,13 +8,14 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\AST\Name;
+namespace NicMart\Generics\Name\Transformer;
 
 
+use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use PhpParser\Node\Name;
 
-class ChainPhpParserNameTransformerTest extends \PHPUnit_Framework_TestCase
+class ChainNameTransformerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -23,43 +24,45 @@ class ChainPhpParserNameTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $context = NamespaceContext::fromNamespaceName("foo");
         $transformer1 = $this->getMock(
-            '\NicMart\Generics\AST\Name\PhpParserNameTransformer'
+            '\NicMart\Generics\Name\Transformer\NameTransformer'
         );
         $transformer2 = $this->getMock(
-            '\NicMart\Generics\AST\Name\PhpParserNameTransformer'
+            '\NicMart\Generics\Name\Transformer\NameTransformer'
         );
 
-        $name = new Name("a");
+        $name = RelativeName::fromString("a");
 
         $transformer1
-            ->method("transform")
+            ->expects($this->once())
+            ->method("transformName")
             ->with(
                 $name,
                 $context
             )
             ->willReturn(
-                new Name("b")
+                FullName::fromString("b")
             )
         ;
         $transformer2
-            ->method("transform")
+            ->expects($this->once())
+            ->method("transformName")
             ->with(
-                new Name("b"),
+                FullName::fromString("b"),
                 $context
             )
             ->willReturn(
-                new Name("c")
+                RelativeName::fromString("c")
             )
         ;
 
-        $chain = new ChainPhpParserNameTransformer(array(
+        $chain = new ChainNameTransformer(array(
             $transformer1,
             $transformer2
         ));
 
         $this->assertEquals(
-            new Name("c"),
-            $chain->transform($name, $context)
+            RelativeName::fromString("c"),
+            $chain->transformName($name, $context)
         );
     }
 }

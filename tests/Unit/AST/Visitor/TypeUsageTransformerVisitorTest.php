@@ -17,6 +17,7 @@ use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -42,7 +43,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            new FullNamePhpParserNameTransformer($typeAssignmentContext)
+            new ByFullNameNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -79,7 +80,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            new FullNamePhpParserNameTransformer($typeAssignmentContext)
+            new ByFullNameNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -124,7 +125,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            new FullNamePhpParserNameTransformer($typeAssignmentContext)
+            new ByFullNameNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -160,7 +161,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         $msg = null
     ) {
         $visitor = new TypeUsageTransformerVisitor(
-            new FullNamePhpParserNameTransformer($typeAssignmentContext)
+            new ByFullNameNameTransformer($typeAssignmentContext)
         );
 
         foreach ($nsContexts as $nsContext) {
@@ -274,10 +275,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         return array(
             array(
-                $nodeFactory->function("func")
-                    ->addParam($nodeFactory->param("a")->setTypeHint("Cls"))
-                    ->addParam($nodeFactory->param("b")->setTypeHint("string"))
-                    ->getNode()
+                new Stmt\Function_("ahahah")
                 ,
                 array($contextNs, $contextUse),
                 $assignmentContext,
@@ -286,7 +284,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 "Function statement transformation"
             ),
 
-            array(
+            /*array(
                 $nodeFactory->method("method")
                     ->addParam($nodeFactory->param("a")->setTypeHint("Cls"))
                     ->addParam($nodeFactory->param("b")->setTypeHint("string"))
@@ -311,7 +309,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 array("A\\B\\C", "string"),
                 null,
                 "Closure expression transformation"
-            )
+            )*/
         );
     }
 

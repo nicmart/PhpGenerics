@@ -88,6 +88,11 @@ abstract class Name
     }
 
     /**
+     * @return bool
+     */
+    abstract function isFullName();
+
+    /**
      * @return string[]
      */
     public function parts()

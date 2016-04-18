@@ -12,14 +12,14 @@ namespace NicMart\Generics\Name\Assignment;
 
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Transformer\NameTransformer;
+use NicMart\Generics\Name\Transformer\FullNameTransformer;
 use PhpParser\Node\Name;
 
 /**
  * Class NameAssignmentContext
  * @package NicMart\Generics\Name\Assignment
  */
-final class NameAssignmentContext implements NameTransformer
+final class NameAssignmentContext implements FullNameTransformer
 {
     /**
      * @var NameAssignment[]

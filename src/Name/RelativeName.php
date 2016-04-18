@@ -10,8 +10,6 @@
 
 namespace NicMart\Generics\Name;
 
-use NicMart\Generics\Name\Context\NamespaceContext;
-
 /**
  * Class RelativeType
  * @package NicMart\Generics\Name
@@ -24,5 +22,13 @@ final class RelativeName extends Name
     public function toFullName()
     {
         return new FullName($this->parts());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFullName()
+    {
+        return false;
     }
 }

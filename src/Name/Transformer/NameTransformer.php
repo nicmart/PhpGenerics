@@ -1,17 +1,17 @@
 <?php
 /**
- * This file is part of php-generics
+ * @author Nicolò Martini - <nicolo.martini@dxi.eu>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Nicolò Martini <nicolo@martini.io>
+ * Created on 18/04/2016, 17:14
+ * Copyright (C) DXI Ltd
  */
 
 namespace NicMart\Generics\Name\Transformer;
 
 
-use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\Name;
+
 
 /**
  * Interface NameTransformer
@@ -20,8 +20,9 @@ use NicMart\Generics\Name\FullName;
 interface NameTransformer
 {
     /**
-     * @param FullName $name
-     * @return FullName
+     * @param Name $name
+     * @param NamespaceContext $namespaceContext
+     * @return mixed
      */
-    public function transform(FullName $name);
+    public function transformName(Name $name, NamespaceContext $namespaceContext);
 }
