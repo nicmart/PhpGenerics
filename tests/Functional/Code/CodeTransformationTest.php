@@ -21,7 +21,9 @@ use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
 use NicMart\Generics\Compiler\PhpDoc\ReplaceTypePhpDocTransformer;
 use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
@@ -55,9 +57,8 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
             '\NicMart\Generics\Variable\T' => '\MyNamespace\MyClass'
         ));
 
-        $typeDefAssignments = NameAssignmentContext::fromStrings(array(
-            '\NicMart\Generics\Example\Option\Option«T»' =>
-            '\NicMart\Generics\Example\Option\Option«MyClass»'
+        $typeDefAssignments = SimpleNameAssignmentContext::fromStrings(array(
+            'Option«T»' => 'Option«MyClass»'
         ));
 
         $traverser = new NodeTraverser();
@@ -68,7 +69,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
-                new FullNamePhpParserNameTransformer($typeUsageAssignment)
+                new ByFullNameNameTransformer($typeUsageAssignment)
             ))
         );
 

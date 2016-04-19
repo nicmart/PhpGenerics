@@ -20,6 +20,8 @@ use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\SimpleName;
+use NicMart\Generics\Name\Transformer\SimpleNameTransformer;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
@@ -31,23 +33,17 @@ use PhpParser\Node\Stmt;
 class TypeDefinitionTransformerVisitor implements Visitor
 {
     /**
-     * @var NameAssignmentContext
+     * @var SimpleNameTransformer
      */
-    private $typeAssignmentContext;
-
-    /**
-     * @var NameAssignmentContext
-     */
-    private $namespaceAssignmentContext;
+    private $nameTransformer;
 
     /**
      * TypeDefinitionTransformerVisitor constructor.
-     * @param NameAssignmentContext $typeAssignmentContext
+     * @param SimpleNameTransformer $nameTransformer
      */
-    public function __construct(NameAssignmentContext $typeAssignmentContext)
+    public function __construct(SimpleNameTransformer $nameTransformer)
     {
-        $this->typeAssignmentContext = $typeAssignmentContext;
-        $this->namespaceAssignmentContext = $this->getNamespaceAssignments();
+        $this->nameTransformer = $nameTransformer;
     }
 
     /**
@@ -56,22 +52,13 @@ class TypeDefinitionTransformerVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
-        $action = new MaintainNode();
-
-        if ($node instanceof Stmt\Namespace_) {
-            $node->name = $this->transformNamespaceName($node->name);
-            return $action;
-        }
-
         if ($node instanceof Stmt\Class_ || $node instanceof Stmt\Interface_) {
             $node->name = $this->transformClassName(
-                $node->name,
-                $this->getNamespaceContext($node)
+                $node->name
             );
-            return $action;
         }
 
-        return $action;
+        return new MaintainNode();
     }
 
     /**
@@ -84,61 +71,14 @@ class TypeDefinitionTransformerVisitor implements Visitor
     }
 
     /**
-     * @return NameAssignmentContext
-     */
-    private function getNamespaceAssignments()
-    {
-        $assignments = array();
-
-        foreach ($this->typeAssignmentContext->getAssignments() as $typeAssignment) {
-            $assignments[] = new NameAssignment(
-                $typeAssignment->from()->up(),
-                $typeAssignment->to()->up()
-            );
-        }
-
-        return new NameAssignmentContext($assignments);
-    }
-
-    /**
-     * @param Node $node
-     * @return NamespaceContext
-     * @throws \UnexpectedValueException
-     */
-    private function getNamespaceContext(Node $node)
-    {
-        if (!$node->hasAttribute(NamespaceContextVisitor::ATTR_NAME)) {
-            throw new \UnexpectedValueException(
-                "NamespaceContext attribute not found for node"
-            );
-        }
-
-        return $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
-    }
-
-    /**
-     * @param Name $name
-     * @return Name
-     */
-    private function transformNamespaceName(Name $name)
-    {
-        $from = new FullName($name->parts);
-        $to = $this->namespaceAssignmentContext->transform($from);
-
-        return new Name($to->parts());
-    }
-
-    /**
      * @param string $className
-     * @param NamespaceContext $namespaceContext
      * @return string
      */
-    private function transformClassName($className, NamespaceContext $namespaceContext)
+    private function transformClassName($className)
     {
-        $fromRelative = new RelativeName((array($className)));
-        $from = $namespaceContext->qualify($fromRelative);
-        $to = $this->typeAssignmentContext->transform($from);
+        $from = new SimpleName($className);
+        $to = $this->nameTransformer->transform($from);
 
-        return $to->last()->toString();
+        return $to->toString();
     }
 }
