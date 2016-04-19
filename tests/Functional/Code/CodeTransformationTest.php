@@ -14,22 +14,22 @@ namespace NicMart\Generics\Code;
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
 use NicMart\Generics\AST\Name\FullNamePhpParserNameTransformer;
+use NicMart\Generics\AST\Visitor\AddUsesVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
 use NicMart\Generics\Compiler\PhpDoc\ReplaceTypePhpDocTransformer;
-use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
-use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
+use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\PrettyPrinterTest;
 
 /**
  * Class CodeTransformationTest
@@ -50,7 +50,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $statements = $parser->parse($code);
 
-        var_dump($statements);
+        //var_dump($statements);
 
 
         $typeUsageAssignment = NameAssignmentContext::fromStrings(array(
@@ -82,7 +82,39 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $traverser->addVisitor(
             new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
-                    $typeUsageAssignment,
+                    new ByFullNameNameTransformer($typeUsageAssignment),
+                    new PhpParserDocToPhpdoc(),
+                    new Serializer()
+                )
+            ))
+        );
+
+        $traverser->traverse($statements);
+
+        $traverser = new NodeTraverser();
+
+        $use = Use_::fromStrings('\MyNamespace\MyClass');
+
+        $traverser->addVisitor(
+            new PhpParserVisitorAdapter(new AddUsesVisitor(array(
+                $use
+            )))
+        );
+
+        $traverser->addVisitor(
+            new PhpParserVisitorAdapter(new NamespaceContextVisitor())
+        );
+
+        $traverser->addVisitor(
+            new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
+                new SimplifierNameTransformer($use)
+            ))
+        );
+
+        $traverser->addVisitor(
+            new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
+                new ReplaceTypePhpDocTransformer(
+                    new SimplifierNameTransformer($use),
                     new PhpParserDocToPhpdoc(),
                     new Serializer()
                 )

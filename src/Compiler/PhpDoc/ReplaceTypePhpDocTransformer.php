@@ -14,7 +14,7 @@ use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\Transformer\NameTransformer;
 use phpDocumentor\Reflection\DocBlock;
 
 /**
@@ -27,20 +27,24 @@ class ReplaceTypePhpDocTransformer extends AbstractPhpDocTransformer
      * @var NameAssignmentContext
      */
     private $nameAssignmentContext;
+    /**
+     * @var NameTransformer
+     */
+    private $nameTransformer;
 
     /**
      * ReplaceTypePhpDocTransformer constructor.
-     * @param NameAssignmentContext $nameAssignmentContext
+     * @param NameTransformer $nameTransformer
      * @param PhpParserDocToPhpdoc $docToPhpdoc
      * @param DocBlock\Serializer $docBlockSerializer
      */
     public function __construct(
-        NameAssignmentContext $nameAssignmentContext,
+        NameTransformer $nameTransformer,
         PhpParserDocToPhpdoc $docToPhpdoc,
         DocBlock\Serializer $docBlockSerializer
     ) {
         parent::__construct($docToPhpdoc, $docBlockSerializer);
-        $this->nameAssignmentContext = $nameAssignmentContext;
+        $this->nameTransformer = $nameTransformer;
     }
 
     /**
@@ -52,16 +56,16 @@ class ReplaceTypePhpDocTransformer extends AbstractPhpDocTransformer
         $type,
         NamespaceContext $namespaceContext
     ) {
-        $fromType = FullName::fromString($type);
-        $hasAssignmentFrom = $this->nameAssignmentContext
-            ->hasAssignmentFrom($fromType)
-        ;
+        $from = FullName::fromString($type);
+        $to = $this->nameTransformer->transformName(
+            $from,
+            $namespaceContext
+        );
 
-        $toType = $hasAssignmentFrom
-            ? $this->nameAssignmentContext->transform($fromType)
-            : $fromType
-        ;
+        if ($from == $to) {
+            return $type;
+        }
 
-        return $toType->toAbsoluteString();
+        return $to->toCanonicalString();
     }
 }

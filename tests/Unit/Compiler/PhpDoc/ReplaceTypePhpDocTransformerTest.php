@@ -11,12 +11,11 @@
 namespace NicMart\Generics\Compiler\PhpDoc;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
-use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
-use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use phpDocumentor\Reflection\DocBlock;
 use PhpParser\Comment\Doc;
 
@@ -45,7 +44,7 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
         );
 
         $compiler = new ReplaceTypePhpDocTransformer(
-            $assignments,
+            new ByFullNameNameTransformer($assignments),
             $transformer = new PhpParserDocToPhpdoc(),
             new DocBlock\Serializer()
         );

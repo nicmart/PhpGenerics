@@ -11,10 +11,7 @@
 namespace NicMart\Generics\AST\Visitor;
 
 
-use NicMart\Generics\Name\Assignment\NameAssignment;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\SimpleName;
 use NicMart\Generics\Name\Transformer\SimpleNameTransformer;
 use PhpParser\BuilderFactory;

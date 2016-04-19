@@ -12,7 +12,6 @@ namespace NicMart\Generics\Compiler\PhpDoc;
 
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;

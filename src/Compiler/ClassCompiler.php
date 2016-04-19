@@ -14,7 +14,6 @@ namespace NicMart\Generics\Compiler;
 use NicMart\Generics\Compiler\Visitor\ReplaceTypeVisitor;
 use PhpParser\NodeDumper;
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 

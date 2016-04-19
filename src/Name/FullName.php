@@ -10,10 +10,6 @@
 
 namespace NicMart\Generics\Name;
 
-use NicMart\Generics\Name\Context\Namespace_;
-use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Context\Use_;
-
 /**
  * Class Type
  * @package NicMart\Generics\Name

@@ -12,7 +12,6 @@ namespace NicMart\Generics\Compiler\PhpDoc;
 
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
-use PhpParser\Comment\Doc;
 
 /**
  * Class SimplifyNamesPhpDocTransformer

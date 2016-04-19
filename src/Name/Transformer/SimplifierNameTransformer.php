@@ -10,7 +10,6 @@ namespace NicMart\Generics\Name\Transformer;
 
 
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 

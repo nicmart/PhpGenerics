@@ -11,7 +11,6 @@
 namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 use NicMart\Generics\Name\Transformer\NameQualifier;

@@ -160,18 +160,32 @@ class NameTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_converts_to_string_with_leading_sep()
+    public function it_gets_canonical_string()
     {
         $name = new FullName(array("a", "b", "c"));
 
         $this->assertEquals(
             "\\a\\b\\c",
-            $name->toAbsoluteString()
+            $name->toCanonicalString()
         );
 
         $this->assertEquals(
             ".a.b.c",
-            $name->toAbsoluteString(".")
+            $name->toCanonicalString(".")
+        );
+
+        $name = new RelativeName(array("a", "b"));
+
+        $this->assertEquals(
+            "a\\b",
+            $name->toCanonicalString()
+        );
+
+        $name = new FullName(array("string"));
+
+        $this->assertEquals(
+            "string",
+            $name->toCanonicalString()
         );
     }
 

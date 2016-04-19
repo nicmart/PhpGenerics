@@ -8,7 +8,6 @@
 
 namespace NicMart\Generics\Name;
 
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
@@ -262,9 +261,9 @@ abstract class Name
      * @param string $separator
      * @return string
      */
-    public function toAbsoluteString($separator = "\\")
+    public function toCanonicalString($separator = "\\")
     {
-        if ($this->isNative()) {
+        if ($this->isNative() || !$this->isFullName()) {
             return $this->toString($separator);
         }
 

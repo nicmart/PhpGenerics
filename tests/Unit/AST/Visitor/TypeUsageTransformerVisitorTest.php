@@ -21,8 +21,8 @@ use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 
 class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 {

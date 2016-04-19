@@ -11,15 +11,9 @@
 namespace NicMart\Generics\AST\Visitor;
 
 
-use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Compiler\PhpDoc\PhpDocTransformer;
-use NicMart\Generics\Compiler\PhpDoc\ReplaceTypePhpDocTransformer;
-use NicMart\Generics\Name\Assignment\NameAssignment;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Context\Use_;
-use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 

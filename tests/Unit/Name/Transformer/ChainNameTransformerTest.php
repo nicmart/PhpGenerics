@@ -11,9 +11,9 @@
 namespace NicMart\Generics\Name\Transformer;
 
 
+use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
-use NicMart\Generics\Name\Context\NamespaceContext;
 
 class ChainNameTransformerTest extends \PHPUnit_Framework_TestCase
 {

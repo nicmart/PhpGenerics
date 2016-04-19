@@ -11,9 +11,7 @@
 namespace NicMart\Generics\Compiler\PhpDoc;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
-use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\FullName;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 use PhpParser\Comment\Doc;

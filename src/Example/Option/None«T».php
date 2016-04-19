@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Example\Option;
 
-use NicMart\Generics\Example\Option\Option;
 use NicMart\Generics\Variable\T;
 
 class None«T» implements Option«T»

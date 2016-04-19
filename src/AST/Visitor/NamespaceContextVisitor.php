@@ -11,7 +11,6 @@
 namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
-use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;

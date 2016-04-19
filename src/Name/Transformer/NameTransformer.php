@@ -22,7 +22,7 @@ interface NameTransformer
     /**
      * @param Name $name
      * @param NamespaceContext $namespaceContext
-     * @return mixed
+     * @return Name
      */
     public function transformName(Name $name, NamespaceContext $namespaceContext);
 }
