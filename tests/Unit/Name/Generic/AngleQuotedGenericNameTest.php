@@ -22,7 +22,9 @@ class AngleQuotedGenericNameTest extends \PHPUnit_Framework_TestCase
      */
     public function it_returns_name()
     {
-        $generic = new AngleQuotedGenericName(FullName::fromString("Ns\\Class1"));
+        $generic = new AngleQuotedGenericName(
+            FullName::fromString("Ns\\Class1")
+        );
 
         $this->assertEquals(
             FullName::fromString("Ns\\Class1"),
@@ -36,7 +38,7 @@ class AngleQuotedGenericNameTest extends \PHPUnit_Framework_TestCase
     public function it_applies()
     {
         $generic = AngleQuotedGenericName::fromString(
-            "Ns\\Class1«T»«S»"
+            "Ns\\Class1«T·S»"
         );
 
         $concreteName = $generic->apply(array(
@@ -45,7 +47,7 @@ class AngleQuotedGenericNameTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            FullName::fromString("Ns\\Class1«Class2»«Class3»"),
+            FullName::fromString("Ns\\Class1«Class2·Class3»"),
             $concreteName
         );
 

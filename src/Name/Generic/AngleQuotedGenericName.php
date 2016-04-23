@@ -126,12 +126,13 @@ class AngleQuotedGenericName implements GenericName
     {
         $nameString = $this->name->toString();
 
-        $this->nameTemplate = preg_replace("/«[^«»]+»/", "«%s»", $nameString);
+        $this->nameTemplate = preg_replace("/([«·])[^«»·]+/", "$1%s", $nameString);
 
-        $typeVarNames = preg_match_all("/«([^«»]+)»/", $nameString, $match)
-            ? $match[1]
-            : array()
-        ;
+        $typeVarNames = preg_match_all(
+            "/[«·]([^«»·]+)/",
+            $nameString,
+            $match
+        ) ? $match[1] : array();
 
         foreach ($typeVarNames as $typeVarName) {
             $this->typeVars[] = RelativeName::fromString($typeVarName);
