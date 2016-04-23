@@ -6,7 +6,7 @@
  * Copyright (C) DXI Ltd
  */
 
-namespace NicMart\Generics\Name\GenericName;
+namespace NicMart\Generics\Name\Generic;
 
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;

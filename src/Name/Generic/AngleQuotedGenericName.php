@@ -6,9 +6,9 @@
  * Copyright (C) DXI Ltd
  */
 
-namespace NicMart\Generics\Name\GenericName;
+namespace NicMart\Generics\Name\Generic;
 
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\FullName;
@@ -35,6 +35,15 @@ class AngleQuotedGenericName implements GenericName
      * @var string
      */
     private $nameTemplate;
+
+    /**
+     * @param string $name
+     * @return AngleQuotedGenericName
+     */
+    public static function fromString($name)
+    {
+        return new self(FullName::fromString($name));
+    }
 
     /**
      * AngleQuotedGenericName constructor.
