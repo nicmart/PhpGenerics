@@ -23,6 +23,11 @@ use PhpParser\Node\Stmt;
  *
  * Attach the namespace context to each node
  *
+ * Stateful visitor.
+ *
+ * I would prefer changing the semantic of visitors with an immutable
+ * approach, in a fold-like fashion
+ *
  * @package NicMart\Generics\AST\Visitor
  */
 class NamespaceContextVisitor implements Visitor
@@ -39,7 +44,23 @@ class NamespaceContextVisitor implements Visitor
      */
     public function __construct()
     {
+        $this->reset();
+    }
+
+    /**
+     * @return void
+     */
+    public function reset()
+    {
         $this->currentContext = NamespaceContext::emptyContext();
+    }
+
+    /**
+     * @return NamespaceContext
+     */
+    public function context()
+    {
+        return $this->currentContext;
     }
 
     /**
