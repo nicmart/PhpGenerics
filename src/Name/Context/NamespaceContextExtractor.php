@@ -11,13 +11,14 @@
 namespace NicMart\Generics\Name\Context;
 
 /**
- * Interface NamespaceContextResolver
+ * Interface NamespaceContextExtractor
  * @package NicMart\Generics\Name\Context
  */
-interface NamespaceContextResolver
+interface NamespaceContextExtractor
 {
     /**
+     * @param string $source
      * @return NamespaceContext
      */
-    public function resolve();
+    public function contextOf($source);
 }

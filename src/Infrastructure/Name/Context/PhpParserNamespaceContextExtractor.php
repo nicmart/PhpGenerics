@@ -14,12 +14,16 @@ namespace NicMart\Generics\Infrastructure\Name\Context;
 use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Context\NamespaceContextResolver;
+use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
 
-class CallerNamespaceContextResolver implements NamespaceContextResolver
+/**
+ * Class PhpParserNamespaceContextExtractor
+ * @package NicMart\Generics\Infrastructure\Name\Context
+ */
+class PhpParserNamespaceContextExtractor implements NamespaceContextExtractor
 {
     /**
      * @var Parser
@@ -37,7 +41,7 @@ class CallerNamespaceContextResolver implements NamespaceContextResolver
     private $traverser;
 
     /**
-     * CallerNamespaceContextResolver constructor.
+     * PhpParserNamespaceContextExtractor constructor.
      * @param Parser $parser
      * @param NamespaceContextVisitor $visitor
      */
@@ -53,30 +57,17 @@ class CallerNamespaceContextResolver implements NamespaceContextResolver
         ));
     }
 
-    public function resolve()
+    /**
+     * @param string $source
+     * @return NamespaceContext
+     */
+    public function contextOf($source)
     {
         $this->visitor->reset();
 
-        $filename = $this->filename();
-
-        var_dump($filename);
-
-        $statements = $this->parser->parse(file_get_contents($filename));
+        $statements = $this->parser->parse($source);
         $this->traverser->traverse($statements);
 
         return $this->visitor->context();
-    }
-
-    private function filename()
-    {
-        $trace = debug_backtrace();
-
-        foreach ($trace as $entry) {
-            if (isset($entry["file"]) && $entry["file"] != __FILE__) {
-                return $entry["file"];
-            }
-        }
-
-        throw new \UnderflowException("Found no filename in the backtrace");
     }
 }

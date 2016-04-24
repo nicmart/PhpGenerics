@@ -18,19 +18,21 @@ use NicMart\Generics\Name\Context\Use_;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 
-class CallerNamespaceContextResolverTest extends \PHPUnit_Framework_TestCase
+class PhpParserNamespaceContextResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function it_gets_context_from_backtrace()
     {
-        $resolver = new CallerNamespaceContextResolver(
+        $resolver = new PhpParserNamespaceContextExtractor(
             new Parser(new Lexer()),
             new NamespaceContextVisitor()
         );
 
-        $context = include __DIR__ . "/caller.php";
+        $context = $resolver->contextOf(
+            file_get_contents(__DIR__ . "/caller.php")
+        );
 
         $this->assertEquals(
             NamespaceContext::emptyContext()
