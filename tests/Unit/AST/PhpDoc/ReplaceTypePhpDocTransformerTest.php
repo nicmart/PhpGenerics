@@ -8,7 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Compiler\PhpDoc;
+namespace NicMart\Generics\AST\PhpDoc;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;

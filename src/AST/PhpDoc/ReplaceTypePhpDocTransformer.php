@@ -8,10 +8,14 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Compiler\PhpDoc;
+namespace NicMart\Generics\AST\PhpDoc;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
+use NicMart\Generics\AST\PhpDoc\PhpDocTransformer;
+use NicMart\Generics\AST\PhpDoc\ReturnTagTypeReplacer;
 use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Transformer\NameTransformer;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 use PhpParser\Comment\Doc;
@@ -20,7 +24,7 @@ use PhpParser\Comment\Doc;
  * Class AbstractPhpDocTransformer
  * @package NicMart\Generics\Compiler\PhpDoc
  */
-abstract class AbstractPhpDocTransformer implements PhpDocTransformer
+class ReplaceTypePhpDocTransformer implements PhpDocTransformer
 {
     /**
      * @var PhpParserDocToPhpdoc
@@ -31,16 +35,23 @@ abstract class AbstractPhpDocTransformer implements PhpDocTransformer
      * @var DocBlock\Serializer
      */
     private $docBlockSerializer;
+    /**
+     * @var NameTransformer
+     */
+    private $nameTransformer;
 
     /**
      * ReplaceTypePhpDocTransformer constructor.
+     * @param NameTransformer $nameTransformer
      * @param PhpParserDocToPhpdoc $docToPhpdoc
      * @param DocBlock\Serializer $docBlockSerializer
      */
     public function __construct(
+        NameTransformer $nameTransformer,
         PhpParserDocToPhpdoc $docToPhpdoc,
         DocBlock\Serializer $docBlockSerializer
     ) {
+        $this->nameTransformer = $nameTransformer;
         $this->docToPhpdoc = $docToPhpdoc;
         $this->docBlockSerializer = $docBlockSerializer;
     }
@@ -111,8 +122,20 @@ abstract class AbstractPhpDocTransformer implements PhpDocTransformer
      * @param NamespaceContext $namespaceContext
      * @return string
      */
-    abstract protected function transformType(
+    private function transformType(
         $type,
         NamespaceContext $namespaceContext
-    );
+    ) {
+        $from = FullName::fromString($type);
+        $to = $this->nameTransformer->transformName(
+            $from,
+            $namespaceContext
+        );
+
+        if ($from == $to) {
+            return $type;
+        }
+
+        return $to->toCanonicalString();
+    }
 }

@@ -11,7 +11,7 @@
 namespace NicMart\Generics\AST\Visitor;
 
 
-use NicMart\Generics\Compiler\PhpDoc\PhpDocTransformer;
+use NicMart\Generics\AST\PhpDoc\PhpDocTransformer;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use PhpParser\BuilderFactory;
@@ -52,7 +52,7 @@ class PhpDocTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         /** @var PhpDocTransformer $phpdocTransformer */
         $phpdocTransformer = $this->getMock(
-            '\NicMart\Generics\Compiler\PhpDoc\PhpDocTransformer'
+            '\NicMart\Generics\AST\PhpDoc\PhpDocTransformer'
         );
 
         $phpdocTransformer

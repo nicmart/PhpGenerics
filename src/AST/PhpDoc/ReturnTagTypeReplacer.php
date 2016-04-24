@@ -8,7 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Compiler\PhpDoc;
+namespace NicMart\Generics\AST\PhpDoc;
 
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 

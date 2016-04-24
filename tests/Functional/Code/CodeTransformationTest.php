@@ -19,7 +19,7 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
-use NicMart\Generics\Compiler\PhpDoc\ReplaceTypePhpDocTransformer;
+use NicMart\Generics\AST\PhpDoc\ReplaceTypePhpDocTransformer;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\Context\Use_;

@@ -11,7 +11,7 @@
 namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
-use NicMart\Generics\Compiler\PhpDoc\PhpDocTransformer;
+use NicMart\Generics\AST\PhpDoc\PhpDocTransformer;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 
