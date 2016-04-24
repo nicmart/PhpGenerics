@@ -20,6 +20,7 @@ use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
 use NicMart\Generics\AST\PhpDoc\ReplaceTypePhpDocTransformer;
+use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransformer;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\Context\Use_;
@@ -46,12 +47,6 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
             __DIR__ . "/../../../src/Example/Option/Option«T».php"
         );
 
-        $parser = new Parser(new Lexer());
-
-        $statements = $parser->parse($code);
-
-        //var_dump($statements);
-
 
         $typeUsageAssignment = NameAssignmentContext::fromStrings(array(
             '\NicMart\Generics\Variable\T' => '\MyNamespace\MyClass'
@@ -61,25 +56,25 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
             'Option«T»' => 'Option«MyClass»'
         ));
 
-        $traverser = new NodeTraverser();
+        $traverser1 = new NodeTraverser();
 
-        $traverser->addVisitor(
+        $traverser1->addVisitor(
             new PhpParserVisitorAdapter(new NamespaceContextVisitor())
         );
 
-        $traverser->addVisitor(
+        $traverser1->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
                 new ByFullNameNameTransformer($typeUsageAssignment)
             ))
         );
 
-        $traverser->addVisitor(
+        $traverser1->addVisitor(
             new PhpParserVisitorAdapter(new TypeDefinitionTransformerVisitor(
                 $typeDefAssignments
             ))
         );
 
-        $traverser->addVisitor(
+        $traverser1->addVisitor(
             new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
                     new ByFullNameNameTransformer($typeUsageAssignment),
@@ -89,29 +84,28 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
             ))
         );
 
-        $traverser->traverse($statements);
 
-        $traverser = new NodeTraverser();
+        $traverser2 = new NodeTraverser();
 
         $use = Use_::fromStrings('\MyNamespace\MyClass');
 
-        $traverser->addVisitor(
+        $traverser2->addVisitor(
             new PhpParserVisitorAdapter(new AddUsesVisitor(array(
                 $use
             )))
         );
 
-        $traverser->addVisitor(
+        $traverser2->addVisitor(
             new PhpParserVisitorAdapter(new NamespaceContextVisitor())
         );
 
-        $traverser->addVisitor(
+        $traverser2->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
                 new SimplifierNameTransformer($use)
             ))
         );
 
-        $traverser->addVisitor(
+        $traverser2->addVisitor(
             new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
                     new SimplifierNameTransformer($use),
@@ -121,10 +115,16 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
             ))
         );
 
-        $traverser->traverse($statements);
 
-        $prettyPrinter = new Standard();
+        $transformer = new PhpParserSourceTransformer(
+            new Parser(new Lexer()),
+            new Standard(),
+            array(
+                $traverser1,
+                $traverser2
+            )
+        );
 
-        var_dump($prettyPrinter->prettyPrint($statements));
+        var_dump($transformer->transform($code));
     }
 }

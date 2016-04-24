@@ -11,6 +11,8 @@ namespace NicMart\Generics\Name\Generic;
 use InvalidArgumentException;
 use NicMart\Generics\Name\Assignment\NameAssignment;
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignment;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
@@ -105,6 +107,21 @@ class AngleQuotedGenericName implements GenericName
         }
 
         return new NameAssignmentContext($assignments);
+    }
+
+    /**
+     * @param FullName[] $names
+     * @return SimpleNameAssignmentContext
+     */
+    public function simpleAssignments(
+        array $names
+    ) {
+        return new SimpleNameAssignmentContext(array(
+            new SimpleNameAssignment(
+                $this->name()->last(),
+                $this->apply($names)->last()
+            )
+        ));
     }
 
     /**

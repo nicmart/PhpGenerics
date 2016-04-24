@@ -12,6 +12,7 @@ namespace NicMart\Generics\Name\Generic;
 
 
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 
@@ -86,6 +87,28 @@ class AngleQuotedGenericNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             NameAssignmentContext::fromStrings(array(
                 "Foo" => "A\\B"
+            )),
+            $assignments
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_simple_name_assignments()
+    {
+        $generic = AngleQuotedGenericName::fromString("Ns\\Class1«T·S»");
+
+        $assignments = $generic->simpleAssignments(
+            array(
+                FullName::fromString("A\\B"),
+                FullName::fromString("C\\D")
+            )
+        );
+
+        $this->assertEquals(
+            SimpleNameAssignmentContext::fromStrings(array(
+                "Class1«T·S»" => "Class1«B·D»"
             )),
             $assignments
         );

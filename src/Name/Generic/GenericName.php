@@ -9,6 +9,7 @@
 namespace NicMart\Generics\Name\Generic;
 
 use NicMart\Generics\Name\Assignment\NameAssignmentContext;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
@@ -39,5 +40,13 @@ interface GenericName
     public function assignments(
         array $names,
         NameQualifier $namespaceContext
+    );
+
+    /**
+     * @param FullName[] $names
+     * @return SimpleNameAssignmentContext
+     */
+    public function simpleAssignments(
+        array $names
     );
 }
