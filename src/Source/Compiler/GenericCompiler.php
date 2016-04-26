@@ -14,7 +14,7 @@ namespace NicMart\Generics\Source\Compiler;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Source\FullNameWithSource;
+use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Source\Generic\GenericTransformerProvider;
 use NicMart\Generics\Source\SourceResolver;
 
@@ -58,7 +58,7 @@ class GenericCompiler
     /**
      * @param GenericName $generic
      * @param FullName[] $typeParameters
-     * @return FullNameWithSource
+     * @return SourceUnit
      */
     public function compile(
         GenericName $generic,
@@ -73,7 +73,7 @@ class GenericCompiler
             $typeParameters
         );
 
-        return new FullNameWithSource(
+        return new SourceUnit(
             $generic->apply($typeParameters),
             $transformer->transform($code)
         );

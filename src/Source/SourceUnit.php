@@ -14,10 +14,10 @@ namespace NicMart\Generics\Source;
 use NicMart\Generics\Name\FullName;
 
 /**
- * Class FullNameWithSource
+ * Class SourceUnit
  * @package NicMart\Generics\Source
  */
-final class FullNameWithSource
+final class SourceUnit
 {
     /**
      * @var FullName
@@ -29,7 +29,7 @@ final class FullNameWithSource
     private $source;
 
     /**
-     * FullNameWithSource constructor.
+     * SourceUnit constructor.
      * @param FullName $fullName
      * @param $source
      */
