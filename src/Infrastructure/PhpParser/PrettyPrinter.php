@@ -20,19 +20,30 @@ use PhpParser\PrettyPrinter\Standard;
  */
 class PrettyPrinter extends Standard
 {
+    /**
+     * @param Stmt\Property $node
+     * @return string
+     */
     public function pStmt_Property(Stmt\Property $node)
     {
         return parent::pStmt_Property($node) . "\n";
     }
 
+    /**
+     * @param Stmt\ClassMethod $node
+     * @return string
+     */
     public function pStmt_ClassMethod(Stmt\ClassMethod $node)
     {
         return parent::pStmt_ClassMethod($node). "\n";
     }
 
+    /**
+     * @param Stmt\ClassConst $node
+     * @return string
+     */
     public function pStmt_ClassConst(Stmt\ClassConst $node)
     {
         return parent::pStmt_ClassConst($node). "\n";
     }
-
 }
