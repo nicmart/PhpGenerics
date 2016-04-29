@@ -14,6 +14,10 @@ namespace NicMart\Generics\Source\Evaluation;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Source\SourceUnit;
 
+/**
+ * Class Psr0SourceUnitEvaluation
+ * @package NicMart\Generics\Source\Evaluation
+ */
 class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
 {
     /**
@@ -30,6 +34,10 @@ class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
         $this->folder = $folder;
     }
 
+    /**
+     * @param SourceUnit $sourceUnit
+     * @return void
+     */
     public function evaluate(SourceUnit $sourceUnit)
     {
         $name = $sourceUnit->name();
@@ -37,11 +45,16 @@ class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
         $this->createFolders($name);
         file_put_contents(
             $filePath,
-            $sourceUnit->source()
+            "<?php\n\n" . $sourceUnit->source()
         );
+
         include $filePath;
     }
 
+    /**
+     * @param FullName $name
+     * @return string
+     */
     private function filePath(FullName $name)
     {
         return sprintf(
@@ -51,6 +64,9 @@ class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
         );
     }
 
+    /**
+     * @param FullName $name
+     */
     private function createFolders(FullName $name)
     {
         $path = $this->folder;

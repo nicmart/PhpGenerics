@@ -16,7 +16,8 @@ use NicMart\Generics\Variable\T;
  * Class Some
  * @package NicMart\Generics\Example
  */
-class Some«T» implements Option«T»
+class Some«T»
+//implements Option«T»
 {
     /**
      * @var T
@@ -39,6 +40,14 @@ class Some«T» implements Option«T»
     public function getOrElse(T $else)
     {
         return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function type()
+    {
+        return get_class($this->value);
     }
 
     /**

@@ -66,6 +66,21 @@ class AngleQuotedGenericName implements GenericName
     }
 
     /**
+     * @param NameQualifier $qualifier
+     * @return FullName[]
+     */
+    public function parameters(NameQualifier $qualifier)
+    {
+        $names = array();
+
+        foreach ($this->typeVars as $i => $relativeTypeVarName) {
+            $names[] = $qualifier->qualify($relativeTypeVarName);
+        }
+
+        return $names;
+    }
+
+    /**
      * @param FullName[] $names
      * @return FullName
      */
@@ -85,6 +100,11 @@ class AngleQuotedGenericName implements GenericName
     }
 
     /**
+     * Given a set of concrete types, and a qualifier that is able
+     * to resolve type variable to full types (in general this should be the
+     * namespace context of the generic type) returns the generic types to
+     * concrete types assignments
+     *
      * @param FullName[] $names
      * @param NameQualifier $nameQualifier
      *

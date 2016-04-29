@@ -12,6 +12,7 @@ use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 
 /**
@@ -30,6 +31,12 @@ interface GenericName
      * @return FullName
      */
     public function apply(array $names);
+
+    /**
+     * @param NameQualifier $qualifier
+     * @return FullName[]
+     */
+    public function parameters(NameQualifier $qualifier);
 
     /**
      * @param FullName[] $names

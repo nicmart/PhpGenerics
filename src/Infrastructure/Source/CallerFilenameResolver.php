@@ -20,12 +20,15 @@ class CallerFilenameResolver
     /**
      * @return mixed
      */
-    public function filename()
+    public function filename(array $filesToSkip = array())
     {
+        $filesToSkip[] = __FILE__;
+        $filesToSkip = array_flip($filesToSkip);
+
         $trace = debug_backtrace();
 
         foreach ($trace as $entry) {
-            if (isset($entry["file"]) && $entry["file"] != __FILE__) {
+            if (isset($entry["file"]) && !isset($filesToSkip[$entry["file"]])) {
                 return $entry["file"];
             }
         }
