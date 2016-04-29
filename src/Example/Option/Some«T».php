@@ -57,4 +57,8 @@ class Some«T»
     {
         return $this->value;
     }
+
+    public function withoutComment() {
+
+    }
 }

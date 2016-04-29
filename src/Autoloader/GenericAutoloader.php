@@ -10,11 +10,9 @@
 
 namespace NicMart\Generics\Autoloader;
 
-
 use NicMart\Generics\Infrastructure\Source\CallerFilenameResolver;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
-use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
 use NicMart\Generics\Source\Compiler\GenericCompiler;
@@ -40,7 +38,7 @@ class GenericAutoloader
      * @var CallerFilenameResolver
      */
     private $filenameResolver;
-    
+
     /**
      * @var NamespaceContextExtractor
      */
@@ -104,7 +102,7 @@ class GenericAutoloader
      */
     private function isGenericClassName($className)
     {
-        return strpos($className, "«") == false;
+        return strpos($className, "«") !== false;
     }
 
     /**

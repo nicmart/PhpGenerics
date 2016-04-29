@@ -63,6 +63,8 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $c = new Some«Lexer»(new Lexer());
         $c->type();
 
-        $func = new Function1«RelativeName·FullName»();
+        $func = new Function1«RelativeName·FullName»(function(RelativeName $name) {
+            return $name->toFullName();
+        });
     }
 }
