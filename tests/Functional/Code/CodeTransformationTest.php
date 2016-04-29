@@ -22,6 +22,7 @@ use PhpParser\Lexer;
 use NicMart\Generics\Example\Option\Some«T»;
 use NicMart\Generics\Example\Option\Some«stdClass»;
 use NicMart\Generics\Example\Option\Some«Lexer»;
+use NicMart\Generics\Example\Option\Some«string»;
 use stdClass;
 
 /**
@@ -66,5 +67,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $func = new Function1«RelativeName·FullName»(function(RelativeName $name) {
             return $name->toFullName();
         });
+
+        $d = new Some«string»("ahah");
     }
 }
