@@ -24,5 +24,8 @@ interface NameTransformer
      * @param NamespaceContext $namespaceContext
      * @return Name
      */
-    public function transformName(Name $name, NamespaceContext $namespaceContext);
+    public function transformName(
+        Name $name,
+        NamespaceContext $namespaceContext
+    );
 }
