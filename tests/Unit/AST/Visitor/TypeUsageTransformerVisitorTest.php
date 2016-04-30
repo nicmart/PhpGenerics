@@ -23,6 +23,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
+use PhpParser\PrettyPrinter\Standard;
 
 class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 {
@@ -94,7 +95,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             foreach ($node->params as $i => $param) {
                 $this->assertEquals(
                     $expectedParamsClasses[$i],
-                    $param->type->toString(),
+                    $param->type instanceof Name ? $param->type->toString() : null,
                     $msg
                 );
             }
@@ -275,8 +276,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
 
         return array(
             array(
-                new Stmt\Function_("ahahah")
-                ,
+                new Stmt\Function_("ahahah"),
                 array($contextNs, $contextUse),
                 $assignmentContext,
                 array("A\\B\\C", "string"),
@@ -284,7 +284,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 "Function statement transformation"
             ),
 
-            /*array(
+            array(
                 $nodeFactory->method("method")
                     ->addParam($nodeFactory->param("a")->setTypeHint("Cls"))
                     ->addParam($nodeFactory->param("b")->setTypeHint("string"))
@@ -292,7 +292,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             ,
                 array($contextNs, $contextUse),
                 $assignmentContext,
-                array("A\\B\\C", "string"),
+                array("A\\B\\C", null),
                 null,
                 "Method statement transformation"
             ),
@@ -306,10 +306,10 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 )),
                 array($contextNs, $contextUse),
                 $assignmentContext,
-                array("A\\B\\C", "string"),
+                array("A\\B\\C", null),
                 null,
                 "Closure expression transformation"
-            )*/
+            )
         );
     }
 
@@ -327,6 +327,14 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 FullName::fromString("A\\B\\C")
             )
         ));
+
+        $n = $nodeFactory->class("D")
+            ->extend("Cls")
+            ->getNode()
+        ;
+        $n->extends = new Name\FullyQualified("A\\B");
+        $prettyPrinter = new Standard();
+        var_dump($prettyPrinter->prettyPrint(array($n)));
 
         return array(
             array(

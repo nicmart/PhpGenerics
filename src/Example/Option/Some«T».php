@@ -12,12 +12,15 @@ namespace NicMart\Generics\Example\Option;
 
 use NicMart\Generics\Variable\T;
 
+// @todo I don't want to have this one
+// Let's add it in the Some«ConcreteClass» generation
+use NicMart\Generics\Example\Option\Option«T»;
+
 /**
  * Class Some
  * @package NicMart\Generics\Example
  */
-class Some«T»
-//implements Option«T»
+class Some«T» implements Option«T»
 {
     /**
      * @var T

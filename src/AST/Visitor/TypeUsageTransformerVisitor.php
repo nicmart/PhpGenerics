@@ -106,25 +106,25 @@ class TypeUsageTransformerVisitor implements Visitor
     }
 
     /**
-     * @param Node\Name  $name
+     * @param Node\Name  $phpName
      * @param NamespaceContext $nsContext
      * @return Node\Name\FullyQualified
      */
-    private function transformName(Node\Name $name, NamespaceContext $nsContext)
+    private function transformName(Node\Name $phpName, NamespaceContext $nsContext)
     {
-        $fullname = $this->fromPhpNameToName($name);
-        $transformedFullName = $this->nameTransformer->transformName(
-            $fullname,
+        $name = $this->fromPhpNameToName($phpName);
+        $transformedName = $this->nameTransformer->transformName(
+            $name,
             $nsContext
         );
 
         // No scalar types in php < 7
-        if (!$transformedFullName->isValidType()) {
+        if (!$transformedName->isValidType()) {
             return null;
         }
 
         return $this->fromNameToPhpName(
-            $transformedFullName
+            $transformedName
         );
     }
 
@@ -147,7 +147,7 @@ class TypeUsageTransformerVisitor implements Visitor
      */
     private function fromNameToPhpName(Name $name)
     {
-        return $name instanceof FullName
+        return $name instanceof FullName && !$name->isNative()
             ? new Node\Name\FullyQualified($name->parts())
             : new Node\Name($name->parts())
         ;

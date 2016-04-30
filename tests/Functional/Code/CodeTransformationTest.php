@@ -12,6 +12,8 @@ namespace NicMart\Generics\Code;
 
 
 use NicMart\Generics\Autoloader\GenericAutoloaderFactory;
+use NicMart\Generics\Example\Option\None«T»;
+use NicMart\Generics\Example\Option\None«Lexer»;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Example\Func\Function1«T1·T2»;
 use NicMart\Generics\Example\Func\Function1«RelativeName·FullName»;
@@ -71,8 +73,10 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         });
 
         $d = new Some«string»("ahah");
-        $e = new Some«array»(array(1, 2, 3));
+
 
         $f = new Some«Some«string»»($d);
+        $g = new None«Lexer»();
+        $e = new Some«array»(array(1, 2, 3));
     }
 }

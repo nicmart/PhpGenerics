@@ -24,8 +24,11 @@ use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
+use NicMart\Generics\Name\Transformer\ChainNameTransformer;
+use NicMart\Generics\Name\Transformer\GenericNameTransformer;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
@@ -101,6 +104,12 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
 
         $typeDefAssignments = $generic->simpleAssignments($typeParameters);
 
+        $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
+        $typeUsageTransformer = new ChainNameTransformer(array(
+            $typeUsageTransformer,
+            new GenericNameTransformer($typeUsageAssignment, new AngleQuotedGenericNameFactory())
+        ));
+
         $traverser1 = new NodeTraverser();
 
         $traverser1->addVisitor(
@@ -109,7 +118,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
 
         $traverser1->addVisitor(
             new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
-                new ByFullNameNameTransformer($typeUsageAssignment)
+                $typeUsageTransformer
             ))
         );
 
@@ -122,7 +131,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
         $traverser1->addVisitor(
             new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
-                    new ByFullNameNameTransformer($typeUsageAssignment),
+                    $typeUsageTransformer,
                     $this->phpParserDocToPhpdoc,
                     $this->phpDocSerializer
                 )

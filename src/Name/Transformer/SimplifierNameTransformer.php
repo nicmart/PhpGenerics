@@ -48,6 +48,16 @@ class SimplifierNameTransformer implements NameTransformer
             : $name
         ;
 
-        return $this->nameSimplifier->simplify($fullName);
+        // @todo I think this is showing a modeling problem in simplifiers
+        // It's WRONG returning a relative name that is the same as the fullname
+        // when there is no possilbe semplification
+
+        $simplified = $this->nameSimplifier->simplify($fullName);
+
+        if ($simplified->parts() == $name->parts()) {
+            return $name;
+        }
+
+        return $simplified;
     }
 }
