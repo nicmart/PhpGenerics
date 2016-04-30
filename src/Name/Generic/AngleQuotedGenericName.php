@@ -23,6 +23,8 @@ use NicMart\Generics\Name\Transformer\NameQualifier;
  */
 class AngleQuotedGenericName implements GenericName
 {
+    const CHAR_CODE = 194;
+
     /**
      * @var FullName
      */
@@ -157,22 +159,51 @@ class AngleQuotedGenericName implements GenericName
     }
 
     /**
-     * @return void
+     * Parse the generic name
      */
     private function parseName()
     {
-        $nameString = $this->name->toString();
+        $name = $this->name->toString();
+        $len = strlen($name);
 
-        $this->nameTemplate = preg_replace("/([«·])[^«»·]+/", "$1%s", $nameString);
+        $nameTemplate = "";
+        $typeVars = array();
+        $currTypeVar = "";
 
-        $typeVarNames = preg_match_all(
-            "/[«·]([^«»·]+)/",
-            $nameString,
-            $match
-        ) ? $match[1] : array();
+        $level = 0;
 
-        foreach ($typeVarNames as $typeVarName) {
-            $this->typeVars[] = RelativeName::fromString($typeVarName);
+        for ($i = 0; $i < $len; $i++) {
+            $char = $name[$i];
+            if (ord($char) == self::CHAR_CODE) {
+                $char .= $name[++$i];
+            }
+
+            if ($char == "»" || $char == "·") {
+                --$level;
+            }
+
+            if ($level == 0) {
+                $nameTemplate .= $char;
+                if ($char == "«") {
+                    $nameTemplate .= "%s";
+                } elseif ($char == "·") {
+                    $nameTemplate .= "%s";
+                    $typeVars[] = RelativeName::fromString($currTypeVar);
+                    $currTypeVar = "";
+                } elseif ($char == "»") {
+                    $typeVars[] = RelativeName::fromString($currTypeVar);
+                    $currTypeVar = "";
+                }
+            } else {
+                $currTypeVar .= $char;
+            }
+
+            if ($char == "«"  || $char == "·") {
+                ++$level;
+            }
         }
+
+        $this->nameTemplate = $nameTemplate;
+        $this->typeVars = $typeVars;
     }
 }

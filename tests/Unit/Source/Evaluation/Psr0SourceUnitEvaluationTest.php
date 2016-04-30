@@ -27,7 +27,7 @@ class Psr0SourceUnitEvaluationTest extends \PHPUnit_Framework_TestCase
 
         $sourceUnit = new SourceUnit(
             FullName::fromString("Ns1\\Ns2\\Class1"),
-            '<?php
+            '
                 define(\'__GENERICS_INCLUDED\', 1);
             '
         );
@@ -39,7 +39,5 @@ class Psr0SourceUnitEvaluationTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             defined('__GENERICS_INCLUDED')
         );
-
-        //unlink($path);
     }
 }

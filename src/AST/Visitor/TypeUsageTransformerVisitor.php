@@ -113,17 +113,18 @@ class TypeUsageTransformerVisitor implements Visitor
     private function transformName(Node\Name $name, NamespaceContext $nsContext)
     {
         $fullname = $this->fromPhpNameToName($name);
+        $transformedFullName = $this->nameTransformer->transformName(
+            $fullname,
+            $nsContext
+        );
 
         // No scalar types in php < 7
-        if ($fullname->isNative()) {
+        if (!$transformedFullName->isValidType()) {
             return null;
         }
 
         return $this->fromNameToPhpName(
-            $this->nameTransformer->transformName(
-                $fullname,
-                $nsContext
-            )
+            $transformedFullName
         );
     }
 

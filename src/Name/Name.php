@@ -41,6 +41,15 @@ abstract class Name
     );
 
     /**
+     * @var string[]
+     */
+    private $nativeValidTypes = array(
+        "array",
+        "self",
+        "static"
+    );
+
+    /**
      * Returns the root path object
      *
      * @return static
@@ -279,6 +288,17 @@ abstract class Name
         return
             count($parts) == 1
             && in_array($parts[0], $this->nativeTypes)
+        ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidType()
+    {
+        return
+            !$this->isNative()
+            || in_array($this->parts[0], $this->nativeValidTypes)
         ;
     }
 

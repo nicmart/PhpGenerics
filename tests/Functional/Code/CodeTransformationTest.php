@@ -23,6 +23,8 @@ use NicMart\Generics\Example\Option\Some«T»;
 use NicMart\Generics\Example\Option\Some«stdClass»;
 use NicMart\Generics\Example\Option\Some«Lexer»;
 use NicMart\Generics\Example\Option\Some«string»;
+use NicMart\Generics\Example\Option\Some«Some«string»»;
+use NicMart\Generics\Example\Option\Some«array»;
 use stdClass;
 
 /**
@@ -69,5 +71,8 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         });
 
         $d = new Some«string»("ahah");
+        $e = new Some«array»(array(1, 2, 3));
+
+        $f = new Some«Some«string»»($d);
     }
 }

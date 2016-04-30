@@ -23,6 +23,7 @@ use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransforme
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\NameQualifier;
@@ -85,7 +86,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
     /**
      * @param NameQualifier $qualifier
      * @param GenericName $generic
-     * @param array $typeParameters
+     * @param FullName[] $typeParameters
      * @return PhpParserSourceTransformer
      */
     public function transformer(
@@ -134,7 +135,9 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
         $uses = array();
 
         foreach ($typeParameters as $typeParameter) {
-            $uses[] = new Use_($typeParameter);
+            if (!$typeParameter->isNative()) {
+                $uses[] = new Use_($typeParameter);
+            }
         }
 
         $usesSimplifier = new NamespaceContext(
