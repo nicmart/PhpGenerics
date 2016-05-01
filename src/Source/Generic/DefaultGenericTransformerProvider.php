@@ -108,7 +108,10 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
         $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
         $typeUsageTransformer = new ChainNameTransformer(array(
             $typeUsageTransformer,
-            new GenericNameTransformer($typeUsageAssignment, new AngleQuotedGenericNameFactory())
+            new GenericNameTransformer(
+                $typeUsageAssignment,
+                new AngleQuotedGenericNameFactory()
+            )
         ));
 
         $traverser1 = new NodeTraverser();
