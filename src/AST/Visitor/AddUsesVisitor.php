@@ -15,6 +15,7 @@ use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\Context\Uses;
 use PhpParser\Node;
 
 /**
@@ -24,19 +25,17 @@ use PhpParser\Node;
 class AddUsesVisitor implements Visitor
 {
     /**
-     * @var Use_[]
+     * @var Uses
      */
-    private $uses = array();
+    private $uses;
 
     /**
      * AddUsesVisitor constructor.
-     * @param Use_[] $uses
+     * @param Uses $uses
      */
-    public function __construct(array $uses)
+    public function __construct(Uses $uses)
     {
-        foreach ($uses as $use) {
-            $this->addUse($use);
-        }
+        $this->uses = $uses;
     }
 
     /**
@@ -53,7 +52,7 @@ class AddUsesVisitor implements Visitor
 
         $usesNodes = array();
 
-        foreach ($this->uses as $use) {
+        foreach ($this->uses->getUsesByAliases() as $use) {
             $usesNodes[] = $this->getUseNode($use);
         }
 
@@ -82,13 +81,4 @@ class AddUsesVisitor implements Visitor
             $use->alias()->toString()
         )));
     }
-
-    /**
-     * @param Use_ $use
-     */
-    private function addUse(Use_ $use)
-    {
-        $this->uses[] = $use;
-    }
-
 }

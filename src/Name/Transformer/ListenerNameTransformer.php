@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Name\Transformer;
 
-
 use InvalidArgumentException;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Name;
@@ -25,7 +24,7 @@ class ListenerNameTransformer implements NameTransformer
      * @var NameTransformer
      */
     private $nameTransformer;
-    
+
     /**
      * @var
      */
@@ -63,7 +62,12 @@ class ListenerNameTransformer implements NameTransformer
         );
 
         if ($name != $transformed) {
-            call_user_func($this->listener, $name, $transformed);
+            call_user_func(
+                $this->listener,
+                $name,
+                $transformed,
+                $namespaceContext
+            );
         }
 
         return $transformed;

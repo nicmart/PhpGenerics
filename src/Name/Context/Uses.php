@@ -138,4 +138,16 @@ final class Uses implements NameSimplifier
 
         return $new;
     }
+
+    /**
+     * @param Uses $uses
+     * @return Uses
+     */
+    public function merge(Uses $uses)
+    {
+        return new Uses(array_merge(
+            $this->getUsesByAliases(),
+            $uses->getUsesByAliases()
+        ));
+    }
 }

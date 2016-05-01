@@ -19,6 +19,8 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
+use NicMart\Generics\Infrastructure\PhpParser\Transformer\ChainNodeTransformer;
+use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransformer;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
@@ -27,9 +29,11 @@ use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
 use NicMart\Generics\Name\Transformer\GenericNameTransformer;
+use NicMart\Generics\Name\Transformer\ListenerNameTransformer;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
@@ -105,88 +109,72 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
 
         $typeDefAssignments = $generic->simpleAssignments($typeParameters);
 
+        $uses = new Uses();
+
+        $genericCollector = function (
+            Name $fromGeneric,
+            Name $toGeneric,
+            NamespaceContext $context
+        ) use (&$uses) {
+            $fullname = $context->qualify($fromGeneric);
+            $uses = $uses->withUse(new Use_($fullname));
+        };
+
         $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
+
         $typeUsageTransformer = new ChainNameTransformer(array(
             $typeUsageTransformer,
-            new GenericNameTransformer(
-                $typeUsageAssignment,
-                new AngleQuotedGenericNameFactory()
+            new ListenerNameTransformer(
+                new GenericNameTransformer(
+                    $typeUsageAssignment,
+                    new AngleQuotedGenericNameFactory()
+                ),
+                $genericCollector
             )
         ));
 
-        $traverser1 = new NodeTraverser();
-
-        $traverser1->addVisitor(
-            new PhpParserVisitorAdapter($this->namespaceContextVisitor)
-        );
-
-        $traverser1->addVisitor(
-            new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
-                $typeUsageTransformer
-            ))
-        );
-
-        $traverser1->addVisitor(
-            new PhpParserVisitorAdapter(new TypeDefinitionTransformerVisitor(
-                $typeDefAssignments
-            ))
-        );
-
-        $traverser1->addVisitor(
-            new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
+        $nodeTransformer1 = TraverserNodeTransformer::fromVisitors(array(
+            $this->namespaceContextVisitor,
+            new TypeUsageTransformerVisitor($typeUsageTransformer),
+            new TypeDefinitionTransformerVisitor($typeDefAssignments),
+            new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
                     $typeUsageTransformer,
                     $this->phpParserDocToPhpdoc,
                     $this->phpDocSerializer
                 )
-            ))
-        );
+            )
+        ));
 
-
-        $traverser2 = new NodeTraverser();
-
-        $uses = array();
 
         foreach ($typeParameters as $typeParameter) {
             if (!$typeParameter->isNative()) {
-                $uses[] = new Use_($typeParameter);
+                $uses = $uses->withUse(new Use_($typeParameter));
             }
         }
 
-        $usesSimplifier = new Uses($uses);
-
-        $traverser2->addVisitor(
-            new PhpParserVisitorAdapter(new AddUsesVisitor($uses))
-        );
-
-        $traverser2->addVisitor(
-            new PhpParserVisitorAdapter($this->namespaceContextVisitor)
-        );
-
-        $traverser2->addVisitor(
-            new PhpParserVisitorAdapter(new TypeUsageTransformerVisitor(
-                new SimplifierNameTransformer($usesSimplifier)
-            ))
-        );
-
-        $traverser2->addVisitor(
-            new PhpParserVisitorAdapter(new PhpDocTransformerVisitor(
+        $nodeTransformer2 = TraverserNodeTransformer::fromVisitors(array(
+            new AddUsesVisitor($uses),
+            $this->namespaceContextVisitor,
+            new TypeUsageTransformerVisitor(
+                new SimplifierNameTransformer($uses)
+            ),
+            new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
-                    new SimplifierNameTransformer($usesSimplifier),
+                    new SimplifierNameTransformer($uses),
                     $this->phpParserDocToPhpdoc,
                     $this->phpDocSerializer
                 )
-            ))
-        );
-
+            )
+        ));
 
         return new PhpParserSourceTransformer(
             $this->phpParser,
-            $this->phpPrettyPrinter,
-            array(
-                $traverser1,
-                $traverser2
-            )
+            new ChainNodeTransformer(array(
+                $nodeTransformer1,
+                $nodeTransformer2
+            )),
+            $this->phpPrettyPrinter
         );
     }
 }

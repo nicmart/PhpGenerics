@@ -19,6 +19,8 @@ use NicMart\Generics\Example\Func\Function1«T1·T2»;
 use NicMart\Generics\Variable\T;
 use NicMart\Generics\Example\Func\Function1«FullName·RelativeName»;
 use NicMart\Generics\Example\Func\Function1«T·T»;
+use NicMart\Generics\Example\Func\Endofunc«T»;
+use NicMart\Generics\Example\Func\Endofunc«Lexer»;
 use NicMart\Generics\Example\Func\Function1«RelativeName·FullName»;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
@@ -43,7 +45,7 @@ GenericAutoloaderFactory::registerAutoloader(
 class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @test
+     * @stest
      */
     public function it_transforms_php_code()
     {
@@ -54,10 +56,10 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $innerType = FullName::fromString("Ns\\MyClass1");
 
-        var_dump($compiler->compile(
+        /*var_dump($compiler->compile(
             $generic,
             array($innerType)
-        ));
+        ));*/
     }
 
     /**
@@ -66,7 +68,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
     public function it_autoloads()
     {
         $a = new Some«stdClass»(new stdClass);
-        $b = $a->getOrElse(new stdClass);
+        /*$b = $a->getOrElse(new stdClass);
 
         $c = new Some«Lexer»(new Lexer());
         $c->type();
@@ -83,7 +85,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $e = new Some«array»(array(1, 2, 3));
 
         $id = new Function1«T1·T2»(function ($x) { return $x; });
+
+        $endo = new Endofunc«Lexer»(function () {});*/
     }
 }
-
-//class Endofunc«T» extends Function1«T·T» {}

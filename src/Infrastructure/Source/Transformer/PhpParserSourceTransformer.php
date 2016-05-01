@@ -10,8 +10,8 @@
 
 namespace NicMart\Generics\Infrastructure\Source\Transformer;
 
+use NicMart\Generics\Infrastructure\PhpParser\Transformer\NodeTransformer;
 use NicMart\Generics\Source\Transformer\SourceTransformer;
-use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\Serializer;
@@ -24,29 +24,29 @@ class PhpParserSourceTransformer implements SourceTransformer
     private $parser;
 
     /**
-     * @var array|\PhpParser\NodeTraverserInterface[]
-     */
-    private $traversers;
-
-    /**
      * @var Standard
      */
     private $prettyPrinter;
 
     /**
+     * @var NodeTransformer
+     */
+    private $nodeTransformer;
+
+    /**
      * PhpParserSourceTransformer constructor.
      * @param Parser $parser
+     * @param NodeTransformer $nodeTransformer
      * @param Standard $prettyPrinter
-     * @param NodeTraverserInterface[] $traversers
      */
     public function __construct(
         Parser $parser,
-        Standard $prettyPrinter,
-        array $traversers
+        NodeTransformer $nodeTransformer,
+        Standard $prettyPrinter
     ) {
         $this->parser = $parser;
-        $this->traversers = $traversers;
         $this->prettyPrinter = $prettyPrinter;
+        $this->nodeTransformer = $nodeTransformer;
     }
 
     /**
@@ -57,9 +57,7 @@ class PhpParserSourceTransformer implements SourceTransformer
     {
         $nodes = $this->parser->parse($source);
 
-        foreach ($this->traversers as $traverser) {
-            $traverser->traverse($nodes);
-        }
+        $nodes = $this->nodeTransformer->transformNodes($nodes);
 
         return $this->prettyPrinter->prettyPrint($nodes);
     }

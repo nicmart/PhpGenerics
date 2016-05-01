@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\Context\Uses;
 use PhpParser\BuilderFactory;
 
 class AddUsesVisitorTest extends \PHPUnit_Framework_TestCase
@@ -22,10 +23,10 @@ class AddUsesVisitorTest extends \PHPUnit_Framework_TestCase
     public function it_adds_uses_as_children_to_namespace_node()
     {
         $nodeFactory = new BuilderFactory();
-        $visitor = new AddUsesVisitor(array(
+        $visitor = new AddUsesVisitor(new Uses(array(
             Use_::fromStrings("Ns1\\Class1"),
             Use_::fromStrings("Ns1\\Class2", "Alias"),
-        ));
+        )));
 
         $ns = $nodeFactory->namespace("NS1\\NS2")->getNode();
 

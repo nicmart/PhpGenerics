@@ -52,7 +52,8 @@ class ListenerNameTransformerTest extends \PHPUnit_Framework_TestCase
             ->method('__invoke')
             ->with(
                 $from,
-                $to
+                $to,
+                $context
             )
         ;
 
@@ -75,8 +76,10 @@ class ListenerNameTransformerTest extends \PHPUnit_Framework_TestCase
 interface Listener
 {
     /**
-     * @param Name $name
+     * @param Name $from
+     * @param Name $to
+     * @param NamespaceContext $context
      * @return Name
      */
-    public function __invoke(Name $name);
+    public function __invoke(Name $from, Name $to, NamespaceContext $context);
 }
