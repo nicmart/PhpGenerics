@@ -103,7 +103,7 @@ class GenericNameTransformerTest extends \PHPUnit_Framework_TestCase
                 $name,
                 $context
             ),
-            RelativeName::fromString("Foo")
+            FullName::fromString("Foo")
         );
     }
 }

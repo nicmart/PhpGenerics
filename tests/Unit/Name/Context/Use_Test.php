@@ -74,7 +74,7 @@ class Use_Test extends \PHPUnit_Framework_TestCase
         $fullName = FullName::fromString("B\\A\\C");
 
         $this->assertEquals(
-            RelativeName::fromString("B\\A\\C"),
+            $fullName,
             $use->simplify($fullName)
         );
     }

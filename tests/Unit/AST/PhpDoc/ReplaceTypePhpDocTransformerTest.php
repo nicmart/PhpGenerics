@@ -15,6 +15,7 @@ use NicMart\Generics\Name\Assignment\NameAssignmentContext;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use phpDocumentor\Reflection\DocBlock;
 use PhpParser\Comment\Doc;
@@ -38,9 +39,9 @@ class ReplaceTypePhpDocTransformerTest extends \PHPUnit_Framework_TestCase
 
         $nsContext = new NamespaceContext(
             Namespace_::fromString("Ns1\\Ns2"),
-            array(
+            new Uses(array(
                 Use_::fromStrings('C\D\E', 'A')
-            )
+            ))
         );
 
         $compiler = new ReplaceTypePhpDocTransformer(

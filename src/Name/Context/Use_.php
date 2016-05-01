@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
@@ -76,32 +77,36 @@ final class Use_ implements NameSimplifier, NameQualifier
     }
 
     /**
-     * @param RelativeName $relativeName
+     * @param Name $name
      * @return FullName
      */
-    public function qualify(RelativeName $relativeName)
+    public function qualify(Name $name)
     {
-        if (!$relativeName->length()) {
-            return $relativeName->toFullName();
+        if ($name instanceof FullName) {
+            return $name;
         }
 
-        $first = $relativeName->first();
+        if (!$name->length()) {
+            return $name->toFullName();
+        }
+
+        $first = $name->first();
 
         if ($first != $this->alias) {
-            return $relativeName->toFullName();
+            return $name->toFullName();
         }
 
-        return $this->name()->append($relativeName->tail());
+        return $this->name()->append($name->tail());
     }
 
     /**
      * @param FullName $fullName
-     * @return RelativeName
+     * @return Name
      */
     public function simplify(FullName $fullName)
     {
         if (!$this->name->isPrefixOf($fullName)) {
-            return $fullName->toRelative();
+            return $fullName;
         }
 
         return $this->alias->toRelativeName()->append(

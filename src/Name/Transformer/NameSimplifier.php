@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Name\Transformer;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\Name;
 
 /**
  * Interface NameSimplifier
@@ -21,7 +21,7 @@ interface NameSimplifier
 {
     /**
      * @param FullName $fullName
-     * @return RelativeName
+     * @return Name
      */
     public function simplify(FullName $fullName);
 }

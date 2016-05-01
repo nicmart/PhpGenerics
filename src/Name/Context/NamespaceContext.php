@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
@@ -30,14 +31,9 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
     private $namespace;
 
     /**
-     * @var Use_[]
+     * @var Uses
      */
-    private $usesByAliases = array();
-
-    /**
-     * @var Use_[]
-     */
-    private $usesByName = array();
+    private $uses;
 
     /**
      * @return NamespaceContext
@@ -68,56 +64,30 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
     /**
      * NamespaceContext constructor.
      * @param Namespace_ $namespace
-     * @param Use_[] $uses
+     * @param Uses $uses
      */
     public function __construct(
         Namespace_ $namespace,
-        array $uses = array()
+        Uses $uses = null
     ) {
         $this->namespace = $namespace;
-
-        foreach ($uses as $use) {
-            $this->addUse($use);
-        }
+        $this->uses = $uses ?: new Uses(array());
     }
 
     /**
      * @return Namespace_
      */
-    public function getNamespace()
+    public function namespace_()
     {
         return $this->namespace;
     }
 
     /**
-     * @return Use_[]
+     * @return Uses
      */
-    public function getUsesByAliases()
+    public function uses()
     {
-        return $this->usesByAliases;
-    }
-
-    /**
-     * @param SimpleName $alias
-     * @return bool
-     */
-    public function hasUse(SimpleName $alias)
-    {
-        return isset($this->usesByAliases[$alias->toString()]);
-    }
-
-    /**
-     * @param SimpleName $alias
-     * @return Use_
-     * @throws UnderflowException
-     */
-    public function getUse(SimpleName $alias)
-    {
-        if (!$this->hasUse($alias)) {
-            throw new UnderflowException("Undefined use statement for alias $alias");
-        }
-
-        return $this->usesByAliases[$alias->toString()];
+        return $this->uses;
     }
 
     /**
@@ -149,8 +119,7 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
     public function withUse(Use_ $use)
     {
         $new = clone $this;
-
-        $new->addUse($use);
+        $new->uses = $this->uses->withUse($use);
 
         return $new;
     }
@@ -185,44 +154,35 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
     }
 
     /**
-     * @param RelativeName $relativeName
+     * @param Name $name
      * @return FullName
-     * @throws \UnderflowException
      */
-    public function qualify(RelativeName $relativeName)
+    public function qualify(Name $name)
     {
-        if ($relativeName->isRoot()) {
-            return $relativeName->toFullName();
+        if ($name instanceof FullName) {
+            return $name;
         }
 
-        $first = $relativeName->first();
-
-        if ($this->hasUse($first)) {
-            return $this->getUse($first)->qualify($relativeName);
+        if ($name->isRoot()) {
+            return $name->toFullName();
         }
 
-        return $this->namespace->qualify($relativeName);
+        $first = $name->first();
+
+        if ($this->uses->hasUse($first)) {
+            return $this->uses->getUse($first)->qualify($name);
+        }
+
+        return $this->namespace->qualify($name);
     }
 
     /**
      * @param FullName $fullName
-     * @return RelativeName
+     * @return Name
      */
     public function simplify(FullName $fullName)
     {
-        $useRelativeName = $fullName->toRelative();
-
-        for (
-            $prefix = $fullName;
-            !$prefix->isRoot();
-            $prefix = $prefix->up()
-        ) {
-            if ($this->hasUseByName($prefix)) {
-                $useRelativeName = $this->getUseByName($prefix)->simplify($fullName);
-                break;
-            }
-        }
-
+        $useRelativeName = $this->uses()->simplify($fullName);
         $nsRelativeName = $this->namespace->simplify($fullName);
 
         return $nsRelativeName->length() <= $useRelativeName->length()

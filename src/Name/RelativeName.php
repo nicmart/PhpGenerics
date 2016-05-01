@@ -17,14 +17,6 @@ namespace NicMart\Generics\Name;
 final class RelativeName extends Name
 {
     /**
-     * @return FullName
-     */
-    public function toFullName()
-    {
-        return new FullName($this->parts());
-    }
-
-    /**
      * @return bool
      */
     public function isFullName()

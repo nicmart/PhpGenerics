@@ -12,7 +12,7 @@ namespace NicMart\Generics\Name\Transformer;
 
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\Name;
 
 /**
  * Interface NameQualifier
@@ -21,8 +21,8 @@ use NicMart\Generics\Name\RelativeName;
 interface NameQualifier
 {
     /**
-     * @param RelativeName $name
+     * @param Name $name
      * @return FullName
      */
-    public function qualify(RelativeName $name);
+    public function qualify(Name $name);
 }

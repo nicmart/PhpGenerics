@@ -280,6 +280,14 @@ abstract class Name
     }
 
     /**
+     * @return FullName
+     */
+    public function toFullName()
+    {
+        return new FullName($this->parts());
+    }
+
+    /**
      * @return bool
      */
     public function isNative()

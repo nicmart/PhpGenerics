@@ -126,7 +126,7 @@ class GenericAutoloader
     {
         $mainPartOfClassName = strstr($className, "«", true);
 
-        foreach ($contextOfCaller->getUsesByAliases() as $use) {
+        foreach ($contextOfCaller->uses()->getUsesByAliases() as $use) {
             $name = $use->name();
 
             $mainPartOfName = strstr(

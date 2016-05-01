@@ -49,10 +49,10 @@ class PhpParserDocToPhpdoc
             return new DocBlock($phpdocText);
         }
 
-        $namespace = $namespaceContext->getNamespace()->toString();
+        $namespace = $namespaceContext->namespace_()->toString();
 
         $aliases = array();
-        foreach ($namespaceContext->getUsesByAliases() as $alias => $use) {
+        foreach ($namespaceContext->uses()->getUsesByAliases() as $alias => $use) {
             $aliases[$use->alias()->toString()] = $use->name()->toString();
         }
 

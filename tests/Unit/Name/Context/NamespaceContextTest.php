@@ -10,6 +10,7 @@ namespace NicMart\Generics\Name\Context;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\NameTestCase;
 use NicMart\Generics\Name\RelativeName;
 
@@ -18,12 +19,12 @@ class NamespaceContextTest extends NameTestCase
     /**
      * @test
      * @dataProvider data
-     * @param RelativeName $relativeName
+     * @param Name $relativeName
      * @param NamespaceContext $context
      * @param FullName $fullName
      */
     public function it_qualifies_type(
-        RelativeName $relativeName,
+        Name $relativeName,
         NamespaceContext $context,
         FullName $fullName
     )
@@ -38,12 +39,12 @@ class NamespaceContextTest extends NameTestCase
      *
      * @test
      * @dataProvider data
-     * @param RelativeName $relativeName
+     * @param Name $relativeName
      * @param NamespaceContext $context
      * @param FullName $fullName
      */
     public function it_simplifies(
-        RelativeName $relativeName,
+        Name $relativeName,
         NamespaceContext $context,
         FullName $fullName
     )

@@ -23,6 +23,7 @@ use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransforme
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
@@ -149,10 +150,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
             }
         }
 
-        $usesSimplifier = new NamespaceContext(
-            Namespace_::globalNamespace(),
-            $uses
-        );
+        $usesSimplifier = new Uses($uses);
 
         $traverser2->addVisitor(
             new PhpParserVisitorAdapter(new AddUsesVisitor($uses))
