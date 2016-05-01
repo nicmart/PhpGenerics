@@ -28,9 +28,17 @@ class AddUsesVisitorTest extends \PHPUnit_Framework_TestCase
             Use_::fromStrings("Ns1\\Class2", "Alias"),
         )));
 
-        $ns = $nodeFactory->namespace("NS1\\NS2")->getNode();
+        $ns = $nodeFactory->namespace("NS1\\NS2")->addStmts(array(
+            $nodeFactory->use("Ns1\\Class1")->getNode(),
+            $nodeFactory->class("boh")->getNode()
+        ))->getNode();
 
         $visitor->enterNode($ns);
+
+        $this->assertCount(
+            3,
+            $ns->stmts
+        );
 
         $this->assertEquals(
             $nodeFactory->use("Ns1\\Class1")->getNode(),
@@ -40,6 +48,11 @@ class AddUsesVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             $nodeFactory->use("Ns1\\Class2")->as("Alias")->getNode(),
             $ns->stmts[1]
+        );
+
+        $this->assertEquals(
+            $nodeFactory->class("boh")->getNode(),
+            $ns->stmts[2]
         );
     }
 }

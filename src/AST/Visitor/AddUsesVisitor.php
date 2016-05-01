@@ -49,10 +49,24 @@ class AddUsesVisitor implements Visitor
         }
 
         $children =& $node->stmts;
+        $uses = $this->uses;
+
+        foreach ($children as $i => $node) {
+            if (!$node instanceof Node\Stmt\Use_) {
+                $children = array_slice($children, $i);
+                break;
+            }
+
+            foreach ($node->uses as $use) {
+                $uses = $uses->withUse(
+                    Use_::fromStrings($use->name, $use->alias)
+                );
+            }
+        }
 
         $usesNodes = array();
 
-        foreach ($this->uses->getUsesByAliases() as $use) {
+        foreach ($uses->getUsesByAliases() as $use) {
             $usesNodes[] = $this->getUseNode($use);
         }
 

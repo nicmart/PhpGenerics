@@ -128,7 +128,7 @@ final class Uses implements NameSimplifier
 
     /**
      * @param Use_ $use
-     * @return NamespaceContext
+     * @return Uses
      */
     public function withUse(Use_ $use)
     {

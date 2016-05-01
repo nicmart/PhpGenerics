@@ -17,7 +17,8 @@ use NicMart\Generics\Example\Option\None«Lexer»;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Example\Func\Function1«T1·T2»;
 use NicMart\Generics\Variable\T;
-use NicMart\Generics\Example\Func\Function1«FullName·RelativeName»;
+use NicMart\Generics\Example\Func\Function1«Function1«int·string»·int»;
+use NicMart\Generics\Example\Func\Function1«int·string»;
 use NicMart\Generics\Example\Func\Function1«T·T»;
 use NicMart\Generics\Example\Func\Endofunc«T»;
 use NicMart\Generics\Example\Func\Endofunc«Lexer»;
@@ -68,7 +69,7 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
     public function it_autoloads()
     {
         $a = new Some«stdClass»(new stdClass);
-        /*$b = $a->getOrElse(new stdClass);
+        $b = $a->getOrElse(new stdClass);
 
         $c = new Some«Lexer»(new Lexer());
         $c->type();
@@ -86,6 +87,12 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $id = new Function1«T1·T2»(function ($x) { return $x; });
 
-        $endo = new Endofunc«Lexer»(function () {});*/
+        $endo = new Endofunc«Lexer»(function () {});
+
+        $h = new Function1«Function1«int·string»·int»(function () {});
+        $h->__invoke(new Function1«int·string»(function ($x) {
+            return (string) $x;
+        }));
+
     }
 }

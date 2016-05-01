@@ -20,6 +20,7 @@ use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\ChainNodeTransformer;
+use NicMart\Generics\Infrastructure\PhpParser\Transformer\DefaultNodeTransformer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransformer;
 use NicMart\Generics\Name\Context\Namespace_;
@@ -102,78 +103,18 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
         GenericName $generic,
         array $typeParameters
     ) {
-        $typeUsageAssignment = $generic->assignments(
-            $typeParameters,
-            $qualifier
-        );
-
-        $typeDefAssignments = $generic->simpleAssignments($typeParameters);
-
-        $uses = new Uses();
-
-        $genericCollector = function (
-            Name $fromGeneric,
-            Name $toGeneric,
-            NamespaceContext $context
-        ) use (&$uses) {
-            $fullname = $context->qualify($fromGeneric);
-            $uses = $uses->withUse(new Use_($fullname));
-        };
-
-        $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
-
-        $typeUsageTransformer = new ChainNameTransformer(array(
-            $typeUsageTransformer,
-            new ListenerNameTransformer(
-                new GenericNameTransformer(
-                    $typeUsageAssignment,
-                    new AngleQuotedGenericNameFactory()
-                ),
-                $genericCollector
-            )
-        ));
-
-        $nodeTransformer1 = TraverserNodeTransformer::fromVisitors(array(
-            $this->namespaceContextVisitor,
-            new TypeUsageTransformerVisitor($typeUsageTransformer),
-            new TypeDefinitionTransformerVisitor($typeDefAssignments),
-            new PhpDocTransformerVisitor(
-                new ReplaceTypePhpDocTransformer(
-                    $typeUsageTransformer,
-                    $this->phpParserDocToPhpdoc,
-                    $this->phpDocSerializer
-                )
-            )
-        ));
-
-
-        foreach ($typeParameters as $typeParameter) {
-            if (!$typeParameter->isNative()) {
-                $uses = $uses->withUse(new Use_($typeParameter));
-            }
-        }
-
-        $nodeTransformer2 = TraverserNodeTransformer::fromVisitors(array(
-            new AddUsesVisitor($uses),
-            $this->namespaceContextVisitor,
-            new TypeUsageTransformerVisitor(
-                new SimplifierNameTransformer($uses)
-            ),
-            new PhpDocTransformerVisitor(
-                new ReplaceTypePhpDocTransformer(
-                    new SimplifierNameTransformer($uses),
-                    $this->phpParserDocToPhpdoc,
-                    $this->phpDocSerializer
-                )
-            )
-        ));
-
         return new PhpParserSourceTransformer(
             $this->phpParser,
-            new ChainNodeTransformer(array(
-                $nodeTransformer1,
-                $nodeTransformer2
-            )),
+            new DefaultNodeTransformer(
+                $this->phpParser,
+                $this->phpPrettyPrinter,
+                $this->phpParserDocToPhpdoc,
+                $this->phpDocSerializer,
+                $this->namespaceContextVisitor,
+                $qualifier,
+                $generic,
+                $typeParameters
+            ),
             $this->phpPrettyPrinter
         );
     }
