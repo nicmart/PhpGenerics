@@ -45,6 +45,16 @@ class NameTestCase extends PHPUnit_Framework_TestCase
                 FullName::fromString("A\\B\\T")
             ),
             array(
+                RelativeName::fromString("Option«stdClass»"),
+                new NamespaceContext(
+                    Namespace_::fromString('NicMart\Generics\Example\Option'),
+                    array(
+                        Use_::fromStrings("A\\B\\T")
+                    )
+                ),
+                FullName::fromString('NicMart\Generics\Example\Option\Option«stdClass»')
+            ),
+            array(
                 RelativeName::fromString("T"),
                 new NamespaceContext(
                     Namespace_::fromString("Ns1\\Ns2"),

@@ -42,7 +42,7 @@ class NamespaceContextTest extends NameTestCase
      * @param NamespaceContext $context
      * @param FullName $fullName
      */
-    public function it_transforms_to_relative_type(
+    public function it_simplifies(
         RelativeName $relativeName,
         NamespaceContext $context,
         FullName $fullName

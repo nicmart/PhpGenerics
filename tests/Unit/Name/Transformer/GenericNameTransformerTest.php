@@ -13,6 +13,7 @@ namespace NicMart\Generics\Name\Transformer;
 
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\RelativeName;
 
 /**
  * Class GenericNameTransformerTest
@@ -102,7 +103,7 @@ class GenericNameTransformerTest extends \PHPUnit_Framework_TestCase
                 $name,
                 $context
             ),
-            FullName::fromString("Foo")
+            RelativeName::fromString("Foo")
         );
     }
 }

@@ -16,6 +16,9 @@ use NicMart\Generics\Example\Option\None«T»;
 use NicMart\Generics\Example\Option\None«Lexer»;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Example\Func\Function1«T1·T2»;
+use NicMart\Generics\Variable\T;
+use NicMart\Generics\Example\Func\Function1«FullName·RelativeName»;
+use NicMart\Generics\Example\Func\Function1«T·T»;
 use NicMart\Generics\Example\Func\Function1«RelativeName·FullName»;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
@@ -28,6 +31,10 @@ use NicMart\Generics\Example\Option\Some«string»;
 use NicMart\Generics\Example\Option\Some«Some«string»»;
 use NicMart\Generics\Example\Option\Some«array»;
 use stdClass;
+
+GenericAutoloaderFactory::registerAutoloader(
+    __DIR__ . "/../../../cache/generics"
+);
 
 /**
  * Class CodeTransformationTest
@@ -58,10 +65,6 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
      */
     public function it_autoloads()
     {
-        GenericAutoloaderFactory::registerAutoloader(
-            __DIR__ . "/../../../cache/generics"
-        );
-
         $a = new Some«stdClass»(new stdClass);
         $b = $a->getOrElse(new stdClass);
 
@@ -78,5 +81,9 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
         $f = new Some«Some«string»»($d);
         $g = new None«Lexer»();
         $e = new Some«array»(array(1, 2, 3));
+
+        $id = new Function1«T1·T2»(function ($x) { return $x; });
     }
 }
+
+//class Endofunc«T» extends Function1«T·T» {}

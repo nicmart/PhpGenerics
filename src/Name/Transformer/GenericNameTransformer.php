@@ -70,6 +70,6 @@ class GenericNameTransformer implements NameTransformer
             );
         }
 
-        return $genericName->apply($typeValues);
+        return $namespaceContext->simplify($genericName->apply($typeValues));
     }
 }

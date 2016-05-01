@@ -54,7 +54,7 @@ class SimplifierNameTransformer implements NameTransformer
 
         $simplified = $this->nameSimplifier->simplify($fullName);
 
-        if ($simplified->parts() == $name->parts()) {
+        if ($simplified->parts() == $fullName->parts()) {
             return $name;
         }
 

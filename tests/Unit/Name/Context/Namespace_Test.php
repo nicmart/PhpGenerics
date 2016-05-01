@@ -57,5 +57,10 @@ class Namespace_Test extends \PHPUnit_Framework_TestCase
             RelativeName::fromString("C\\D"),
             $ns->simplify($name)
         );
+
+        $this->assertEquals(
+            RelativeName::fromString("C\\D«T»"),
+            $ns->simplify(FullName::fromString("A\\B\\C\\D«T»"))
+        );
     }
 }
