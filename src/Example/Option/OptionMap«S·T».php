@@ -28,11 +28,24 @@ class OptionMap«S·T»
      */
     public static function map(Option«S» $option, $callable)
     {
-        $a = new None«S»();
         if ($option instanceof None«S») {
             return new None«T»();
         }
 
         return new Some«T»($callable($option->get()));
+    }
+
+    /**
+     * @param Option«S» $option
+     * @param $callable
+     * @return Option«T»
+     */
+    public static function flatMap(Option«S» $option, $callable)
+    {
+        if ($option instanceof None«S») {
+            return new None«T»();
+        }
+
+        return $callable($option->get());
     }
 }
