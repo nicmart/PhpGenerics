@@ -17,9 +17,14 @@ use NicMart\Generics\Example\Option\None«Lexer»;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Example\Func\Function1«T1·T2»;
 use NicMart\Generics\Variable\T;
+use NicMart\Generics\Variable\T1;
+use NicMart\Generics\Variable\T2;
 use NicMart\Generics\Example\Func\Function1«Function1«int·string»·int»;
 use NicMart\Generics\Example\Func\Function1«int·string»;
 use NicMart\Generics\Example\Func\Function1«T·T»;
+use NicMart\Generics\Example\Func\Function1«int·int»;
+use NicMart\Generics\Example\Func\Function2«T1·T2·T»;
+use NicMart\Generics\Example\Func\Function2«Function1«T1·T2»·T1·T2»;
 use NicMart\Generics\Example\Func\Endofunc«T»;
 use NicMart\Generics\Example\Func\Endofunc«Lexer»;
 use NicMart\Generics\Example\Func\Function1«RelativeName·FullName»;
@@ -33,6 +38,10 @@ use NicMart\Generics\Example\Option\Some«Lexer»;
 use NicMart\Generics\Example\Option\Some«string»;
 use NicMart\Generics\Example\Option\Some«Some«string»»;
 use NicMart\Generics\Example\Option\Some«array»;
+
+use NicMart\Generics\Example\Func\Apply«A·B»;
+use NicMart\Generics\Example\Func\Apply«Lexer·Lexer»;
+use NicMart\Generics\Example\Func\Apply«int·int»;
 use stdClass;
 
 GenericAutoloaderFactory::registerAutoloader(
@@ -89,10 +98,14 @@ class CodeTransformationTest extends \PHPUnit_Framework_TestCase
 
         $endo = new Endofunc«Lexer»(function () {});
 
+        //new Function2«Function1«T1·T2»·T1·T2»(function () {});
+
         $h = new Function1«Function1«int·string»·int»(function () {});
         $h->__invoke(new Function1«int·string»(function ($x) {
             return (string) $x;
         }));
 
+        $apply = new Apply«int·int»();
+        $apply(new Function1«int·int»(function ($x) { return $x; }), 2);
     }
 }
