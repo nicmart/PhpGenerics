@@ -14,6 +14,24 @@ use NicMart\Generics\Variable\T;
 
 class None«T» implements Option«T»
 {
+    /**
+     * @return None«T»
+     */
+    public static function instance()
+    {
+        static $instance;
+
+        if (!isset($instance)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * @param T $else
+     * @return T
+     */
     public function getOrElse(T $else)
     {
         return $else;

@@ -49,7 +49,7 @@ class AddUsesVisitor implements Visitor
         }
 
         $children =& $node->stmts;
-        $uses = $this->uses;
+        $uses = new Uses();
 
         foreach ($children as $i => $node) {
             if (!$node instanceof Node\Stmt\Use_) {
@@ -63,6 +63,8 @@ class AddUsesVisitor implements Visitor
                 );
             }
         }
+
+        $uses = $uses->merge($this->uses);
 
         $usesNodes = array();
 
