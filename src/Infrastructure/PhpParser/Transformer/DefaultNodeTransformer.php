@@ -136,14 +136,14 @@ class DefaultNodeTransformer implements NodeTransformer
         $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
 
         $typeUsageTransformer = new ChainNameTransformer(array(
-            $typeUsageTransformer,
             new ListenerNameTransformer(
                 new GenericNameTransformer(
                     $typeUsageAssignment,
                     new AngleQuotedGenericNameFactory()
                 ),
                 $genericCollector
-            )
+            ),
+            $typeUsageTransformer
         ));
 
         return TraverserNodeTransformer::fromVisitors(array(
