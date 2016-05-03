@@ -43,4 +43,12 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
     {
         include __DIR__ . "/files/Nested.php";
     }
+
+    /**
+     * @test
+     */
+    public function it_works_with_nested_functions()
+    {
+        include __DIR__ . "/files/NestedFunction.php";
+    }
 }

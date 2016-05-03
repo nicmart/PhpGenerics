@@ -39,6 +39,7 @@ $optionRelative = OptionMap«FullName·RelativeName»::map(
     $map
 );
 
+
 $this->assertEquals(
     $optionRelative->getOrElse(RelativeName::fromString("boo")),
     RelativeName::fromString("foo")

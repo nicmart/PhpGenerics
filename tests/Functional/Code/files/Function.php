@@ -40,4 +40,10 @@ $this->assertEquals(
     FullName::fromString("a\\b")
 );
 
+$apply = new Apply«FullName·RelativeName»();
+
+$this->assertEquals(
+    $name->toRelative(),
+    $apply($f, $name)
+);
 

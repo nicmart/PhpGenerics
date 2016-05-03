@@ -44,11 +44,11 @@ class GenericNameTransformerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $innerTransformer = $this->getMock(
-            '\NicMart\Generics\Name\Transformer\FullNameTransformer'
+            '\NicMart\Generics\Name\Transformer\NameTransformer'
         );
         $innerTransformer
             ->expects($this->exactly(2))
-            ->method("transform")
+            ->method("transformName")
             ->withConsecutive(
                 array(
                     FullName::fromString("T1")

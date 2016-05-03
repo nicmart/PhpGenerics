@@ -124,27 +124,32 @@ class DefaultNodeTransformer implements NodeTransformer
             $this->typeParameters
         );
 
-        $genericCollector = function (
-            Name $fromGeneric,
-            Name $toGeneric,
+        $transformationsCollector = function (
+            Name $from,
+            Name $to,
             NamespaceContext $context
         ) use (&$uses) {
-            $fullname = $context->qualify($fromGeneric);
-            $uses = $uses->withUse(new Use_($fullname));
+            // @todo refactor
+            if (strpos($from->toString(), "«") !== false) {
+                $uses = $uses
+                    ->withUse(new Use_($context->qualify($from)))
+                    ->withUse(new Use_($context->qualify($to)))
+                ;
+            }
         };
 
         $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
 
-        $typeUsageTransformer = new ChainNameTransformer(array(
-            new ListenerNameTransformer(
+        $typeUsageTransformer = new ListenerNameTransformer(
+            new ChainNameTransformer(array(
                 new GenericNameTransformer(
-                    $typeUsageAssignment,
+                    $typeUsageTransformer,
                     new AngleQuotedGenericNameFactory()
                 ),
-                $genericCollector
-            ),
-            $typeUsageTransformer
-        ));
+                $typeUsageTransformer
+            )),
+            $transformationsCollector
+        );
 
         return TraverserNodeTransformer::fromVisitors(array(
             $this->namespaceContextVisitor,

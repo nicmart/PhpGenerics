@@ -16,12 +16,16 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Name;
 
+/**
+ * Class GenericNameTransformer
+ * @package NicMart\Generics\Name\Transformer
+ */
 class GenericNameTransformer implements NameTransformer
 {
     /**
      * @var FullNameTransformer
      */
-    private $innerFullNameTransformer;
+    private $innerNameTransformer;
 
     /**
      * @var GenericNameFactory
@@ -30,14 +34,14 @@ class GenericNameTransformer implements NameTransformer
 
     /**
      * GenericNameTransformer constructor.
-     * @param FullNameTransformer $innerFullNameTransformer
+     * @param NameTransformer $innerNameTransformer
      * @param GenericNameFactory $genericNameFactory
      */
     public function __construct(
-        FullNameTransformer $innerFullNameTransformer,
+        NameTransformer $innerNameTransformer,
         GenericNameFactory $genericNameFactory
     ) {
-        $this->innerFullNameTransformer = $innerFullNameTransformer;
+        $this->innerNameTransformer = $innerNameTransformer;
         $this->genericNameFactory = $genericNameFactory;
     }
 
@@ -65,8 +69,9 @@ class GenericNameTransformer implements NameTransformer
         $typeValues = array();
 
         foreach ($typeVars as $typeVar) {
-            $typeValues[] = $this->innerFullNameTransformer->transform(
-                $typeVar
+            $typeValues[] = $this->innerNameTransformer->transformName(
+                $typeVar,
+                $namespaceContext
             );
         }
 
