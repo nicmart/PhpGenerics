@@ -27,4 +27,12 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
     {
         include __DIR__ . "/files/Option.php";
     }
+
+    /**
+     * @test
+     */
+    public function it_works_with_functions()
+    {
+        include __DIR__ . "/files/Function.php";
+    }
 }

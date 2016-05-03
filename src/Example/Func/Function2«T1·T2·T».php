@@ -12,26 +12,18 @@ namespace NicMart\Generics\Example\Func;
 
 use NicMart\Generics\Variable\T1;
 use NicMart\Generics\Variable\T2;
+use NicMart\Generics\Variable\T;
 
-class Function2«T1·T2·T»
+/**
+ * Interface Function2«T1·T2·T»
+ * @package NicMart\Generics\Example\Func
+ */
+interface Function2«T1·T2·T»
 {
-    private $callable;
-
-    /**
-     * @param $callable
-     */
-    public function __construct($callable)
-    {
-        $this->callable = $callable;
-    }
-
     /**
      * @param T1 $x
      * @param T2 $y
      * @return T
      */
-    public function __invoke(T1 $x, T2 $y)
-    {
-        return call_user_func($this->callable, $x, $y);
-    }
+    public function __invoke(T1 $x, T2 $y);
 }
