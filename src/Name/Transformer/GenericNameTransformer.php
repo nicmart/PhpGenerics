@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Name\Transformer;
 
 
+use Doctrine\Instantiator\Exception\UnexpectedValueException;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
@@ -31,6 +32,36 @@ class GenericNameTransformer implements NameTransformer
      * @var GenericNameFactory
      */
     private $genericNameFactory;
+
+    /**
+     * Accepts a factory callable that returns the NameTransformer
+     *
+     * The factory will receive THIS instance as argument, making possible
+     * self-recursive definitions of the transformation, maintaining
+     * immutability.
+     *
+     * @param callable $factory
+     * @param GenericNameFactory $genericNameFactory
+     * @return GenericNameTransformer
+     */
+    public static function fromNameTransformerFactory(
+        $factory,
+        GenericNameFactory $genericNameFactory
+    ) {
+        if (!is_callable($factory)) {
+            throw new UnexpectedValueException(
+                "NameTransformer factory must be a valid php callable"
+            );
+        }
+
+        $dummyTransformer = new ChainNameTransformer(array());
+
+        $transformer = new self($dummyTransformer, $genericNameFactory);
+
+        $transformer->innerNameTransformer = $factory($transformer);
+
+        return $transformer;
+    }
 
     /**
      * GenericNameTransformer constructor.

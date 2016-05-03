@@ -138,16 +138,20 @@ class DefaultNodeTransformer implements NodeTransformer
             }
         };
 
-        $typeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
+        $simpleTypeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
 
         $typeUsageTransformer = new ListenerNameTransformer(
-            new ChainNameTransformer(array(
-                new GenericNameTransformer(
-                    $typeUsageTransformer,
-                    new AngleQuotedGenericNameFactory()
-                ),
-                $typeUsageTransformer
-            )),
+            ChainNameTransformer::fromNameTransformerFactory(
+                function (ChainNameTransformer $chain) use ($simpleTypeUsageTransformer) {
+                    return array(
+                        new GenericNameTransformer(
+                            $chain,
+                            new AngleQuotedGenericNameFactory()
+                        ),
+                        $simpleTypeUsageTransformer
+                    );
+                }
+            ),
             $transformationsCollector
         );
 

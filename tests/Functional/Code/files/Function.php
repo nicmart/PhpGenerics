@@ -20,6 +20,9 @@ use NicMart\Generics\Example\Func\CallableFunction1«FullName·RelativeName»;
 use NicMart\Generics\Example\Func\Apply«T1·T2»;
 use NicMart\Generics\Example\Func\Apply«FullName·RelativeName»;
 
+use NicMart\Generics\Example\Func\CallableEndofunc«T»;
+use NicMart\Generics\Example\Func\CallableEndofunc«FullName»;
+
 $f = new CallableFunction1«FullName·RelativeName»(function (FullName $name) {
     return $name->toRelative();
 });
@@ -46,4 +49,8 @@ $this->assertEquals(
     $name->toRelative(),
     $apply($f, $name)
 );
+
+// Enfofunc
+
+$endo = new CallableEndofunc«FullName»(function (FullName $x) { return $x; });
 

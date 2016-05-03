@@ -8,3 +8,6 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
+use NicMart\Generics\Example\Func\Function1«T1·T2»;
+
+// A function that returns
