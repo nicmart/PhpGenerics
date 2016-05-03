@@ -17,6 +17,9 @@ use NicMart\Generics\Example\Func\CallableFunction2«FullName·FullName·FullNam
 use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
 use NicMart\Generics\Example\Func\CallableFunction1«FullName·RelativeName»;
 
+use NicMart\Generics\Example\Func\Apply«T1·T2»;
+use NicMart\Generics\Example\Func\Apply«FullName·RelativeName»;
+
 $f = new CallableFunction1«FullName·RelativeName»(function (FullName $name) {
     return $name->toRelative();
 });
@@ -36,3 +39,6 @@ $this->assertEquals(
     $f2(Fullname::fromString("a"), FullName::fromString("b")),
     FullName::fromString("a\\b")
 );
+
+$apply = new Apply«FullName·RelativeName»();
+
