@@ -47,3 +47,16 @@ class GenericFunctionalTestCase extends \PHPUnit_Framework_TestCase
         include $path;
     }
 }
+
+abstract class Test {
+    public function name()
+    {
+        return get_class($this);
+    }
+}
+
+class A extends Test {}
+class B extends Test {}
+class C extends Test {}
+class D extends Test {}
+class E extends Test {}

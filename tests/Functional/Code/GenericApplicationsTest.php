@@ -17,7 +17,7 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
      */
     public function it_works_with_optional_ops()
     {
-        include __DIR__ . "/files/OptionOps.php";
+        //include __DIR__ . "/files/OptionOps.php";
     }
 
     /**
@@ -25,7 +25,7 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
      */
     public function it_works_with_optionals()
     {
-        include __DIR__ . "/files/Option.php";
+        //include __DIR__ . "/files/Option.php";
     }
 
     /**
@@ -33,7 +33,7 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
      */
     public function it_works_with_functions()
     {
-        include __DIR__ . "/files/Function.php";
+        //include __DIR__ . "/files/Function.php";
     }
 
     /**
@@ -41,7 +41,7 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
      */
     public function it_works_with_nested_types()
     {
-        include __DIR__ . "/files/Nested.php";
+        //include __DIR__ . "/files/Nested.php";
     }
 
     /**

@@ -333,8 +333,6 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             ->getNode()
         ;
         $n->extends = new Name\FullyQualified("A\\B");
-        $prettyPrinter = new Standard();
-        var_dump($prettyPrinter->prettyPrint(array($n)));
 
         return array(
             array(

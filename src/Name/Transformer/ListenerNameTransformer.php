@@ -29,14 +29,22 @@ class ListenerNameTransformer implements NameTransformer
      * @var
      */
     private $listener;
+    /**
+     * @var bool
+     */
+    private $onlyIfDifferent;
 
     /**
      * ListenerNameTransformer constructor.
      * @param NameTransformer $nameTransformer
      * @param callable $listener
+     * @param bool $onlyIfDifferent
      */
-    public function __construct(NameTransformer $nameTransformer, $listener)
-    {
+    public function __construct(
+        NameTransformer $nameTransformer,
+        $listener,
+        $onlyIfDifferent = true
+    ) {
         if (!is_callable($listener)) {
             throw new InvalidArgumentException(
                 "Listener must be a valid callable"
@@ -45,6 +53,7 @@ class ListenerNameTransformer implements NameTransformer
 
         $this->listener = $listener;
         $this->nameTransformer = $nameTransformer;
+        $this->onlyIfDifferent = $onlyIfDifferent;
     }
 
     /**
@@ -61,7 +70,7 @@ class ListenerNameTransformer implements NameTransformer
             $namespaceContext
         );
 
-        if ($name != $transformed) {
+        if (!$this->onlyIfDifferent || $name != $transformed) {
             call_user_func(
                 $this->listener,
                 $name,

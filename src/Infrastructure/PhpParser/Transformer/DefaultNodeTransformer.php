@@ -25,6 +25,7 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Name;
+use NicMart\Generics\Name\Transformer\AutoloadNameTransformer;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
 use NicMart\Generics\Name\Transformer\GenericNameTransformer;
