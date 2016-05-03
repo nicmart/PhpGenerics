@@ -56,14 +56,7 @@ class DefaultNodeTransformer implements NodeTransformer
      * @var FullName[]
      */
     private $typeParameters;
-    /**
-     * @var Parser
-     */
-    private $phpParser;
-    /**
-     * @var Standard
-     */
-    private $phpPrettyPrinter;
+
     /**
      * @var PhpParserDocToPhpdoc
      */
@@ -79,8 +72,6 @@ class DefaultNodeTransformer implements NodeTransformer
 
     /**
      * DefaultNodeTransformer constructor.
-     * @param Parser $phpParser
-     * @param Standard $phpPrettyPrinter
      * @param PhpParserDocToPhpdoc $phpParserDocToPhpdoc
      * @param Serializer $phpDocSerializer
      * @param NamespaceContextVisitor $namespaceContextVisitor
@@ -89,8 +80,6 @@ class DefaultNodeTransformer implements NodeTransformer
      * @param array $typeParameters
      */
     public function __construct(
-        Parser $phpParser,
-        Standard $phpPrettyPrinter,
         PhpParserDocToPhpdoc $phpParserDocToPhpdoc,
         Serializer $phpDocSerializer,
         NamespaceContextVisitor $namespaceContextVisitor,
@@ -101,8 +90,6 @@ class DefaultNodeTransformer implements NodeTransformer
         $this->qualifier = $qualifier;
         $this->generic = $generic;
         $this->typeParameters = $typeParameters;
-        $this->phpParser = $phpParser;
-        $this->phpPrettyPrinter = $phpPrettyPrinter;
         $this->phpParserDocToPhpdoc = $phpParserDocToPhpdoc;
         $this->phpDocSerializer = $phpDocSerializer;
         $this->namespaceContextVisitor = $namespaceContextVisitor;

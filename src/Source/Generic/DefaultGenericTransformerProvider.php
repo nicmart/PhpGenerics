@@ -106,8 +106,6 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
         return new PhpParserSourceTransformer(
             $this->phpParser,
             new DefaultNodeTransformer(
-                $this->phpParser,
-                $this->phpPrettyPrinter,
                 $this->phpParserDocToPhpdoc,
                 $this->phpDocSerializer,
                 $this->namespaceContextVisitor,
