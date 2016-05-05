@@ -104,9 +104,9 @@ class DefaultNodeTransformer implements NodeTransformer
     {
         $uses = new Uses();
 
-        $nodes = $this->transformer1($uses)->transformNodes($nodes);
-
-        return $this->transformer2($uses)->transformNodes($nodes);
+        $nodes = $this->typeReplacer($uses)->transformNodes($nodes);
+        
+        return $this->nameSimplifier($uses)->transformNodes($nodes);
     }
 
     /**
@@ -114,7 +114,7 @@ class DefaultNodeTransformer implements NodeTransformer
      *
      * @return TraverserNodeTransformer
      */
-    private function transformer1(Uses &$uses)
+    private function typeReplacer(Uses &$uses)
     {
         $typeUsageAssignment = $this->generic->assignments(
             $this->typeParameters,
@@ -174,7 +174,7 @@ class DefaultNodeTransformer implements NodeTransformer
      * @param Uses $uses
      * @return TraverserNodeTransformer
      */
-    private function transformer2(Uses $uses)
+    private function nameSimplifier(Uses $uses)
     {
         foreach ($this->typeParameters as $typeParameter) {
             if (!$typeParameter->isNative()) {

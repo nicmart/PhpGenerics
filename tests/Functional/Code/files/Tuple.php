@@ -31,3 +31,14 @@ $this->assertEquals(
     $relative,
     $tuple->_2()
 );
+
+$elements = array();
+
+foreach ($tuple->iterator() as $element) {
+    $elements[] = $element;
+}
+
+$this->assertEquals(
+    array($full, $relative),
+    $elements
+);

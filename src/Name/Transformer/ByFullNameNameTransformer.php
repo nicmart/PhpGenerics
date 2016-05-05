@@ -47,6 +47,11 @@ class ByFullNameNameTransformer implements NameTransformer
             : $name
         ;
 
-        return $this->fullNameTransformer->transform($fullName);
+        $transformedFullName = $this->fullNameTransformer->transform($fullName);
+
+        return $transformedFullName == $fullName
+            ? $name
+            : $transformedFullName
+        ;
     }
 }
