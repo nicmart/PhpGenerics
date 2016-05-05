@@ -13,6 +13,7 @@ namespace NicMart\Generics\Infrastructure\PhpParser\Transformer;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
 use NicMart\Generics\AST\PhpDoc\ReplaceTypePhpDocTransformer;
+use NicMart\Generics\AST\Transformer\NodeTransformer;
 use NicMart\Generics\AST\Visitor\AddUsesVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
@@ -25,7 +26,6 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Name;
-use NicMart\Generics\Name\Transformer\AutoloadNameTransformer;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
 use NicMart\Generics\Name\Transformer\GenericNameTransformer;
@@ -34,8 +34,6 @@ use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Node;
-use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
 
 /**
  * Class DefaultNodeTransformer
@@ -105,7 +103,7 @@ class DefaultNodeTransformer implements NodeTransformer
         $uses = new Uses();
 
         $nodes = $this->typeReplacer($uses)->transformNodes($nodes);
-        
+
         return $this->nameSimplifier($uses)->transformNodes($nodes);
     }
 
@@ -139,11 +137,15 @@ class DefaultNodeTransformer implements NodeTransformer
             }
         };
 
-        $simpleTypeUsageTransformer = new ByFullNameNameTransformer($typeUsageAssignment);
+        $simpleTypeUsageTransformer = new ByFullNameNameTransformer(
+            $typeUsageAssignment
+        );
 
         $typeUsageTransformer = new ListenerNameTransformer(
             ChainNameTransformer::fromNameTransformerFactory(
-                function (ChainNameTransformer $chain) use ($simpleTypeUsageTransformer) {
+                function (
+                    ChainNameTransformer $chain
+                ) use ($simpleTypeUsageTransformer) {
                     return array(
                         new GenericNameTransformer(
                             $chain,

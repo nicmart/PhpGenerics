@@ -10,7 +10,7 @@
 
 namespace NicMart\Generics\Infrastructure\Source\Transformer;
 
-use NicMart\Generics\Infrastructure\PhpParser\Transformer\NodeTransformer;
+use NicMart\Generics\AST\Transformer\NodeTransformer;
 use NicMart\Generics\Source\Transformer\SourceTransformer;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -29,7 +29,7 @@ class PhpParserSourceTransformer implements SourceTransformer
     private $prettyPrinter;
 
     /**
-     * @var NodeTransformer
+     * @var \NicMart\Generics\Infrastructure\AST\Transformer\NodeTransformer
      */
     private $nodeTransformer;
 

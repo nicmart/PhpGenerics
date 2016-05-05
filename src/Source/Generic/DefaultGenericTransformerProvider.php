@@ -19,7 +19,7 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
-use NicMart\Generics\Infrastructure\PhpParser\Transformer\ChainNodeTransformer;
+use NicMart\Generics\Infrastructure\AST\Transformer\ChainNodeTransformer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\DefaultNodeTransformer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransformer;

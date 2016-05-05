@@ -24,8 +24,8 @@ use NicMart\Generics\Source\Transformer\SourceTransformer;
 interface GenericTransformerProvider
 {
     /**
-     * @param NameQualifier $qualifier
-     * @param GenericName $generic
+     * @param NameQualifier $qualifier This is used to resolve type parameters
+     * @param GenericName $generic 
      * @param FullName[] $typeParameters
      * @return SourceTransformer
      */

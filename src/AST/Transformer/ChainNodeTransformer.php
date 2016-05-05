@@ -8,8 +8,9 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Infrastructure\PhpParser\Transformer;
+namespace NicMart\Generics\Infrastructure\AST\Transformer;
 
+use NicMart\Generics\Infrastructure\AST\Transformer\NodeTransformer;
 use PhpParser\Node;
 
 /**
