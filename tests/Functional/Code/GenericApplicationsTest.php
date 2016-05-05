@@ -55,6 +55,14 @@ class GenericApplicationsTest extends GenericFunctionalTestCase
     /**
      * @test
      */
+    public function it_works_with_predicates()
+    {
+        include __DIR__ . "/files/Predicate.php";
+    }
+
+    /**
+     * @test
+     */
     public function it_works_with_tuples()
     {
         include __DIR__ . "/files/Tuple.php";
