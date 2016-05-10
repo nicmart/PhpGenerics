@@ -29,6 +29,12 @@ class CallableFunction1«T1·T2» implements Function1«T1·T2»
      */
     public function __construct($callable)
     {
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException(
+                "Callable must be a valid callable"
+            );
+        }
+        
         $this->callable = $callable;
     }
 
