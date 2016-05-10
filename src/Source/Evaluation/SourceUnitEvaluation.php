@@ -20,7 +20,7 @@ interface SourceUnitEvaluation
 {
     /**
      * @param SourceUnit $sourceUnit
-     * @return mixed
+     * @return void
      */
     public function evaluate(SourceUnit $sourceUnit);
 }

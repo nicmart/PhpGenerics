@@ -15,7 +15,7 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
-use NicMart\Generics\Source\Compiler\GenericCompiler;
+use NicMart\Generics\Source\Compiler\DefaultGenericCompiler;
 use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
 
 /**
@@ -25,7 +25,7 @@ use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
 class GenericAutoloader
 {
     /**
-     * @var GenericCompiler
+     * @var DefaultGenericCompiler
      */
     private $compiler;
 
@@ -46,13 +46,13 @@ class GenericAutoloader
 
     /**
      * GenericAutoloader constructor.
-     * @param GenericCompiler $compiler
+     * @param DefaultGenericCompiler $compiler
      * @param SourceUnitEvaluation $evaluation
      * @param CallerFilenameResolver $filenameResolver
      * @param NamespaceContextExtractor $namespaceContextExtractor
      */
     public function __construct(
-        GenericCompiler $compiler,
+        DefaultGenericCompiler $compiler,
         SourceUnitEvaluation $evaluation,
         CallerFilenameResolver $filenameResolver,
         NamespaceContextExtractor $namespaceContextExtractor

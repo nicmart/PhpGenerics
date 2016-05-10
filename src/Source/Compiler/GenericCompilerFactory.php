@@ -28,7 +28,7 @@ use PhpParser\Parser;
 class GenericCompilerFactory
 {
     /**
-     * @return GenericCompiler
+     * @return DefaultGenericCompiler
      */
     public static function compiler()
     {
@@ -49,7 +49,7 @@ class GenericCompilerFactory
             $nsVisitor
         );
 
-        return new GenericCompiler(
+        return new DefaultGenericCompiler(
             $sourceResolver,
             $namespaceExtractor,
             $sourceTransformerProvider

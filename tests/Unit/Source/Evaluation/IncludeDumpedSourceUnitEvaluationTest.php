@@ -12,9 +12,10 @@ namespace NicMart\Generics\Source\Evaluation;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
 use NicMart\Generics\Source\SourceUnit;
 
-class Psr0SourceUnitEvaluationTest extends \PHPUnit_Framework_TestCase
+class IncludeDumpedSourceUnitEvaluationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -23,7 +24,9 @@ class Psr0SourceUnitEvaluationTest extends \PHPUnit_Framework_TestCase
     {
         $path = "/tmp/generics";
 
-        $evaluation = new Psr0SourceUnitEvaluation($path);
+        $evaluation = new IncludeDumpedSourceUnitEvaluation(
+            new Psr0SourceUnitDumper($path)
+        );
 
         $sourceUnit = new SourceUnit(
             FullName::fromString("Ns1\\Ns2\\Class1"),
@@ -32,12 +35,16 @@ class Psr0SourceUnitEvaluationTest extends \PHPUnit_Framework_TestCase
             '
         );
 
+        $filename = $path . "/Ns1/Ns2/Class1.php";
+
         $evaluation->evaluate($sourceUnit);
 
-        $this->assertFileExists($path . "/Ns1/Ns2/Class1.php");
+        $this->assertFileExists($filename);
 
         $this->assertTrue(
             defined('__GENERICS_INCLUDED')
         );
+
+        unlink($filename);
     }
 }

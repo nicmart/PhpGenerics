@@ -1,24 +1,18 @@
 <?php
 /**
- * This file is part of php-generics
+ * @author Nicolò Martini - <nicolo@martini.io>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @author Nicolò Martini <nicolo@martini.io>
+ * Created on 11/05/2016, 13:39
+ * Copyright (C) DXI Ltd
  */
 
-namespace NicMart\Generics\Source\Evaluation;
+namespace NicMart\Generics\Source\Dumper;
 
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Source\SourceUnit;
 
-/**
- * Class Psr0SourceUnitEvaluation
- * @package NicMart\Generics\Source\Evaluation
- */
-class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
+class Psr0SourceUnitDumper implements SourceUnitDumper
 {
     /**
      * @var
@@ -26,7 +20,6 @@ class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
     private $folder;
 
     /**
-     * Psr0SourceUnitEvaluation constructor.
      * @param string $folder
      */
     public function __construct($folder)
@@ -36,9 +29,9 @@ class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
 
     /**
      * @param SourceUnit $sourceUnit
-     * @return void
+     * @return DumpResult
      */
-    public function evaluate(SourceUnit $sourceUnit)
+    public function dump(SourceUnit $sourceUnit)
     {
         $name = $sourceUnit->name();
         $filePath = $this->filePath($name);
@@ -48,7 +41,10 @@ class Psr0SourceUnitEvaluation implements SourceUnitEvaluation
             "<?php\n\n" . $sourceUnit->source()
         );
 
-        include $filePath;
+        return new DumpResult(
+            $filePath,
+            $sourceUnit
+        );
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Nicolò Martini - <nicolo.martini@dxi.eu>
+ * @author Nicolò Martini - <nicolo@martini.io>
  *
  * Created on 18/04/2016, 17:14
  * Copyright (C) DXI Ltd

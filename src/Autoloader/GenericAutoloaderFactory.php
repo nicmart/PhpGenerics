@@ -14,7 +14,8 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\Source\CallerFilenameResolver;
 use NicMart\Generics\Source\Compiler\GenericCompilerFactory;
-use NicMart\Generics\Source\Evaluation\Psr0SourceUnitEvaluation;
+use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
+use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 
@@ -24,7 +25,9 @@ class GenericAutoloaderFactory
     {
         $genericAutoloader = new GenericAutoloader(
             GenericCompilerFactory::compiler(),
-            new Psr0SourceUnitEvaluation($baseDir),
+            new IncludeDumpedSourceUnitEvaluation(
+                new Psr0SourceUnitDumper($baseDir)
+            ),
             new CallerFilenameResolver(),
             new PhpParserNamespaceContextExtractor(
                 new Parser(new Lexer()),
