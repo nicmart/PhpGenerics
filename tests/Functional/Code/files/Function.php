@@ -23,6 +23,10 @@ use NicMart\Generics\Example\Func\Apply«FullName·RelativeName»;
 use NicMart\Generics\Example\Func\CallableEndofunc«T»;
 use NicMart\Generics\Example\Func\CallableEndofunc«FullName»;
 
+use NicMart\Generics\Example\Func\Functions«T»;
+use NicMart\Generics\Example\Func\Functions«FullName»;
+use NicMart\Generics\Example\Func\Functions«RelativeName»;
+
 $f = new CallableFunction1«FullName·RelativeName»(function (FullName $name) {
     return $name->toRelative();
 });
@@ -53,4 +57,20 @@ $this->assertEquals(
 // Enfofunc
 
 $endo = new CallableEndofunc«FullName»(function (FullName $x) { return $x; });
+
+// Identity
+
+$idOfFull = Functions«FullName»::identity();
+
+$this->assertSame(
+    $name,
+    $idOfFull($name)
+);
+
+$supplierOfName = Functions«FullName»::constant($name);
+
+$this->assertSame(
+    $name,
+    $supplierOfName()
+);
 
