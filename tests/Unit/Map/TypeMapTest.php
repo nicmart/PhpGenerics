@@ -21,15 +21,15 @@ class TypeMapTest extends \PHPUnit_Framework_TestCase
     public function it_returns_generic_types()
     {
         $map = new TypeMap(array(
-            new GenericTypeApplication(
+            new TypeApplication(
                 FullName::fromString("ns\\a"),
                 array()
             ),
-            new GenericTypeApplication(
+            new TypeApplication(
                 FullName::fromString("ns\\b"),
                 array()
             ),
-            new GenericTypeApplication(
+            new TypeApplication(
                 FullName::fromString("ns\\b"),
                 array(FullName::fromString("c"))
             ),
@@ -50,18 +50,18 @@ class TypeMapTest extends \PHPUnit_Framework_TestCase
     public function it_returns_type_params()
     {
         $map = new TypeMap(array(
-            $a = new GenericTypeApplication(
+            $a = new TypeApplication(
                 FullName::fromString("ns\\a"),
                 array(
                     FullName::fromString("c"),
                     FullName::fromString("d"),
                 )
             ),
-            $b1 = new GenericTypeApplication(
+            $b1 = new TypeApplication(
                 FullName::fromString("ns\\b"),
                 array(FullName::fromString("c"))
             ),
-            $b2 = new GenericTypeApplication(
+            $b2 = new TypeApplication(
                 FullName::fromString("ns\\b"),
                 array(FullName::fromString("d"))
             ),
@@ -91,7 +91,7 @@ class TypeMapTest extends \PHPUnit_Framework_TestCase
         $map = new TypeMap();
         $copy = clone $map;
 
-        $map2 = $map->withApplication($app = new GenericTypeApplication(
+        $map2 = $map->withApplication($app = new TypeApplication(
             FullName::fromString("ns\\b"),
             array(FullName::fromString("c"))
         ));

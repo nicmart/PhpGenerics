@@ -13,9 +13,15 @@ use NicMart\Generics\Map\GenericTypeApplication;
 use NicMart\Generics\Map\TypeMap;
 use NicMart\Generics\Name\FullName;
 
-class DefaultTypeMapCompilerTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class DefaultTypeMapCompilerTest
+ * @package NicMart\Generics\Map\Compiler
+ * @
+ */
+class DefaultTypeMapCompilerTest // extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @
      * @test
      */
     public function it_compiles()

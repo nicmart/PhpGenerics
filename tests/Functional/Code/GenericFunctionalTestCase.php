@@ -13,6 +13,12 @@ namespace NicMart\Generics\Code;
 
 use NicMart\Generics\Autoloader\GenericAutoloaderFactory;
 
+/**
+ * Class GenericFunctionalTestCase
+ * @package NicMart\Generics\Code
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class GenericFunctionalTestCase extends \PHPUnit_Framework_TestCase
 {
     protected static $cacheDir;

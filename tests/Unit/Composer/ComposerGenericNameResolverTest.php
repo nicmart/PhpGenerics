@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Composer;
 
-use NicMart\Generics\Generic;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
@@ -19,6 +18,7 @@ use NicMart\Generics\Name\Generic\GenericName;
 /**
  * Class GenericNameResolverTest
  * @package NicMart\Generics\Composer
+ * @runTestsInSeparateProcesses
  */
 class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
 {

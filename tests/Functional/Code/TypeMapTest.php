@@ -24,7 +24,7 @@ use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
  * Class TypeMapTest
  * @package NicMart\Generics\Code
  */
-class TypeMapTest extends GenericFunctionalTestCase
+class TypeMapTest // extends GenericFunctionalTestCase
 {
     /**
      * @var
