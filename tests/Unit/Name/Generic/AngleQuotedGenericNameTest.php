@@ -36,6 +36,21 @@ class AngleQuotedGenericNameTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_returns_main_name()
+    {
+        $generic = new AngleQuotedGenericName(
+            FullName::fromString("Ns\\Class1«Ah«T»·S»")
+        );
+
+        $this->assertEquals(
+            FullName::fromString("Ns\\Class1"),
+            $generic->mainName()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function it_applies()
     {
         $generic = AngleQuotedGenericName::fromString(

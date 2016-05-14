@@ -31,6 +31,11 @@ class AngleQuotedGenericName implements GenericName
     private $name;
 
     /**
+     * @var FullName
+     */
+    private $mainName;
+
+    /**
      * @var RelativeName[]
      */
     private $typeVars = array();
@@ -65,6 +70,14 @@ class AngleQuotedGenericName implements GenericName
     public function name()
     {
         return $this->name;
+    }
+
+    /**
+     * @return FullName
+     */
+    public function mainName()
+    {
+        return $this->mainName;
     }
 
     /**
@@ -147,6 +160,15 @@ class AngleQuotedGenericName implements GenericName
     }
 
     /**
+     * @return int
+     */
+    public function arity()
+    {
+        return count($this->typeVars);
+    }
+
+
+    /**
      * @param array $names
      */
     private function assertValidNumberOfNames(array $names)
@@ -169,6 +191,7 @@ class AngleQuotedGenericName implements GenericName
         $nameTemplate = "";
         $typeVars = array();
         $currTypeVar = "";
+        $mainName = "";
 
         $level = 0;
 
@@ -193,6 +216,8 @@ class AngleQuotedGenericName implements GenericName
                 } elseif ($char == "»") {
                     $typeVars[] = RelativeName::fromString($currTypeVar);
                     $currTypeVar = "";
+                } else {
+                    $mainName .= $char;
                 }
             } else {
                 $currTypeVar .= $char;
@@ -203,6 +228,7 @@ class AngleQuotedGenericName implements GenericName
             }
         }
 
+        $this->mainName = FullName::fromString($mainName);
         $this->nameTemplate = $nameTemplate;
         $this->typeVars = $typeVars;
     }

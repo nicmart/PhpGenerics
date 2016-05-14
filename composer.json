@@ -1,6 +1,5 @@
 {
     "name": "nicmart/php-generics",
-    "type": "library",
     "description": "Tools for generic types in php",
     "keywords": [],
     "license": "MIT",
@@ -13,10 +12,13 @@
     "require": {
         "php": ">=5.3",
         "nikic/php-parser": "~1.4",
-        "phpdocumentor/reflection-docblock": "~2"
+        "phpdocumentor/reflection-docblock": "~2",
+        "composer-plugin-api": "^1.0",
+        "symfony/finder": "~2.8"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4"
+        "phpunit/phpunit": "~4",
+        "composer/composer": "~1.1"
     },
     "autoload": {
         "psr-4": {

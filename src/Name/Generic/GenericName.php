@@ -27,6 +27,16 @@ interface GenericName
     public function name();
 
     /**
+     * @return FullName
+     */
+    public function mainName();
+
+    /**
+     * @return int
+     */
+    public function arity();
+
+    /**
      * @param FullName[] $names
      * @return FullName
      */

@@ -13,7 +13,7 @@ namespace NicMart\Generics\Composer;
 
 use Composer\Autoload\ClassLoader;
 
-class NamespaceDirectoryResolverTest extends \PHPUnit_Framework_TestCase
+class ClassLoaderDirectoryResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ClassLoader
@@ -21,7 +21,7 @@ class NamespaceDirectoryResolverTest extends \PHPUnit_Framework_TestCase
     private $classLoader;
 
     /**
-     * @var NamespaceDirectoryResolver
+     * @var ClassLoaderDirectoryResolver
      */
     private $resolver;
 
@@ -29,7 +29,7 @@ class NamespaceDirectoryResolverTest extends \PHPUnit_Framework_TestCase
     {
         $this->classLoader = new ClassLoader();
 
-        $this->resolver = new NamespaceDirectoryResolver($this->classLoader);
+        $this->resolver = new ClassLoaderDirectoryResolver($this->classLoader);
     }
 
     /**
@@ -38,7 +38,7 @@ class NamespaceDirectoryResolverTest extends \PHPUnit_Framework_TestCase
     public function it_resolves_psr4()
     {
         $this->classLoader->setPsr4(
-            "A\\B\\",
+            "Ans\\Bns\\",
             array("/dir1/", "/dir2/")
         );
 
@@ -51,10 +51,10 @@ class NamespaceDirectoryResolverTest extends \PHPUnit_Framework_TestCase
             array(
                 "/dir1/C",
                 "/dir2/C",
-                "/fall1/A/B/C",
-                "/fall2/A/B/C",
+                "/fall1/Ans/Bns/C",
+                "/fall2/Ans/Bns/C",
             ),
-            $this->resolver->directories("A\\B\\C")
+            $this->resolver->directories("Ans\\Bns\\C")
         );
     }
 
