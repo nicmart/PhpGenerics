@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T1;
 use NicMart\Generics\Variable\T2;
 use NicMart\Generics\Variable\T;
@@ -18,7 +19,7 @@ use NicMart\Generics\Variable\T;
  * Interface Function2«T1·T2·T»
  * @package NicMart\Generics\Example\Func
  */
-interface Function2«T1·T2·T»
+interface Function2«T1·T2·T» extends Generic
 {
     /**
      * @param T1 $x

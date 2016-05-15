@@ -59,11 +59,14 @@ class ComposerGenericNameResolver implements GenericNameResolver
         $dirs = $this->directoryResolver->directories($nsName->toString());
         
         $finder = new Finder();
-        $finder
-            ->files()
-            ->in($dirs)
-            ->name($this->regexp($appliedGenericName))
-        ;
+
+        foreach ($dirs as $dir) {
+            if (is_dir($dir)) {
+                $finder->in($dir);
+            }
+        }
+
+        $finder->name($this->regexp($appliedGenericName));
 
         /** @var SplFileInfo $file */
         foreach ($finder as $file) {

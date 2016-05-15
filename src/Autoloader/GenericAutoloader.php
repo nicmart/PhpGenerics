@@ -15,6 +15,8 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
+use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
+use NicMart\Generics\Name\Generic\GenericNameResolver;
 use NicMart\Generics\Source\Compiler\DefaultGenericCompiler;
 use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
 
@@ -43,6 +45,14 @@ class GenericAutoloader
      * @var NamespaceContextExtractor
      */
     private $namespaceContextExtractor;
+    /**
+     * @var GenericNameResolver
+     */
+    private $genericNameResolver;
+    /**
+     * @var GenericNameFactory
+     */
+    private $genericNameFactory;
 
     /**
      * GenericAutoloader constructor.
@@ -50,17 +60,23 @@ class GenericAutoloader
      * @param SourceUnitEvaluation $evaluation
      * @param CallerFilenameResolver $filenameResolver
      * @param NamespaceContextExtractor $namespaceContextExtractor
+     * @param GenericNameResolver $genericNameResolver
+     * @param GenericNameFactory $genericNameFactory
      */
     public function __construct(
         DefaultGenericCompiler $compiler,
         SourceUnitEvaluation $evaluation,
         CallerFilenameResolver $filenameResolver,
-        NamespaceContextExtractor $namespaceContextExtractor
+        NamespaceContextExtractor $namespaceContextExtractor,
+        GenericNameResolver $genericNameResolver,
+        GenericNameFactory $genericNameFactory
     ) {
         $this->compiler = $compiler;
         $this->evaluation = $evaluation;
         $this->filenameResolver = $filenameResolver;
         $this->namespaceContextExtractor = $namespaceContextExtractor;
+        $this->genericNameResolver = $genericNameResolver;
+        $this->genericNameFactory = $genericNameFactory;
     }
 
     /**
@@ -69,22 +85,18 @@ class GenericAutoloader
      */
     public function __invoke($className)
     {
-        if (!$this->isGenericClassName($className)) {
+        $name = FullName::fromString($className);
+
+        if (!$this->genericNameFactory->isGeneric($name)) {
             return;
         }
 
         $namespaceContext = $this->namespaceContextOfCaller();
 
-        $appliedGeneric = new AngleQuotedGenericName(
-            FullName::fromString($className)
-        );
-
+        $appliedGeneric = $this->genericNameFactory->toGeneric($name);
         $genericParams = $appliedGeneric->parameters($namespaceContext);
 
-        $generic = new AngleQuotedGenericName($this->genericName(
-            $className,
-            $namespaceContext
-        ));
+        $generic = $this->genericNameResolver->resolve($appliedGeneric);
 
         $source = $this->compiler->compile(
             $generic,
@@ -97,15 +109,6 @@ class GenericAutoloader
     }
 
     /**
-     * @param $className
-     * @return bool
-     */
-    private function isGenericClassName($className)
-    {
-        return strpos($className, "«") !== false;
-    }
-
-    /**
      * @return NamespaceContext
      */
     private function namespaceContextOfCaller()
@@ -114,37 +117,6 @@ class GenericAutoloader
 
         return $this->namespaceContextExtractor->contextOf(
             file_get_contents($callerFilename)
-        );
-    }
-
-    /**
-     * @param string $className
-     * @param NamespaceContext $contextOfCaller
-     * @return FullName
-     */
-    private function genericName($className, NamespaceContext $contextOfCaller)
-    {
-        $mainPartOfClassName = strstr($className, "«", true);
-
-        foreach ($contextOfCaller->uses()->getUsesByAliases() as $use) {
-            $name = $use->name();
-
-            $mainPartOfName = strstr(
-                $name->toString(),
-                "«",
-                true
-            );
-
-            if (
-                $mainPartOfName == $mainPartOfClassName
-                && $name->toString() != $className
-            ) {
-                return $name;
-            }
-        }
-
-        throw new \RuntimeException(
-            "Unable to resolve generic class for $className"
         );
     }
 }

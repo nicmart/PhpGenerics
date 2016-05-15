@@ -54,12 +54,12 @@ class ClassLoaderDirectoryResolver implements DirectoryResolver
             }
             $suffix = substr($logicalPath, strlen($prefix));
             foreach ($dirs as $dir) {
-                $directories[] = $dir . $suffix;
+                $directories[] = $this->normalizeDir($dir) . $suffix;
             }
         }
 
         foreach ($fallbackDirsPsr4 as $dir) {
-            $directories[] = $dir . $logicalPath;
+            $directories[] = $this->normalizeDir($dir) . $logicalPath;
         }
 
         // Psr0
@@ -68,15 +68,24 @@ class ClassLoaderDirectoryResolver implements DirectoryResolver
                 continue;
             }
             foreach ($dirs as $dir) {
-                $directories[] = $dir . $logicalPath;
+                $directories[] = $this->normalizeDir($dir) . $logicalPath;
             }
         }
 
         foreach ($fallbackDirsPsr0 as $dir) {
-            $directories[] = $dir . $logicalPath;
+            $directories[] = $this->normalizeDir($dir) . $logicalPath;
         }
 
 
         return $directories;
+    }
+
+    /**
+     * @param $dir
+     * @return string
+     */
+    private function normalizeDir($dir)
+    {
+        return rtrim($dir, "/") . "/";
     }
 }

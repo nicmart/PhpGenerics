@@ -18,11 +18,26 @@ namespace NicMart\Generics\Infrastructure\Source;
 class CallerFilenameResolver
 {
     /**
+     * @var array
+     */
+    private $filesToSkip;
+
+    /**
+     * CallerFilenameResolver constructor.
+     * @param array $filesToSkip
+     */
+    public function __construct(array $filesToSkip = array())
+    {
+        $this->filesToSkip = $filesToSkip;
+    }
+
+    /**
      * @return mixed
      */
     public function filename(array $filesToSkip = array())
     {
         $filesToSkip[] = __FILE__;
+        $filesToSkip = array_merge($this->filesToSkip, $filesToSkip);
         $filesToSkip = array_flip($filesToSkip);
 
         $trace = debug_backtrace();

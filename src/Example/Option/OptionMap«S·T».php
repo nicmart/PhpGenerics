@@ -16,10 +16,11 @@ use NicMart\Generics\Example\Option\Option«S»;
 use NicMart\Generics\Example\Option\None«T»;
 use NicMart\Generics\Example\Option\None«S»;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\S;
 use NicMart\Generics\Variable\T;
 
-class OptionMap«S·T»
+class OptionMap«S·T» implements Generic
 {
     /**
      * @param Option«S» $option

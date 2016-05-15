@@ -8,13 +8,14 @@
 
 namespace NicMart\Generics\Example\Product;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T1;
 
 /**
  * Interface Product1«T1»
  * @package NicMart\Generics\Example\Product
  */
-interface Product1«T1» extends Product
+interface Product1«T1» extends Product, Generic
 {
     /**
      * @return T1

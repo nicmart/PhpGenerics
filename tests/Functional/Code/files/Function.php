@@ -11,21 +11,15 @@
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 
-use NicMart\Generics\Example\Func\CallableFunction2«T1·T2·T»;
 use NicMart\Generics\Example\Func\CallableFunction2«FullName·FullName·FullName»;
 
-use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
 use NicMart\Generics\Example\Func\CallableFunction1«FullName·RelativeName»;
 
-use NicMart\Generics\Example\Func\Apply«T1·T2»;
 use NicMart\Generics\Example\Func\Apply«FullName·RelativeName»;
 
-use NicMart\Generics\Example\Func\CallableEndofunc«T»;
 use NicMart\Generics\Example\Func\CallableEndofunc«FullName»;
 
-use NicMart\Generics\Example\Func\Functions«T»;
 use NicMart\Generics\Example\Func\Functions«FullName»;
-use NicMart\Generics\Example\Func\Functions«RelativeName»;
 
 $f = new CallableFunction1«FullName·RelativeName»(function (FullName $name) {
     return $name->toRelative();

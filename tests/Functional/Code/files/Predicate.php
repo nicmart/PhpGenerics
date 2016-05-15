@@ -8,7 +8,6 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-use NicMart\Generics\Example\Func\CallablePredicate«T»;
 use NicMart\Generics\Example\Func\CallablePredicate«FullName»;
 
 use NicMart\Generics\Name\FullName;

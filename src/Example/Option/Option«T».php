@@ -10,13 +10,14 @@
 
 namespace NicMart\Generics\Example\Option;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
 /**
  * Interface Option
  * @package NicMart\Generics\Example
  */
-interface Option«T»
+interface Option«T» extends Generic
 {
     /**
      * @param T $else

@@ -12,16 +12,12 @@
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 
-use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
 use NicMart\Generics\Example\Func\CallableFunction1«Function1«FullName·RelativeName»·Function1«FullName·RelativeName»»;
 use NicMart\Generics\Example\Func\CallableFunction1«A·B»;
 use NicMart\Generics\Example\Func\CallableFunction1«B·C»;
 
-use NicMart\Generics\Example\Func\Function1«T1·T2»;
 use NicMart\Generics\Example\Func\Function1«FullName·RelativeName»;
-use NicMart\Generics\Example\Func\Function1«Function1«T1·T2»·Function1«T1·T2»»;
 
-use NicMart\Generics\Example\Func\Composition«T1·T2·T3»;
 use NicMart\Generics\Example\Func\Composition«A·B·C»;
 
 use NicMart\Generics\Code\A;

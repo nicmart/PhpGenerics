@@ -11,7 +11,6 @@
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 
-use NicMart\Generics\Example\Product\Tuple2«T1·T2»;
 use NicMart\Generics\Example\Product\Tuple2«FullName·RelativeName»;
 
 $full = FullName::fromString("full");

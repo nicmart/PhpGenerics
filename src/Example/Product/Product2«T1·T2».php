@@ -8,6 +8,7 @@
 
 namespace NicMart\Generics\Example\Product;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T1;
 use NicMart\Generics\Variable\T2;
 use NicMart\Generics\Example\Product\Product;
@@ -16,7 +17,7 @@ use NicMart\Generics\Example\Product\Product;
  * Interface Product2«T1·T2»
  * @package NicMart\Generics\Example\Product
  */
-interface Product2«T1·T2» extends Product
+interface Product2«T1·T2» extends Product, Generic
 {
     /**
      * @return T1

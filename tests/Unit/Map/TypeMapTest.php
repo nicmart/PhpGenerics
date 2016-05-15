@@ -12,6 +12,7 @@ namespace NicMart\Generics\Map;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Map\GenericTypeApplication;
 
 class TypeMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,15 +22,15 @@ class TypeMapTest extends \PHPUnit_Framework_TestCase
     public function it_returns_generic_types()
     {
         $map = new TypeMap(array(
-            new TypeApplication(
+            new GenericTypeApplication(
                 FullName::fromString("ns\\a"),
                 array()
             ),
-            new TypeApplication(
+            new GenericTypeApplication(
                 FullName::fromString("ns\\b"),
                 array()
             ),
-            new TypeApplication(
+            new GenericTypeApplication(
                 FullName::fromString("ns\\b"),
                 array(FullName::fromString("c"))
             ),
@@ -50,18 +51,18 @@ class TypeMapTest extends \PHPUnit_Framework_TestCase
     public function it_returns_type_params()
     {
         $map = new TypeMap(array(
-            $a = new TypeApplication(
+            $a = new GenericTypeApplication(
                 FullName::fromString("ns\\a"),
                 array(
                     FullName::fromString("c"),
                     FullName::fromString("d"),
                 )
             ),
-            $b1 = new TypeApplication(
+            $b1 = new GenericTypeApplication(
                 FullName::fromString("ns\\b"),
                 array(FullName::fromString("c"))
             ),
-            $b2 = new TypeApplication(
+            $b2 = new GenericTypeApplication(
                 FullName::fromString("ns\\b"),
                 array(FullName::fromString("d"))
             ),
@@ -91,7 +92,7 @@ class TypeMapTest extends \PHPUnit_Framework_TestCase
         $map = new TypeMap();
         $copy = clone $map;
 
-        $map2 = $map->withApplication($app = new TypeApplication(
+        $map2 = $map->withApplication($app = new GenericTypeApplication(
             FullName::fromString("ns\\b"),
             array(FullName::fromString("c"))
         ));

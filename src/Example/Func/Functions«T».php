@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
 use NicMart\Generics\Example\Func\CallableEndofunc«T»;
@@ -19,7 +20,7 @@ use NicMart\Generics\Example\Func\CallableSupplier«T»;
  * Class Functions«T»
  * @package NicMart\Generics\Example\Func
  */
-class Functions«T»
+class Functions«T» implements Generic
 {
     /**
      * @return CallableEndofunc«T»

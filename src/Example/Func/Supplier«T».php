@@ -10,13 +10,14 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
 /**
  * Interface Supplier«T»
  * @package NicMart\Generics\Example\Func
  */
-interface Supplier«T»
+interface Supplier«T» extends Generic
 {
     /**
      * @return T
