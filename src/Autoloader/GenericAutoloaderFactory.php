@@ -22,9 +22,18 @@ use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
 use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
 use PhpParser\Lexer;
 use PhpParser\Parser;
+use ReflectionClass;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
+/**
+ * Class GenericAutoloaderFactory
+ * @package NicMart\Generics\Autoloader
+ */
 class GenericAutoloaderFactory
 {
+    /**
+     * @param $baseDir
+     */
     public static function registerAutoloader($baseDir)
     {
         $srcDir = dirname(__DIR__);
@@ -37,6 +46,7 @@ class GenericAutoloaderFactory
             new Parser(new Lexer()),
             new NamespaceContextVisitor()
         );
+
         $resolver = new CallerContextGenericNameResolver(
             $genericFactory,
             $filenameResolver,
@@ -46,7 +56,7 @@ class GenericAutoloaderFactory
         $resolver = new ComposerGenericNameResolver(
             $genericFactory,
             new ClassLoaderDirectoryResolver(
-                include $srcDir . "/../vendor/autoload.php"
+                static::composerClassLoader()
             )
         );
 
@@ -62,5 +72,41 @@ class GenericAutoloaderFactory
         );
 
         spl_autoload_register($genericAutoloader);
+    }
+
+    /**
+     * @return mixed
+     */
+    private static function composerClassLoader()
+    {
+        $baseDir = dirname(dirname(__DIR__));
+
+        if (static::isComposerDependency($baseDir)) {
+            return include dirname(dirname($baseDir)) . DIRECTORY_SEPARATOR . "autoload.php";
+        }
+
+        $path = $baseDir . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
+
+        if (file_exists($path)) {
+            return include $path;
+        }
+
+        throw new RuntimeException("Unable to find composer autoload.php file");
+    }
+
+    /**
+     * @param $baseDir
+     * @return bool
+     */
+    private static function isComposerDependency($baseDir)
+    {
+        $nicmartVendorFolder = dirname($baseDir);
+        $vendorFolder = dirname($nicmartVendorFolder);
+
+        return
+            basename($baseDir) == "php-generics"
+            && basename($nicmartVendorFolder) == "nicmart"
+            && file_exists($vendorFolder . DIRECTORY_SEPARATOR . "autoload.php")
+        ;
     }
 }
