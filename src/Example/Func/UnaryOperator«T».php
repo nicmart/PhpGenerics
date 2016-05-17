@@ -13,13 +13,7 @@ namespace NicMart\Generics\Example\Func;
 use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
-use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
-use NicMart\Generics\Example\Func\CallableFunction1«T·T»;
-
-use NicMart\Generics\Example\Func\Function1«T1·T2»;
-use NicMart\Generics\Example\Func\Function1«T·T»;
-
-class CallableEndofunc«T» extends CallableFunction1«T·T» implements Endofunc«T»
+interface UnaryOperator«T» extends Function1«T·T», Generic
 {
 
 }

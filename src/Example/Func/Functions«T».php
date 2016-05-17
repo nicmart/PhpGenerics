@@ -13,7 +13,7 @@ namespace NicMart\Generics\Example\Func;
 use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
-use NicMart\Generics\Example\Func\CallableEndofunc«T»;
+use NicMart\Generics\Example\Func\CallableUnaryOperator«T»;
 use NicMart\Generics\Example\Func\CallableSupplier«T»;
 
 /**
@@ -23,11 +23,11 @@ use NicMart\Generics\Example\Func\CallableSupplier«T»;
 class Functions«T» implements Generic
 {
     /**
-     * @return CallableEndofunc«T»
+     * @return CallableUnaryOperator«T»
      */
     public static function identity()
     {
-        return new CallableEndofunc«T»(function ($x) { return $x; });
+        return new CallableUnaryOperator«T»(function ($x) { return $x; });
     }
 
     /**

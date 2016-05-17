@@ -14,7 +14,6 @@ use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 use NicMart\Generics\Example\Func\Predicate«T»;
 
-use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
 use NicMart\Generics\Example\Func\CallableFunction1«T·bool»;
 
 class CallablePredicate«T» extends CallableFunction1«T·bool» implements Predicate«T»

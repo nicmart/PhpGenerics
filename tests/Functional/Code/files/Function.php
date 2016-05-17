@@ -17,7 +17,7 @@ use NicMart\Generics\Example\Func\CallableFunction1«FullName·RelativeName»;
 
 use NicMart\Generics\Example\Func\Apply«FullName·RelativeName»;
 
-use NicMart\Generics\Example\Func\CallableEndofunc«FullName»;
+use NicMart\Generics\Example\Func\CallableUnaryOperator«FullName»;
 
 use NicMart\Generics\Example\Func\Functions«FullName»;
 
@@ -50,7 +50,7 @@ $this->assertEquals(
 
 // Enfofunc
 
-$endo = new CallableEndofunc«FullName»(function (FullName $x) { return $x; });
+$endo = new CallableUnaryOperator«FullName»(function (FullName $x) { return $x; });
 
 // Identity
 
