@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T1;
 use NicMart\Generics\Variable\T2;
 use NicMart\Generics\Variable\T3;
@@ -18,7 +19,7 @@ use NicMart\Generics\Example\Func\Function1«T1·T2»;
 use NicMart\Generics\Example\Func\Function1«T1·T3»;
 use NicMart\Generics\Example\Func\Function1«T2·T3»;
 
-class Composition«T1·T2·T3» implements Function1«T1·T3»
+class Composition«T1·T2·T3» implements Function1«T1·T3», Generic
 {
     /**
      * @var \NicMart\Generics\Example\Func\Function1«T2·T3»

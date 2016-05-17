@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
 use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;

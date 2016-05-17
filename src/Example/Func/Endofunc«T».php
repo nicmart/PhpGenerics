@@ -10,9 +10,10 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
-interface Endofunc«T» extends Function1«T·T»
+interface Endofunc«T» extends Function1«T·T», Generic
 {
 
 }

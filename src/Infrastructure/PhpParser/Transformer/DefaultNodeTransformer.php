@@ -17,6 +17,7 @@ use NicMart\Generics\AST\Transformer\NodeTransformer;
 use NicMart\Generics\AST\Visitor\AddUsesVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
+use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
 use NicMart\Generics\Name\Context\NamespaceContext;
@@ -168,7 +169,10 @@ class DefaultNodeTransformer implements NodeTransformer
                     $this->phpParserDocToPhpdoc,
                     $this->phpDocSerializer
                 )
-            )
+            ),
+            new RemoveParentTypeVisitor(array(
+                FullName::fromString('\NicMart\Generics\Generic')
+            )),
         ));
     }
 

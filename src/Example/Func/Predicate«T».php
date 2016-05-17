@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\Example\Func;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
 use NicMart\Generics\Example\Func\Function1«T1·T2»;
@@ -19,7 +20,7 @@ use NicMart\Generics\Example\Func\Function1«T·bool»;
  * Interface Predicate«T»
  * @package NicMart\Generics\Example\Func
  */
-interface Predicate«T» extends Function1«T·bool»
+interface Predicate«T» extends Function1«T·bool», Generic
 {
 
 }
