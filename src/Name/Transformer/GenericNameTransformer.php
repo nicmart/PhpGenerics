@@ -94,8 +94,12 @@ class GenericNameTransformer implements NameTransformer
             return $name;
         }
 
-        $genericName = $this->genericNameFactory->toGeneric($fullName);
-        $typeVars = $genericName->parameters($namespaceContext);
+        $genericName = $this->genericNameFactory->toGeneric(
+            $fullName,
+            $namespaceContext
+        );
+
+        $typeVars = $genericName->parameters();
 
         $typeValues = array();
 
@@ -106,6 +110,8 @@ class GenericNameTransformer implements NameTransformer
             );
         }
 
-        return $namespaceContext->simplify($genericName->apply($typeValues));
+        return $namespaceContext->simplify($this->genericNameFactory->fromGeneric(
+            $genericName->apply($typeValues)
+        ));
     }
 }
