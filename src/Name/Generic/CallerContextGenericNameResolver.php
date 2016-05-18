@@ -55,10 +55,10 @@ class CallerContextGenericNameResolver implements GenericNameResolver
     }
 
     /**
-     * @param GenericName $appliedGenericName
-     * @return GenericName
+     * @param GenericNameInterface $appliedGenericName
+     * @return GenericNameInterface
      */
-    public function resolve(GenericName $appliedGenericName)
+    public function resolve(GenericNameInterface $appliedGenericName)
     {
         $contextOfCaller = $this->namespaceContextOfCaller();
 

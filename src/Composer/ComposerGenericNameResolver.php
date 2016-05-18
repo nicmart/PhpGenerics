@@ -12,7 +12,7 @@ namespace NicMart\Generics\Composer;
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
-use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Generic\GenericNameResolver;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -47,10 +47,10 @@ class ComposerGenericNameResolver implements GenericNameResolver
     }
 
     /**
-     * @param GenericName $appliedGenericName
-     * @return GenericName
+     * @param GenericNameInterface $appliedGenericName
+     * @return GenericNameInterface
      */
-    public function resolve(GenericName $appliedGenericName)
+    public function resolve(GenericNameInterface $appliedGenericName)
     {
         $mainName = $appliedGenericName->mainName();
 
@@ -92,10 +92,10 @@ class ComposerGenericNameResolver implements GenericNameResolver
     }
 
     /**
-     * @param GenericName $appliedGenericName
+     * @param GenericNameInterface $appliedGenericName
      * @return mixed
      */
-    private function regexp(GenericName $appliedGenericName)
+    private function regexp(GenericNameInterface $appliedGenericName)
     {
         $paramRegexpName = FullName::fromString(".+");
         $params = array_fill(0, $appliedGenericName->arity(), $paramRegexpName);

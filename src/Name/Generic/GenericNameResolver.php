@@ -22,8 +22,8 @@ namespace NicMart\Generics\Name\Generic;
 interface GenericNameResolver
 {
     /**
-     * @param GenericName $appliedGenericName
-     * @return GenericName
+     * @param GenericNameInterface $appliedGenericName
+     * @return GenericNameInterface
      */
-    public function resolve(GenericName $appliedGenericName);
+    public function resolve(GenericNameInterface $appliedGenericName);
 }

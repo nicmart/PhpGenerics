@@ -21,7 +21,7 @@ use NicMart\Generics\Name\Transformer\NameQualifier;
  * Class AngleQuotedGenericName
  * @package NicMart\Generics\Name\GenericName
  */
-class AngleQuotedGenericName implements GenericName
+class AngleQuotedGenericNameInterface implements GenericNameInterface
 {
     const CHAR_CODE = 194;
 
@@ -47,7 +47,7 @@ class AngleQuotedGenericName implements GenericName
 
     /**
      * @param string $name
-     * @return AngleQuotedGenericName
+     * @return AngleQuotedGenericNameInterface
      */
     public static function fromString($name)
     {

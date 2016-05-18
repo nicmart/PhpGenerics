@@ -25,7 +25,7 @@ use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
-use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
@@ -48,7 +48,7 @@ class DefaultNodeTransformer implements NodeTransformer
     private $qualifier;
 
     /**
-     * @var GenericName
+     * @var GenericNameInterface
      */
     private $generic;
 
@@ -76,7 +76,7 @@ class DefaultNodeTransformer implements NodeTransformer
      * @param Serializer $phpDocSerializer
      * @param NamespaceContextVisitor $namespaceContextVisitor
      * @param NameQualifier $qualifier
-     * @param GenericName $generic
+     * @param GenericNameInterface $generic
      * @param array $typeParameters
      */
     public function __construct(
@@ -84,7 +84,7 @@ class DefaultNodeTransformer implements NodeTransformer
         Serializer $phpDocSerializer,
         NamespaceContextVisitor $namespaceContextVisitor,
         NameQualifier $qualifier,
-        GenericName $generic,
+        GenericNameInterface $generic,
         array $typeParameters
     ) {
         $this->qualifier = $qualifier;

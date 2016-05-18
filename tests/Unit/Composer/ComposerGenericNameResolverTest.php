@@ -11,9 +11,9 @@
 namespace NicMart\Generics\Composer;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
+use NicMart\Generics\Name\Generic\AngleQuotedGenericNameInterface;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
-use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 
 /**
  * Class GenericNameResolverTest
@@ -22,7 +22,7 @@ use NicMart\Generics\Name\Generic\GenericName;
  */
 class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
 {
-    public function directoryResolver(GenericName $appliedGeneric)
+    public function directoryResolver(GenericNameInterface $appliedGeneric)
     {
         /** @var DirectoryResolver $directoryResolver */
         $directoryResolver = $this->getMock(
@@ -46,13 +46,13 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function it_resolves_interfaces()
     {
-        $appliedGeneric = new AngleQuotedGenericName(
+        $appliedGeneric = new AngleQuotedGenericNameInterface(
             FullName::fromString(
                 '\NicMart\Generics\Composer\Fixtures\Test«Blabla»'
             )
         );
 
-        $expectedGeneric = new AngleQuotedGenericName(
+        $expectedGeneric = new AngleQuotedGenericNameInterface(
             FullName::fromString(
                 '\NicMart\Generics\Composer\Fixtures\Test«B»'
             )
@@ -74,13 +74,13 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function it_resolves_classes()
     {
-        $appliedGeneric = new AngleQuotedGenericName(
+        $appliedGeneric = new AngleQuotedGenericNameInterface(
             FullName::fromString(
                 '\NicMart\Generics\Composer\Fixtures\Class«Blabla»'
             )
         );
 
-        $expectedGeneric = new AngleQuotedGenericName(
+        $expectedGeneric = new AngleQuotedGenericNameInterface(
             FullName::fromString(
                 '\NicMart\Generics\Composer\Fixtures\Class«B»'
             )

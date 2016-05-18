@@ -13,7 +13,7 @@ namespace NicMart\Generics\Source\Compiler;
 
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Source\Generic\GenericTransformerProvider;
 use NicMart\Generics\Source\SourceResolver;
@@ -56,12 +56,12 @@ class DefaultGenericCompiler implements GenericCompiler
     }
 
     /**
-     * @param GenericName $generic
+     * @param GenericNameInterface $generic
      * @param FullName[] $typeParameters
      * @return SourceUnit
      */
     public function compile(
-        GenericName $generic,
+        GenericNameInterface $generic,
         array $typeParameters
     ) {
         $code = $this->sourceResolver->sourceOf($generic->name());

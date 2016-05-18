@@ -29,7 +29,7 @@ use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
-use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
@@ -94,13 +94,13 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
 
     /**
      * @param NameQualifier $qualifier
-     * @param GenericName $generic
+     * @param GenericNameInterface $generic
      * @param FullName[] $typeParameters
      * @return PhpParserSourceTransformer
      */
     public function transformer(
         NameQualifier $qualifier,
-        GenericName $generic,
+        GenericNameInterface $generic,
         array $typeParameters
     ) {
         return new PhpParserSourceTransformer(
