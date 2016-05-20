@@ -19,9 +19,9 @@ use NicMart\Generics\Source\SourceUnit;
 interface GenericCompiler
 {
     /**
-     * @param GenericNameInterface $generic
+     * @param FullName $genericNameName
      * @param FullName[] $typeParameters
      * @return SourceUnit
      */
-    public function compile(GenericNameInterface $generic, array $typeParameters);
+    public function compile(FullName $genericNameName, array $typeParameters);
 }

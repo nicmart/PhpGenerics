@@ -100,10 +100,10 @@ class GenericAutoloader
 
         $genericParams = $appliedGeneric->parameters();
 
-        $generic = $this->genericNameResolver->resolve($appliedGeneric);
+        $genericName = $this->genericNameResolver->resolve($appliedGeneric);
 
         $source = $this->compiler->compile(
-            $generic,
+            $genericName,
             $genericParams
         );
 

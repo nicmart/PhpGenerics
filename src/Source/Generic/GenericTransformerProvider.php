@@ -13,6 +13,7 @@ namespace NicMart\Generics\Source\Generic;
 
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Source\Transformer\SourceTransformer;
@@ -25,13 +26,13 @@ interface GenericTransformerProvider
 {
     /**
      * @param NameQualifier $qualifier This is used to resolve type parameters
-     * @param GenericNameInterface $generic
+     * @param GenericName $generic
      * @param FullName[] $typeParameters
      * @return SourceTransformer
      */
     public function transformer(
         NameQualifier $qualifier,
-        GenericNameInterface $generic,
+        GenericName $generic,
         array $typeParameters
     );
 }

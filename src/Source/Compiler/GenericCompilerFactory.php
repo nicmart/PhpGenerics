@@ -16,6 +16,7 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Serializer;
 use NicMart\Generics\Infrastructure\PhpParser\PrettyPrinter;
+use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Source\Generic\DefaultGenericTransformerProvider;
 use NicMart\Generics\Source\ReflectionSourceResolver;
 use PhpParser\Lexer;
@@ -34,6 +35,7 @@ class GenericCompilerFactory
     {
         $parser = new Parser(new Lexer());
         $nsVisitor = new NamespaceContextVisitor();
+        $factory = new AngleQuotedGenericNameFactory();
 
         $sourceResolver = new ReflectionSourceResolver();
         $sourceTransformerProvider = new DefaultGenericTransformerProvider(
@@ -41,7 +43,8 @@ class GenericCompilerFactory
             new PrettyPrinter(),
             new PhpParserDocToPhpdoc(),
             new Serializer(),
-            $nsVisitor
+            $nsVisitor,
+            $factory
         );
 
         $namespaceExtractor = new PhpParserNamespaceContextExtractor(
@@ -52,7 +55,8 @@ class GenericCompilerFactory
         return new DefaultGenericCompiler(
             $sourceResolver,
             $namespaceExtractor,
-            $sourceTransformerProvider
+            $sourceTransformerProvider,
+            new AngleQuotedGenericNameFactory()
         );
     }
 }

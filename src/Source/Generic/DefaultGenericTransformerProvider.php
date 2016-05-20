@@ -29,6 +29,8 @@ use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
+use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
+use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
@@ -69,6 +71,10 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
      * @var NamespaceContextVisitor
      */
     private $namespaceContextVisitor;
+    /**
+     * @var GenericNameFactory
+     */
+    private $genericNameFactory;
 
     /**
      * DefaultGenericTransformerProvider constructor.
@@ -77,30 +83,33 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
      * @param PhpParserDocToPhpdoc $phpParserDocToPhpdoc
      * @param Serializer $phpDocSerializer
      * @param NamespaceContextVisitor $namespaceContextVisitor
+     * @param GenericNameFactory $genericNameFactory
      */
     public function __construct(
         Parser $phpParser,
         Standard $phpPrettyPrinter,
         PhpParserDocToPhpdoc $phpParserDocToPhpdoc,
         Serializer $phpDocSerializer,
-        NamespaceContextVisitor $namespaceContextVisitor
+        NamespaceContextVisitor $namespaceContextVisitor,
+        GenericNameFactory $genericNameFactory
     ) {
         $this->phpParser = $phpParser;
         $this->phpPrettyPrinter = $phpPrettyPrinter;
         $this->phpParserDocToPhpdoc = $phpParserDocToPhpdoc;
         $this->phpDocSerializer = $phpDocSerializer;
         $this->namespaceContextVisitor = $namespaceContextVisitor;
+        $this->genericNameFactory = $genericNameFactory;
     }
 
     /**
      * @param NameQualifier $qualifier
-     * @param GenericNameInterface $generic
+     * @param GenericName $generic
      * @param FullName[] $typeParameters
      * @return PhpParserSourceTransformer
      */
     public function transformer(
         NameQualifier $qualifier,
-        GenericNameInterface $generic,
+        GenericName $generic,
         array $typeParameters
     ) {
         return new PhpParserSourceTransformer(
@@ -110,6 +119,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
                 $this->phpDocSerializer,
                 $this->namespaceContextVisitor,
                 $qualifier,
+                $this->genericNameFactory,
                 $generic,
                 $typeParameters
             ),

@@ -104,10 +104,10 @@ class GenericNameTransformer implements NameTransformer
         $typeValues = array();
 
         foreach ($typeVars as $typeVar) {
-            $typeValues[] = $this->innerNameTransformer->transformName(
+            $typeValues[] = $namespaceContext->qualify($this->innerNameTransformer->transformName(
                 $typeVar,
                 $namespaceContext
-            );
+            ));
         }
 
         return $namespaceContext->simplify($this->genericNameFactory->fromGeneric(

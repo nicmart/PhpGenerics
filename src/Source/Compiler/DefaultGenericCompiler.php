@@ -13,6 +13,7 @@ namespace NicMart\Generics\Source\Compiler;
 
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Source\Generic\GenericTransformerProvider;
@@ -38,34 +39,42 @@ class DefaultGenericCompiler implements GenericCompiler
      * @var GenericTransformerProvider
      */
     private $genericTransformerProvider;
+    /**
+     * @var GenericNameFactory
+     */
+    private $genericNameFactory;
 
     /**
      * GenericCompiler constructor.
      * @param SourceResolver $sourceResolver
      * @param NamespaceContextExtractor $namespaceContextExtractor
      * @param GenericTransformerProvider $genericTransformerProvider
+     * @param GenericNameFactory $genericNameFactory
      */
     public function __construct(
         SourceResolver $sourceResolver,
         NamespaceContextExtractor $namespaceContextExtractor,
-        GenericTransformerProvider $genericTransformerProvider
+        GenericTransformerProvider $genericTransformerProvider,
+        GenericNameFactory $genericNameFactory
     ) {
         $this->sourceResolver = $sourceResolver;
         $this->namespaceContextExtractor = $namespaceContextExtractor;
         $this->genericTransformerProvider = $genericTransformerProvider;
+        $this->genericNameFactory = $genericNameFactory;
     }
 
     /**
-     * @param GenericNameInterface $generic
+     * @param FullName $genericName
      * @param FullName[] $typeParameters
      * @return SourceUnit
      */
     public function compile(
-        GenericNameInterface $generic,
+        FullName $genericName,
         array $typeParameters
     ) {
-        $code = $this->sourceResolver->sourceOf($generic->name());
+        $code = $this->sourceResolver->sourceOf($genericName);
         $context = $this->namespaceContextExtractor->contextOf($code);
+        $generic = $this->genericNameFactory->toGeneric($genericName, $context);
 
         $transformer = $this->genericTransformerProvider->transformer(
             $context,
@@ -73,8 +82,10 @@ class DefaultGenericCompiler implements GenericCompiler
             $typeParameters
         );
 
+        $appliedGeneric = $generic->apply($typeParameters);
+
         return new SourceUnit(
-            $generic->apply($typeParameters),
+            $this->genericNameFactory->fromGeneric($appliedGeneric),
             $transformer->transform($code)
         );
     }
