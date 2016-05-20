@@ -10,6 +10,8 @@
 
 namespace NicMart\Generics\Name\Generic;
 
+use NicMart\Generics\Name\FullName;
+
 /**
  * Interface GenericNameResolver
  * 
@@ -22,8 +24,8 @@ namespace NicMart\Generics\Name\Generic;
 interface GenericNameResolver
 {
     /**
-     * @param GenericNameInterface $appliedGenericName
-     * @return GenericNameInterface
+     * @param GenericName $appliedGenericName
+     * @return FullName
      */
-    public function resolve(GenericNameInterface $appliedGenericName);
+    public function resolve(GenericName $appliedGenericName);
 }

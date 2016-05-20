@@ -12,6 +12,7 @@ namespace NicMart\Generics\Composer;
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
+use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Generic\GenericNameResolver;
 use Symfony\Component\Finder\Finder;
@@ -47,12 +48,12 @@ class ComposerGenericNameResolver implements GenericNameResolver
     }
 
     /**
-     * @param GenericNameInterface $appliedGenericName
-     * @return GenericNameInterface
+     * @param GenericName $appliedGenericName
+     * @return FullName
      */
-    public function resolve(GenericNameInterface $appliedGenericName)
+    public function resolve(GenericName $appliedGenericName)
     {
-        $mainName = $appliedGenericName->mainName();
+        $mainName = $appliedGenericName->main();
 
         $nsName = $mainName->up();
 
@@ -72,13 +73,13 @@ class ComposerGenericNameResolver implements GenericNameResolver
         foreach ($finder as $file) {
             $name = $nsName->down($file->getBasename(".php"));
             if ($this->isGeneric($name)) {
-                return $this->genericNameFactory->toGeneric($name);
+                return $name;
             }
         }
 
         throw new \UnderflowException(sprintf(
             "Unable to resolve GenericName file for applied generic %s",
-            $appliedGenericName->name()->toString()
+            $appliedGenericName->main()->toString()
         ));
     }
 
@@ -92,17 +93,19 @@ class ComposerGenericNameResolver implements GenericNameResolver
     }
 
     /**
-     * @param GenericNameInterface $appliedGenericName
+     * @param GenericName $appliedGenericName
      * @return mixed
      */
-    private function regexp(GenericNameInterface $appliedGenericName)
+    private function regexp(GenericName $appliedGenericName)
     {
         $paramRegexpName = FullName::fromString(".+");
         $params = array_fill(0, $appliedGenericName->arity(), $paramRegexpName);
+        $genericNameRegexp = $appliedGenericName->apply($params);
+        $genericRegexpFullName = $this->genericNameFactory->fromGeneric($genericNameRegexp);
 
         return sprintf(
             "/^%s\.php$/",
-            $appliedGenericName->apply($params)->last()->toString()
+            $genericRegexpFullName->last()->toString()
         );
     }
 }

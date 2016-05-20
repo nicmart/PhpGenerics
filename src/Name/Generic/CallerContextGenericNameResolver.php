@@ -55,19 +55,22 @@ class CallerContextGenericNameResolver implements GenericNameResolver
     }
 
     /**
-     * @param GenericNameInterface $appliedGenericName
-     * @return GenericNameInterface
+     * @param GenericName $appliedGenericName
+     * @return FullName
      */
-    public function resolve(GenericNameInterface $appliedGenericName)
+    public function resolve(GenericName $appliedGenericName)
     {
         $contextOfCaller = $this->namespaceContextOfCaller();
 
         foreach ($contextOfCaller->uses()->getUsesByAliases() as $use) {
-            $useGeneric = $this->genericNameFactory->toGeneric($use->name());
+            $useGeneric = $this->genericNameFactory->toGeneric(
+                $use->name(),
+                $contextOfCaller
+            );
 
             if (
-                $useGeneric->mainName() == $appliedGenericName->mainName()
-                && $useGeneric->name() != $appliedGenericName->name()
+                $useGeneric->main() == $appliedGenericName->main()
+                && $useGeneric != $appliedGenericName
             ) {
                 return $useGeneric;
             }
@@ -75,7 +78,7 @@ class CallerContextGenericNameResolver implements GenericNameResolver
 
         throw new \RuntimeException(sprintf(
             "Unable to resolve generic class for %s",
-            $appliedGenericName->name()->toString()
+            $appliedGenericName->main()->toString()
         ));
     }
 

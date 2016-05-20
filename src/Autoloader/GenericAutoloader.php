@@ -93,8 +93,12 @@ class GenericAutoloader
 
         $namespaceContext = $this->namespaceContextOfCaller();
 
-        $appliedGeneric = $this->genericNameFactory->toGeneric($name);
-        $genericParams = $appliedGeneric->parameters($namespaceContext);
+        $appliedGeneric = $this->genericNameFactory->toGeneric(
+            $name,
+            $namespaceContext
+        );
+
+        $genericParams = $appliedGeneric->parameters();
 
         $generic = $this->genericNameResolver->resolve($appliedGeneric);
 
