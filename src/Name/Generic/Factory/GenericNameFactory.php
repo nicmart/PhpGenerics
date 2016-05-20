@@ -13,6 +13,8 @@ namespace NicMart\Generics\Name\Generic\Factory;
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
+use NicMart\Generics\Name\Transformer\NameQualifier;
 
 /**
  * Interface GenericNameFactory
@@ -29,8 +31,18 @@ interface GenericNameFactory
 
     /**
      * @param FullName $name
+     * @param NameQualifier $qualifier
      *
      * @return GenericName
      */
-    public function toGeneric(FullName $name);
+    public function toGeneric(
+        FullName $name,
+        NameQualifier $qualifier
+    );
+
+    /**
+     * @param GenericName $genericName
+     * @return FullName
+     */
+    public function fromGeneric(GenericName $genericName);
 }

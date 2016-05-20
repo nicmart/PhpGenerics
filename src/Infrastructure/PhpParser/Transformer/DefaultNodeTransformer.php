@@ -20,12 +20,16 @@ use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
 use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignment;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
+use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
@@ -48,7 +52,7 @@ class DefaultNodeTransformer implements NodeTransformer
     private $qualifier;
 
     /**
-     * @var GenericName
+     * @var GenericNameInterface
      */
     private $generic;
 
@@ -69,6 +73,10 @@ class DefaultNodeTransformer implements NodeTransformer
      * @var NamespaceContextVisitor
      */
     private $namespaceContextVisitor;
+    /**
+     * @var GenericNameFactory
+     */
+    private $genericNameFactory;
 
     /**
      * DefaultNodeTransformer constructor.
@@ -76,6 +84,7 @@ class DefaultNodeTransformer implements NodeTransformer
      * @param Serializer $phpDocSerializer
      * @param NamespaceContextVisitor $namespaceContextVisitor
      * @param NameQualifier $qualifier
+     * @param GenericNameFactory $genericNameFactory
      * @param GenericName $generic
      * @param array $typeParameters
      */
@@ -84,6 +93,7 @@ class DefaultNodeTransformer implements NodeTransformer
         Serializer $phpDocSerializer,
         NamespaceContextVisitor $namespaceContextVisitor,
         NameQualifier $qualifier,
+        GenericNameFactory $genericNameFactory,
         GenericName $generic,
         array $typeParameters
     ) {
@@ -93,6 +103,7 @@ class DefaultNodeTransformer implements NodeTransformer
         $this->phpParserDocToPhpdoc = $phpParserDocToPhpdoc;
         $this->phpDocSerializer = $phpDocSerializer;
         $this->namespaceContextVisitor = $namespaceContextVisitor;
+        $this->genericNameFactory = $genericNameFactory;
     }
 
     /**
@@ -120,9 +131,14 @@ class DefaultNodeTransformer implements NodeTransformer
             $this->qualifier
         );
 
-        $typeDefAssignments = $this->generic->simpleAssignments(
-            $this->typeParameters
-        );
+        $appliedGeneric = $this->generic->apply($this->typeParameters);
+
+        $typeDefAssignments = new SimpleNameAssignmentContext(array(
+            new SimpleNameAssignment(
+                $this->genericNameFactory->fromGeneric($this->generic)->last(),
+                $this->genericNameFactory->fromGeneric($appliedGeneric)->last()
+            )
+        ));
 
         $transformationsCollector = function (
             Name $from,

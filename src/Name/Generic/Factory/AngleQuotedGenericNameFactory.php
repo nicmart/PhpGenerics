@@ -10,9 +10,11 @@
 
 namespace NicMart\Generics\Name\Generic\Factory;
 
-
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
+use NicMart\Generics\Name\Generic\AngleQuotedGenericNameInterface;
+use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Name\Transformer\NameQualifier;
 
 /**
  * Class AngleQuotedGenericNameFactory
@@ -20,6 +22,8 @@ use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
  */
 class AngleQuotedGenericNameFactory implements GenericNameFactory
 {
+    const CHAR_CODE = 194;
+
     /**
      * @param FullName $name
      * @return bool
@@ -31,10 +35,74 @@ class AngleQuotedGenericNameFactory implements GenericNameFactory
 
     /**
      * @param FullName $name
-     * @return AngleQuotedGenericName
+     * @param NameQualifier $qualifier
+     *
+     * @return GenericName
      */
-    public function toGeneric(FullName $name)
+    public function toGeneric(
+        FullName $name,
+        NameQualifier $qualifier
+    ) {
+        $name = $name->toString();
+        $nameLength = strlen($name);
+
+        $typeVars = array();
+        $currTypeVar = "";
+        $mainName = "";
+
+        $level = 0;
+
+        for ($i = 0; $i < $nameLength; $i++) {
+            $char = $name[$i];
+            if (ord($char) == self::CHAR_CODE) {
+                $char .= $name[++$i];
+            }
+
+            if ($char == "»" || $char == "·") {
+                --$level;
+            }
+
+            if ($level == 0) {
+                if ($char == "«") {
+
+                } elseif ($char == "·" || $char == "»") {
+                    $typeVars[] = $qualifier->qualify(
+                        RelativeName::fromString($currTypeVar)
+                    );
+                    $currTypeVar = "";
+                } else {
+                    $mainName .= $char;
+                }
+            } else {
+                $currTypeVar .= $char;
+            }
+
+            if ($char == "«"  || $char == "·") {
+                ++$level;
+            }
+        }
+
+        return new GenericName(
+            FullName::fromString($mainName),
+            $typeVars
+        );
+    }
+
+    /**
+     * @param GenericName $genericName
+     * @return FullName
+     */
+    public function fromGeneric(GenericName $genericName)
     {
-        return new AngleQuotedGenericName($name);
+        $paramStrings = array_map(
+            function (FullName $param) { return $param->last()->toString(); },
+            $genericName->parameters()
+        );
+
+        return FullName::fromString(sprintf(
+            "%s«%s»",
+            $genericName->main()->toString(),
+            implode("·", $paramStrings)
+        ));
     }
 }

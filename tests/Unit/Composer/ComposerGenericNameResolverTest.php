@@ -11,9 +11,10 @@
 namespace NicMart\Generics\Composer;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
+use NicMart\Generics\Name\Generic\AngleQuotedGenericNameInterface;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameInterface;
 
 /**
  * Class GenericNameResolverTest
@@ -32,7 +33,7 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
         $directoryResolver
             ->expects($this->once())
             ->method('directories')
-            ->with($appliedGeneric->name()->up()->toString())
+            ->with($appliedGeneric->main()->up()->toString())
             ->willReturn(array(
                 __DIR__ . "/Fixtures"
             ))
@@ -46,16 +47,17 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function it_resolves_interfaces()
     {
-        $appliedGeneric = new AngleQuotedGenericName(
+        $appliedGeneric = new GenericName(
             FullName::fromString(
-                '\NicMart\Generics\Composer\Fixtures\Test«Blabla»'
+                '\NicMart\Generics\Composer\Fixtures\Test'
+            ),
+            array(
+                FullName::fromString("blabla")
             )
         );
 
-        $expectedGeneric = new AngleQuotedGenericName(
-            FullName::fromString(
-                '\NicMart\Generics\Composer\Fixtures\Test«B»'
-            )
+        $expectedGenericName = FullName::fromString(
+            '\NicMart\Generics\Composer\Fixtures\Test«B»'
         );
 
         $resolver = new ComposerGenericNameResolver(
@@ -64,7 +66,7 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            $expectedGeneric,
+            $expectedGenericName,
             $resolver->resolve($appliedGeneric)
         );
     }
@@ -74,16 +76,17 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function it_resolves_classes()
     {
-        $appliedGeneric = new AngleQuotedGenericName(
+        $appliedGeneric = new GenericName(
             FullName::fromString(
-                '\NicMart\Generics\Composer\Fixtures\Class«Blabla»'
+                '\NicMart\Generics\Composer\Fixtures\Class'
+            ),
+            array(
+                FullName::fromString("Blabla")
             )
         );
 
-        $expectedGeneric = new AngleQuotedGenericName(
-            FullName::fromString(
-                '\NicMart\Generics\Composer\Fixtures\Class«B»'
-            )
+        $expectedGenericName = FullName::fromString(
+            '\NicMart\Generics\Composer\Fixtures\Class«B»'
         );
 
         $resolver = new ComposerGenericNameResolver(
@@ -92,7 +95,7 @@ class ComposerGenericNameResolverTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            $expectedGeneric,
+            $expectedGenericName,
             $resolver->resolve($appliedGeneric)
         );
     }

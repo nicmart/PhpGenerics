@@ -13,6 +13,7 @@ namespace NicMart\Generics\Name\Transformer;
 
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\RelativeName;
 
 /**
@@ -29,19 +30,21 @@ class GenericNameTransformerTest extends \PHPUnit_Framework_TestCase
         $name = FullName::fromString("Boh");
         $context = NamespaceContext::fromNamespaceName("A\\B");
 
-        $generic = $this->getMock(
-            '\NicMart\Generics\Name\Generic\GenericName'
-        );
-
-        $generic
-            ->expects($this->once())
-            ->method("parameters")
-            ->with($context)
-            ->willReturn(array(
+        $generic = new GenericName(
+            FullName::fromString("A"),
+            array(
                 FullName::fromString("T1"),
                 FullName::fromString("T2"),
-            ))
-        ;
+            )
+        );
+
+        $transformedGenerics = new GenericName(
+            FullName::fromString("A"),
+            array(
+                FullName::fromString("A"),
+                FullName::fromString("B"),
+            )
+        );
 
         $innerTransformer = $this->getMock(
             '\NicMart\Generics\Name\Transformer\NameTransformer'
@@ -63,18 +66,6 @@ class GenericNameTransformerTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $generic
-            ->expects($this->once())
-            ->method("apply")
-            ->with(array(
-                FullName::fromString("A"),
-                FullName::fromString("B"),
-            ))
-            ->willReturn(
-                FullName::fromString("Foo")
-            )
-        ;
-
         $genericFactory = $this->getMock(
             '\NicMart\Generics\Name\Generic\Factory\GenericNameFactory'
         );
@@ -89,8 +80,15 @@ class GenericNameTransformerTest extends \PHPUnit_Framework_TestCase
         $genericFactory
             ->expects($this->once())
             ->method("toGeneric")
-            ->with($name)
+            ->with($name, $context)
             ->willReturn($generic)
+        ;
+
+        $genericFactory
+            ->expects($this->once())
+            ->method("fromGeneric")
+            ->with($transformedGenerics)
+            ->willReturn(FullName::fromString("Foo"))
         ;
 
         $transformer = new GenericNameTransformer(

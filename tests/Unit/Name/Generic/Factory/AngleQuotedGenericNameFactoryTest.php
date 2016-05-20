@@ -11,9 +11,14 @@
 namespace NicMart\Generics\Name\Generic\Factory;
 
 
+use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\AngleQuotedGenericName;
+use NicMart\Generics\Name\Generic\GenericName;
 
+/**
+ * Class AngleQuotedGenericNameFactoryTest
+ * @package NicMart\Generics\Name\Generic\Factory
+ */
 class AngleQuotedGenericNameFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -39,9 +44,42 @@ class AngleQuotedGenericNameFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new AngleQuotedGenericNameFactory();
 
+        $qualifier = NamespaceContext::fromNamespaceName(
+            '\NicMart\Generics\Variable'
+        );
+
         $this->assertEquals(
-            new AngleQuotedGenericName(FullName::fromString("Ns\\Class«T»")),
-            $factory->toGeneric(FullName::fromString("Ns\\Class«T»"))
+            new GenericName(
+                FullName::fromString("Ns\\Class"),
+                array(
+                    FullName::fromString('\NicMart\Generics\Variable\T'),
+                    FullName::fromString('\NicMart\Generics\Variable\S')
+                )
+            ),
+            $factory->toGeneric(
+                FullName::fromString("Ns\\Class«T·S»"),
+                $qualifier
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_transforms_to_fullname()
+    {
+        $factory = new AngleQuotedGenericNameFactory();
+        $generic = new GenericName(
+            FullName::fromString("Ns\\Class"),
+            array(
+                FullName::fromString('\NicMart\Generics\Variable\T'),
+                FullName::fromString('\NicMart\Generics\Variable\S')
+            )
+        );
+
+        $this->assertEquals(
+            FullName::fromString("Ns\\Class«T·S»"),
+            $factory->fromGeneric($generic)
         );
     }
 }
