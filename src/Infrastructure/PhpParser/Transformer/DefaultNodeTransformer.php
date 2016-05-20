@@ -126,6 +126,8 @@ class DefaultNodeTransformer implements NodeTransformer
      */
     private function typeReplacer(Uses &$uses)
     {
+        $factory = $this->genericNameFactory;
+
         $typeUsageAssignment = $this->generic->assignments(
             $this->typeParameters,
             $this->qualifier
@@ -144,11 +146,11 @@ class DefaultNodeTransformer implements NodeTransformer
             Name $from,
             Name $to,
             NamespaceContext $context
-        ) use (&$uses) {
-            // @todo refactor
-            if (strpos($from->toString(), "«") !== false) {
+        ) use (&$uses, $factory) {
+            $qualifiedFrom = $context->qualify($from);
+            if ($factory->isGeneric($qualifiedFrom)) {
                 $uses = $uses
-                    ->withUse(new Use_($context->qualify($from)))
+                    ->withUse(new Use_($qualifiedFrom))
                     ->withUse(new Use_($context->qualify($to)))
                 ;
             }
