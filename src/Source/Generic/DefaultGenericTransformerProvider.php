@@ -81,7 +81,6 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
     }
 
     /**
-     * @param NameQualifier $qualifier
      * @param GenericName $generic
      * @param FullName[] $typeParameters
      * @return PhpParserSourceTransformer

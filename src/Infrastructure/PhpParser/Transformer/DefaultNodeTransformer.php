@@ -102,19 +102,15 @@ class DefaultNodeTransformer implements NodeTransformer
      */
     public function transformNodes(array $nodes)
     {
-        $uses = new Uses();
+        $nodes = $this->typeReplacer()->transformNodes($nodes);
 
-        $nodes = $this->typeReplacer($uses)->transformNodes($nodes);
-
-        return $this->nameSimplifier($uses)->transformNodes($nodes);
+        return $this->nameSimplifier()->transformNodes($nodes);
     }
 
     /**
-     * @param Uses $uses
-     *
      * @return TraverserNodeTransformer
      */
-    private function typeReplacer(Uses &$uses)
+    private function typeReplacer()
     {
         $factory = $this->genericNameFactory;
 
@@ -133,22 +129,6 @@ class DefaultNodeTransformer implements NodeTransformer
             )
         ));
 
-        // This collects generic transformations, in order
-        // to add them as use statements on top of the file
-        $transformationsCollector = function (
-            Name $from,
-            Name $to,
-            NamespaceContext $context
-        ) use (&$uses, $factory) {
-            $qualifiedFrom = $context->qualify($from);
-            if ($factory->isGeneric($qualifiedFrom)) {
-                $uses = $uses
-                    ->withUse(new Use_($qualifiedFrom))
-                    ->withUse(new Use_($context->qualify($to)))
-                ;
-            }
-        };
-
         // Transform type vars in concrete types
         $simpleTypeUsageTransformer = new ByFullNameNameTransformer(
             $typeUsageAssignment
@@ -156,7 +136,7 @@ class DefaultNodeTransformer implements NodeTransformer
 
         // Recursive type transformer, transform type vars in concrete types,
         // and transform generic arguments recursively
-        $typeUsageTransformer = new ListenerNameTransformer(
+        $typeUsageTransformer =
             ChainNameTransformer::fromNameTransformerFactory(
                 function (
                     ChainNameTransformer $chain
@@ -169,9 +149,8 @@ class DefaultNodeTransformer implements NodeTransformer
                         $simpleTypeUsageTransformer
                     );
                 }
-            ),
-            $transformationsCollector
-        );
+            )
+        ;
 
         // Define the visitor chain
         return TraverserNodeTransformer::fromVisitors(array(
@@ -192,11 +171,11 @@ class DefaultNodeTransformer implements NodeTransformer
     }
 
     /**
-     * @param Uses $uses
      * @return TraverserNodeTransformer
      */
-    private function nameSimplifier(Uses $uses)
+    private function nameSimplifier()
     {
+        $uses = new Uses();
         foreach ($this->typeParameters as $typeParameter) {
             if (!$typeParameter->isNative()) {
                 $uses = $uses->withUse(new Use_($typeParameter));

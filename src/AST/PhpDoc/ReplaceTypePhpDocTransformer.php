@@ -11,8 +11,6 @@
 namespace NicMart\Generics\AST\PhpDoc;
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
-use NicMart\Generics\AST\PhpDoc\PhpDocTransformer;
-use NicMart\Generics\AST\PhpDoc\ReturnTagTypeReplacer;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Transformer\NameTransformer;
