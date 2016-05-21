@@ -87,7 +87,6 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
      * @return PhpParserSourceTransformer
      */
     public function transformer(
-        NameQualifier $qualifier,
         GenericName $generic,
         array $typeParameters
     ) {
@@ -97,7 +96,6 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
                 $this->phpParserDocToPhpdoc,
                 $this->phpDocSerializer,
                 $this->namespaceContextVisitor,
-                $qualifier,
                 $this->genericNameFactory,
                 $generic,
                 $typeParameters

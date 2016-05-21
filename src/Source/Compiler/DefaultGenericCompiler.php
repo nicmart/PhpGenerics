@@ -76,7 +76,6 @@ class DefaultGenericCompiler implements GenericCompiler
         $generic = $this->genericNameFactory->toGeneric($genericName, $context);
 
         $transformer = $this->genericTransformerProvider->transformer(
-            $context,
             $generic,
             $typeParameters
         );
