@@ -85,10 +85,7 @@ class GenericNameTransformer implements NameTransformer
         Name $name,
         NamespaceContext $namespaceContext
     ) {
-        $fullName = $name instanceof FullName
-            ? $name
-            : $namespaceContext->qualify($name)
-        ;
+        $fullName = $namespaceContext->qualify($name);
 
         if (!$this->genericNameFactory->isGeneric($fullName)) {
             return $name;
@@ -104,14 +101,18 @@ class GenericNameTransformer implements NameTransformer
         $typeValues = array();
 
         foreach ($typeVars as $typeVar) {
-            $typeValues[] = $namespaceContext->qualify($this->innerNameTransformer->transformName(
-                $typeVar,
-                $namespaceContext
-            ));
+            $typeValues[] = $namespaceContext->qualify(
+                $this->innerNameTransformer->transformName(
+                    $typeVar,
+                    $namespaceContext
+                )
+            );
         }
 
-        return $namespaceContext->simplify($this->genericNameFactory->fromGeneric(
-            $genericName->apply($typeValues)
-        ));
+        return $namespaceContext->simplify(
+            $this->genericNameFactory->fromGeneric(
+                $genericName->apply($typeValues)
+            )
+        );
     }
 }

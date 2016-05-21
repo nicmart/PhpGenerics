@@ -13,7 +13,6 @@ namespace NicMart\Generics\Composer;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Generic\GenericNameResolver;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;

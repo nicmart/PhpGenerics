@@ -14,7 +14,6 @@ namespace NicMart\Generics\Source\Compiler;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Source\Generic\GenericTransformerProvider;
 use NicMart\Generics\Source\SourceResolver;

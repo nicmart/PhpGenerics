@@ -11,7 +11,6 @@
 namespace NicMart\Generics\Name\Generic\Factory;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\AngleQuotedGenericNameInterface;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\Transformer\NameQualifier;

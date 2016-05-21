@@ -12,36 +12,15 @@ namespace NicMart\Generics\Source\Generic;
 
 
 use NicMart\Generics\Adapter\PhpParserDocToPhpdoc;
-use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
-use NicMart\Generics\AST\PhpDoc\ReplaceTypePhpDocTransformer;
-use NicMart\Generics\AST\Visitor\AddUsesVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
-use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
-use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
-use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
-use NicMart\Generics\Infrastructure\AST\Transformer\ChainNodeTransformer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\DefaultNodeTransformer;
-use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransformer;
-use NicMart\Generics\Name\Context\Namespace_;
-use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Context\Use_;
-use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
-use NicMart\Generics\Name\Name;
-use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
-use NicMart\Generics\Name\Transformer\ChainNameTransformer;
-use NicMart\Generics\Name\Transformer\GenericNameTransformer;
-use NicMart\Generics\Name\Transformer\ListenerNameTransformer;
 use NicMart\Generics\Name\Transformer\NameQualifier;
-use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Lexer;
-use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 

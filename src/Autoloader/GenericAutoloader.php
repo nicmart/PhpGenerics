@@ -14,7 +14,6 @@ use NicMart\Generics\Infrastructure\Source\CallerFilenameResolver;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\AngleQuotedGenericNameInterface;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericNameResolver;
 use NicMart\Generics\Source\Compiler\DefaultGenericCompiler;
@@ -45,10 +44,12 @@ class GenericAutoloader
      * @var NamespaceContextExtractor
      */
     private $namespaceContextExtractor;
+
     /**
      * @var GenericNameResolver
      */
     private $genericNameResolver;
+    
     /**
      * @var GenericNameFactory
      */

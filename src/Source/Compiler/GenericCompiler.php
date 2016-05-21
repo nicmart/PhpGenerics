@@ -8,7 +8,6 @@
 namespace NicMart\Generics\Source\Compiler;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Source\SourceUnit;
 
 

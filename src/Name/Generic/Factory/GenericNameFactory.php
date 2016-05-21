@@ -13,7 +13,6 @@ namespace NicMart\Generics\Name\Generic\Factory;
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 
 /**

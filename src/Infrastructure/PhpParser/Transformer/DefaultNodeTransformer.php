@@ -29,7 +29,6 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\AngleQuotedGenericNameFactory;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
@@ -52,7 +51,7 @@ class DefaultNodeTransformer implements NodeTransformer
     private $qualifier;
 
     /**
-     * @var GenericNameInterface
+     * @var GenericName
      */
     private $generic;
 

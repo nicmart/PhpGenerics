@@ -10,11 +10,8 @@
 
 namespace NicMart\Generics\Source\Generic;
 
-
-use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Name\Generic\GenericNameInterface;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Source\Transformer\SourceTransformer;
 
