@@ -90,27 +90,6 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
         return $this->uses;
     }
 
-    /**
-     * @param FullName $name
-     * @return bool
-     */
-    public function hasUseByName(FullName $name)
-    {
-        return isset($this->usesByName[$name->toString()]);
-    }
-
-    /**
-     * @param FullName $name
-     * @return Use_
-     */
-    public function getUseByName(FullName $name)
-    {
-        if (!$this->hasUseByName($name)) {
-            throw new UnderflowException("Undefined use statement for name {$name->toString()}");
-        }
-
-        return $this->usesByName[$name->toString()];
-    }
 
     /**
      * @param Use_ $use
@@ -189,14 +168,5 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
             ? $nsRelativeName
             : $useRelativeName
         ;
-    }
-
-    /**
-     * @param Use_ $use
-     */
-    private function addUse(Use_ $use)
-    {
-        $this->usesByAliases[$use->alias()->toString()] = $use;
-        $this->usesByName[$use->name()->toString()] = $use;
     }
 }

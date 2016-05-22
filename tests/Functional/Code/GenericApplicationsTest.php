@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Code;
 
 /**
- * @runTestsInSeparateProcesses
+ * @xxrunTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
 class GenericApplicationsTest extends GenericFunctionalTestCase

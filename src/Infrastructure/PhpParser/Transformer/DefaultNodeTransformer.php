@@ -22,17 +22,14 @@ use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignment;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
-use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
-use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
 use NicMart\Generics\Name\Transformer\GenericNameTransformer;
-use NicMart\Generics\Name\Transformer\ListenerNameTransformer;
 use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Node;
@@ -156,6 +153,7 @@ class DefaultNodeTransformer implements NodeTransformer
         return TraverserNodeTransformer::fromVisitors(array(
             $this->namespaceContextVisitor,
             new TypeUsageTransformerVisitor($typeUsageTransformer),
+            $this->namespaceContextVisitor,
             new TypeDefinitionTransformerVisitor($typeDefAssignments),
             new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
@@ -176,6 +174,7 @@ class DefaultNodeTransformer implements NodeTransformer
     private function nameSimplifier()
     {
         $uses = new Uses();
+
         foreach ($this->typeParameters as $typeParameter) {
             if (!$typeParameter->isNative()) {
                 $uses = $uses->withUse(new Use_($typeParameter));
@@ -185,7 +184,7 @@ class DefaultNodeTransformer implements NodeTransformer
         $simplifyNameTransformer = new SimplifierNameTransformer($uses);
 
         return TraverserNodeTransformer::fromVisitors(array(
-            new AddUsesVisitor($uses),
+            //new AddUsesVisitor($uses),
             $this->namespaceContextVisitor,
             new TypeUsageTransformerVisitor(
                 $simplifyNameTransformer

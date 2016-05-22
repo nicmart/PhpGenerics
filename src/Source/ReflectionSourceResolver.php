@@ -26,7 +26,7 @@ class ReflectionSourceResolver implements SourceResolver
     public function sourceOf(FullName $fullName)
     {
         $reflection = new ReflectionClass($fullName->toCanonicalString());
-
+        var_dump("extracting source of " . $fullName->toString());
         return file_get_contents($reflection->getFileName());
     }
 }

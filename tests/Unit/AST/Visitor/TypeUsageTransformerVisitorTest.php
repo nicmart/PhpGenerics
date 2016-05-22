@@ -188,6 +188,39 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function it_transforms_uses()
+    {
+        $contextNs = new NamespaceContext(Namespace_::fromString("NS1\\NS2"));
+
+        $assignmentContext = new NameAssignmentContext(array(
+            new NameAssignment(
+                FullName::fromString("NS1\\NS2\\Cls"),
+                FullName::fromString("A\\B\\C")
+            )
+        ));
+
+        $visitor = new TypeUsageTransformerVisitor(
+            new ByFullNameNameTransformer($assignmentContext)
+        );
+
+        $use = new Stmt\Use_(array(
+            new Stmt\UseUse(new Name\FullyQualified(array("NS1\\NS2\\Cls")))
+        ));
+
+        $use->setAttribute(NamespaceContextVisitor::ATTR_NAME, $contextNs);
+
+        $visitor->enterNode($use);
+        $visitor->leaveNode($use);
+
+        $this->assertEquals(
+            "A\\B\\C",
+            current($use->uses)->name->toString()
+        );
+    }
+
     public function dataClass()
     {
         $contextNs = new NamespaceContext(Namespace_::fromString("NS1\\NS2"));

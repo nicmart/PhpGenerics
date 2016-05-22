@@ -46,7 +46,7 @@ class ByFullNameNameTransformer implements NameTransformer
             ? $namespaceContext->qualify($name)
             : $name
         ;
-
+        
         $transformedFullName = $this->fullNameTransformer->transform($fullName);
 
         return $transformedFullName == $fullName

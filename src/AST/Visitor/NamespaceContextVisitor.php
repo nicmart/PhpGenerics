@@ -70,6 +70,7 @@ class NamespaceContextVisitor implements Visitor
     public function enterNode(Node $node)
     {
         if ($node instanceof Stmt\Namespace_) {
+            var_dump("reset ns");
             $this->currentContext = NamespaceContext::emptyContext();
         }
 
@@ -79,15 +80,10 @@ class NamespaceContextVisitor implements Visitor
         );
 
         if ($node instanceof Stmt\Namespace_) {
+            var_dump("new ns");
             $this->currentContext = new NamespaceContext(
                 Namespace_::fromParts($node->name->parts)
             );
-        } elseif ($node instanceof Stmt\Use_) {
-            foreach ($node->uses as $use) {
-                $this->currentContext = $this->currentContext->withUse(
-                    Use_::fromStrings($use->name, $use->alias)
-                );
-            }
         }
 
         return new MaintainNode();
@@ -95,6 +91,17 @@ class NamespaceContextVisitor implements Visitor
 
     public function leaveNode(Node $node)
     {
+        if ($node instanceof Stmt\Namespace_) {
+            //$this->currentContext = new NamespaceContext(
+            //    Namespace_::fromParts($node->name->parts)
+            //);
+        } elseif ($node instanceof Stmt\UseUse) {
+            $this->currentContext = $this->currentContext->withUse(
+                Use_::fromStrings($node->name, $node->alias)
+            );
+            var_dump("adding use " . $node->name->toString());
+        }
+
         return new MaintainNode();
     }
 }
