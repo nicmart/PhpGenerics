@@ -87,8 +87,11 @@ class NamespaceContextVisitorTest extends \PHPUnit_Framework_TestCase
         $use = $this->nodeFactory->use("A\\B")->as("C")->getNode();
         $new = new Expr\New_(new Name("C"));
 
-        $this->visitor->enterNode($use);
-        $this->visitor->leaveNode($use);
+        foreach ($use->uses as $useUse) {
+            $this->visitor->enterNode($useUse);
+            $this->visitor->leaveNode($useUse);
+        }
+
         $this->visitor->enterNode($new);
         $this->visitor->leaveNode($new);
 

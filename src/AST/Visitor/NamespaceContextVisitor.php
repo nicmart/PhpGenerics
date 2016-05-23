@@ -84,12 +84,10 @@ class NamespaceContextVisitor implements Visitor
             $this->currentContext = new NamespaceContext(
                 Namespace_::fromParts($node->name->parts)
             );
-        } elseif ($node instanceof Stmt\Use_) {
-            foreach ($node->uses as $use) {
-                $this->currentContext = $this->currentContext->withUse(
-                    Use_::fromStrings($use->name, $use->alias)
-                );
-            }
+        } elseif ($node instanceof Stmt\UseUse) {
+            $this->currentContext = $this->currentContext->withUse(
+                Use_::fromStrings($node->name, $node->alias)
+            );
         }
 
         return new MaintainNode();

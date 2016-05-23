@@ -17,6 +17,7 @@ use NicMart\Generics\AST\Transformer\NodeTransformer;
 use NicMart\Generics\AST\Visitor\AddUsesVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\PhpDocTransformerVisitor;
+use NicMart\Generics\AST\Visitor\RemoveDuplicateUsesVisitor;
 use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
@@ -154,9 +155,13 @@ class DefaultNodeTransformer implements NodeTransformer
 
         // Define the visitor chain
         return TraverserNodeTransformer::fromVisitors(array(
+            // Set the namespace
             $this->namespaceContextVisitor,
+            // Transforms type usages
             new TypeUsageTransformerVisitor($typeUsageTransformer),
+            // Transforms type definitions (class/interfaces)
             new TypeDefinitionTransformerVisitor($typeDefAssignments),
+            // Transforms phpdocs
             new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
                     $typeUsageTransformer,
@@ -164,6 +169,7 @@ class DefaultNodeTransformer implements NodeTransformer
                     $this->phpDocSerializer
                 )
             ),
+            // Remove Generic marker interface
             new RemoveParentTypeVisitor(array(
                 FullName::fromString('\NicMart\Generics\Generic')
             )),
@@ -185,8 +191,9 @@ class DefaultNodeTransformer implements NodeTransformer
         $simplifyNameTransformer = new SimplifierNameTransformer($uses);
 
         return TraverserNodeTransformer::fromVisitors(array(
-            new AddUsesVisitor($uses),
+            //new AddUsesVisitor($uses),
             $this->namespaceContextVisitor,
+            new RemoveDuplicateUsesVisitor(),
             new TypeUsageTransformerVisitor(
                 $simplifyNameTransformer
             ),
