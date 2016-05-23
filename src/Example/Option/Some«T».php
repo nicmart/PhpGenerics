@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\Example\Option;
 
+use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
 /**

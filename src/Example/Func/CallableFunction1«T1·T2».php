@@ -13,9 +13,6 @@ namespace NicMart\Generics\Example\Func;
 use NicMart\Generics\Variable\T1;
 use NicMart\Generics\Variable\T2;
 
-use NicMart\Generics\Example\Func\Function1«T1·T2»;
-
-
 /**
  * Class CallableFunction1«T1·T2»
  * @package NicMart\Generics\Example\Func

@@ -54,6 +54,7 @@ class TypeDefinitionTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor->enterNode($class);
+        $visitor->leaveNode($class);
 
         $this->assertEquals(
             "bar",
@@ -78,6 +79,7 @@ class TypeDefinitionTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor->enterNode($class);
+        $visitor->leaveNode($class);
 
         $this->assertEquals(
             "bar",

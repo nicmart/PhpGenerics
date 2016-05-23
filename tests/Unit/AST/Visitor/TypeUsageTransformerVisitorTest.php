@@ -54,6 +54,8 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             );
 
             $visitor->enterNode($node);
+            $visitor->leaveNode($node);
+
             $this->assertEquals(
                 $expectedClass,
                 $node->class->toString(),
@@ -91,6 +93,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             );
 
             $visitor->enterNode($node);
+            $visitor->leaveNode($node);
 
             foreach ($node->params as $i => $param) {
                 $this->assertEquals(
@@ -135,6 +138,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
                 $nsContext
             );
 
+            $visitor->leaveNode($node);
             $visitor->enterNode($node);
 
             $this->assertEquals(
@@ -172,6 +176,7 @@ class TypeUsageTransformerVisitorTest extends \PHPUnit_Framework_TestCase
             );
 
             $visitor->enterNode($node);
+            $visitor->leaveNode($node);
 
             $actualInterfaces = $node instanceof Stmt\Class_
                 ? $node->implements

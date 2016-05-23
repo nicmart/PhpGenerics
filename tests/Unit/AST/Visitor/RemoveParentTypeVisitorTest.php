@@ -40,6 +40,7 @@ class RemoveParentTypeVisitorTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor->enterNode($class);
+        $visitor->leaveNode($class);
 
         $this->assertNull(
             $class->extends
@@ -69,6 +70,7 @@ class RemoveParentTypeVisitorTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor->enterNode($interface);
+        $visitor->leaveNode($interface);
 
         $this->assertEquals(
             array(),
@@ -99,6 +101,7 @@ class RemoveParentTypeVisitorTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor->enterNode($class);
+        $visitor->leaveNode($class);
 
         $this->assertEquals(
             array(),

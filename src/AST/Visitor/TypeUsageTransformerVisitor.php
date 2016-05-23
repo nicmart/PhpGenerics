@@ -14,6 +14,8 @@ use NicMart\Generics\AST\Name\PhpParserNameTransformer;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
+use NicMart\Generics\AST\Visitor\Action\RemoveNode;
+use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
@@ -47,9 +49,9 @@ class TypeUsageTransformerVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return EnterNodeAction
+     * @return LeaveNodeAction
      */
-    public function enterNode(Node $node)
+    public function leaveNode(Node $node)
     {
         // We assume the node has already been decorated by NamespaceContextVisitor
         $nsContext = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
@@ -91,6 +93,12 @@ class TypeUsageTransformerVisitor implements Visitor
                 $node,
                 $nsContext
             );
+        } elseif ($node instanceof Stmt\UseUse) {
+            return $this->visitUse($node, $nsContext);
+        } elseif ($node instanceof Stmt\Use_) {
+            if (!$node->uses) {
+                return new RemoveNode();
+            }
         }
 
         return new MaintainNode();
@@ -98,9 +106,9 @@ class TypeUsageTransformerVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return LeaveNodeAction
+     * @return EnterNodeAction
      */
-    public function leaveNode(Node $node)
+    public function enterNode(Node $node)
     {
         return new MaintainNode();
     }
@@ -176,5 +184,27 @@ class TypeUsageTransformerVisitor implements Visitor
                 $nsContext
             );
         }
+    }
+
+    private function visitUse(
+        Stmt\UseUse $useUse,
+        NamespaceContext $namespaceContext
+    ) {
+        $name = $this->transformName(
+            new Node\Name\FullyQualified($useUse->name->parts),
+            $namespaceContext
+        );
+
+        if (!$name) {
+            return new RemoveNode();
+        }
+
+        if (!$name->isFullyQualified()) {
+            return new MaintainNode();
+        }
+
+        return new ReplaceNodeWith(
+            new Stmt\UseUse(new Node\Name($name->parts))
+        );
     }
 }

@@ -11,10 +11,12 @@
 namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
+use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\Context\Uses;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
@@ -82,12 +84,10 @@ class NamespaceContextVisitor implements Visitor
             $this->currentContext = new NamespaceContext(
                 Namespace_::fromParts($node->name->parts)
             );
-        } elseif ($node instanceof Stmt\Use_) {
-            foreach ($node->uses as $use) {
-                $this->currentContext = $this->currentContext->withUse(
-                    Use_::fromStrings($use->name, $use->alias)
-                );
-            }
+        } elseif ($node instanceof Stmt\UseUse) {
+            $this->currentContext = $this->currentContext->withUse(
+                Use_::fromStrings($node->name, $node->alias)
+            );
         }
 
         return new MaintainNode();
