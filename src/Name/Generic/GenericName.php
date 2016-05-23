@@ -75,14 +75,14 @@ final class GenericName
     }
 
     /**
-     * @param FullName[] $parameters
+     * @param FullName[] $arguments
      * @return GenericName
      */
-    public function apply(array $parameters)
+    public function apply(array $arguments)
     {
-        $this->assertValidParameters($parameters);
+        $this->assertValidArguments($arguments);
 
-        return new self($this->main(), $parameters);
+        return new self($this->main(), $arguments);
     }
 
     /**
@@ -93,7 +93,7 @@ final class GenericName
     public function assignments(
         array $names
     ) {
-        $this->assertValidParameters($names);
+        $this->assertValidArguments($names);
 
         $assignments = array();
 
@@ -106,26 +106,7 @@ final class GenericName
 
         return new NameAssignmentContext($assignments);
     }
-
-    /**
-     * @param FullName[] $names
-     * @return SimpleNameAssignmentContext
-     */
-    public function simpleAssignments(
-        array $names
-    ) {
-        $assignments = array();
-
-        foreach ($names as $index => $name) {
-            $assignments[] = new SimpleNameAssignment(
-                $this->parameters[$index]->last(),
-                $name->last()
-            );
-        }
-
-        return new SimpleNameAssignmentContext($assignments);
-    }
-
+    
     /**
      * @param FullName $fullName
      */
@@ -134,7 +115,7 @@ final class GenericName
         $this->parameters[] = $fullName;
     }
 
-    private function assertValidParameters(array $parameters)
+    private function assertValidArguments(array $parameters)
     {
         if (count($parameters) != $this->arity()) {
             throw new InvalidArgumentException(sprintf(

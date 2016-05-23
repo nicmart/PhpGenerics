@@ -105,21 +105,4 @@ class GenericNameTest extends \PHPUnit_Framework_TestCase
             ))
         );
     }
-
-    /**
-     * @test
-     */
-    public function it_computes_simple_assignments()
-    {
-        $this->assertEquals(
-            SimpleNameAssignmentContext::fromStrings(array(
-                'T' => 'A',
-                'S' => 'B',
-            )),
-            $this->generic->simpleAssignments(array(
-                FullName::fromString("A"),
-                FullName::fromString("B")
-            ))
-        );
-    }
 }
