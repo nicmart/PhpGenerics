@@ -58,8 +58,6 @@ class TraverserNodeTransformer implements NodeTransformer
      */
     public function transformNodes(array $nodes)
     {
-        $this->traverser->traverse($nodes);
-
-        return $nodes;
+        return $this->traverser->traverse($nodes);
     }
 }

@@ -40,9 +40,9 @@ class AddUsesVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return EnterNodeAction
+     * @return LeaveNodeAction
      */
-    public function enterNode(Node $node)
+    public function leaveNode(Node $node)
     {
         if (!$node instanceof Node\Stmt\Namespace_) {
             return new MaintainNode();
@@ -79,9 +79,9 @@ class AddUsesVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return LeaveNodeAction
+     * @return EnterNodeAction
      */
-    public function leaveNode(Node $node)
+    public function enterNode(Node $node)
     {
         return new MaintainNode();
     }

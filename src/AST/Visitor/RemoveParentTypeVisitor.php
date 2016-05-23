@@ -21,6 +21,10 @@ use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\FullName;
 use PhpParser\Node;
 
+/**
+ * Class RemoveParentTypeVisitor
+ * @package NicMart\Generics\AST\Visitor
+ */
 class RemoveParentTypeVisitor implements Visitor
 {
     /**
@@ -39,7 +43,11 @@ class RemoveParentTypeVisitor implements Visitor
         }
     }
 
-    public function enterNode(Node $node)
+    /**
+     * @param Node $node
+     * @return MaintainNode
+     */
+    public function leaveNode(Node $node)
     {
         $nsContext = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
 
@@ -64,11 +72,18 @@ class RemoveParentTypeVisitor implements Visitor
         return new MaintainNode();
     }
 
-    public function leaveNode(Node $node)
+    /**
+     * @param Node $node
+     * @return MaintainNode
+     */
+    public function enterNode(Node $node)
     {
         return new MaintainNode();
     }
 
+    /**
+     * @param FullName $name
+     */
     private function addName(FullName $name)
     {
         $this->names[$name->toString()] = $name;

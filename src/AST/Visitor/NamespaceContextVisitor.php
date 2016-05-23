@@ -11,10 +11,12 @@
 namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
+use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
+use NicMart\Generics\Name\Context\Uses;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 

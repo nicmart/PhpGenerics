@@ -35,6 +35,7 @@ class AddUsesVisitorTest extends \PHPUnit_Framework_TestCase
         ))->getNode();
 
         $visitor->enterNode($ns);
+        $visitor->leaveNode($ns);
 
         $this->assertCount(
             4,

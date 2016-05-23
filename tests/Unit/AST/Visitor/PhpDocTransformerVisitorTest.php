@@ -70,6 +70,7 @@ class PhpDocTransformerVisitorTest extends \PHPUnit_Framework_TestCase
         );
 
         $visitor->enterNode($method);
+        $visitor->leaveNode($method);
 
         $this->assertEquals(
             new Doc("foo"),

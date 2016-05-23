@@ -51,24 +51,28 @@ class NamespaceContextVisitorTest extends \PHPUnit_Framework_TestCase
         ))->getNode();
 
         $this->visitor->enterNode($ns1);
+        $this->visitor->leaveNode($ns1);
         $this->assertEquals(
             NamespaceContext::emptyContext(),
             $ns1->getAttribute(NamespaceContextVisitor::ATTR_NAME)
         );
 
         $this->visitor->enterNode($class);
+        $this->visitor->leaveNode($class);
         $this->assertEquals(
             new NamespaceContext(Namespace_::fromString("A\\B\\C")),
             $class->getAttribute(NamespaceContextVisitor::ATTR_NAME)
         );
 
         $this->visitor->enterNode($ns2);
+        $this->visitor->leaveNode($ns2);
         $this->assertEquals(
             NamespaceContext::emptyContext(),
             $ns1->getAttribute(NamespaceContextVisitor::ATTR_NAME)
         );
 
         $this->visitor->enterNode($func);
+        $this->visitor->leaveNode($func);
         $this->assertEquals(
             new NamespaceContext(Namespace_::fromString("A\\E\\F")),
             $func->getAttribute(NamespaceContextVisitor::ATTR_NAME)
@@ -84,7 +88,9 @@ class NamespaceContextVisitorTest extends \PHPUnit_Framework_TestCase
         $new = new Expr\New_(new Name("C"));
 
         $this->visitor->enterNode($use);
+        $this->visitor->leaveNode($use);
         $this->visitor->enterNode($new);
+        $this->visitor->leaveNode($new);
 
         $this->assertEquals(
             NamespaceContext::emptyContext()

@@ -39,7 +39,7 @@ class PhpDocTransformerVisitor implements Visitor
      * @param Node $node
      * @return MaintainNode
      */
-    public function enterNode(Node $node)
+    public function leaveNode(Node $node)
     {
         $this->transformPhpDoc($node);
 
@@ -50,7 +50,7 @@ class PhpDocTransformerVisitor implements Visitor
      * @param Node $node
      * @return MaintainNode
      */
-    public function leaveNode(Node $node)
+    public function enterNode(Node $node)
     {
         return new MaintainNode();
     }

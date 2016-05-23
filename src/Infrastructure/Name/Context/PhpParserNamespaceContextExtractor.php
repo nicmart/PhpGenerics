@@ -67,7 +67,6 @@ class PhpParserNamespaceContextExtractor implements NamespaceContextExtractor
 
         $statements = $this->parser->parse($source);
         $this->traverser->traverse($statements);
-
         return $this->visitor->context();
     }
 }

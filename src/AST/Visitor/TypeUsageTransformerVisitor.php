@@ -47,9 +47,9 @@ class TypeUsageTransformerVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return EnterNodeAction
+     * @return LeaveNodeAction
      */
-    public function enterNode(Node $node)
+    public function leaveNode(Node $node)
     {
         // We assume the node has already been decorated by NamespaceContextVisitor
         $nsContext = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
@@ -98,9 +98,9 @@ class TypeUsageTransformerVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return LeaveNodeAction
+     * @return EnterNodeAction
      */
-    public function leaveNode(Node $node)
+    public function enterNode(Node $node)
     {
         return new MaintainNode();
     }
