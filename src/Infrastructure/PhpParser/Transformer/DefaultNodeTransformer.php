@@ -193,6 +193,7 @@ class DefaultNodeTransformer implements NodeTransformer
         return TraverserNodeTransformer::fromVisitors(array(
             //new AddUsesVisitor($uses),
             $this->namespaceContextVisitor,
+            // Deduplicate usage statements created by the previous stage
             new RemoveDuplicateUsesVisitor(),
             new TypeUsageTransformerVisitor(
                 $simplifyNameTransformer
