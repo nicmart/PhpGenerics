@@ -74,7 +74,6 @@ class DefaultGenericCompiler implements GenericCompiler
     ) {
         $code = $this->sourceResolver->sourceOf($genericName);
         $context = $this->namespaceContextExtractor->contextOf($code);
-        $generic = $this->genericNameFactory->toGeneric($genericName, $context);
 
         $genericNameAssignment = GenericNameAssignment::fromName(
             $genericName,
@@ -87,10 +86,8 @@ class DefaultGenericCompiler implements GenericCompiler
             $genericNameAssignment
         );
 
-        $appliedGeneric = $generic->apply($typeParameters);
-
         return new SourceUnit(
-            $this->genericNameFactory->fromGeneric($appliedGeneric),
+            $genericNameAssignment->mainAssignment()->to(),
             $transformer->transform($code)
         );
     }

@@ -94,6 +94,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
                 $this->phpParserDocToPhpdoc,
                 $this->phpDocSerializer,
                 $this->namespaceContextVisitor,
+                $this->genericNameFactory,
                 $genericNameAssignment
             ),
             $this->phpPrettyPrinter

@@ -79,6 +79,7 @@ final class GenericNameAssignment
         NameAssignment $nameAssignment,
         array $typeArguments
     ) {
+        $this->genericName = $genericName;
         $this->assertValidArguments($typeArguments);
 
         foreach ($typeArguments as $argument) {
@@ -86,7 +87,6 @@ final class GenericNameAssignment
         }
 
         $this->nameAssignment = $nameAssignment;
-        $this->genericName = $genericName;
     }
 
     /**
