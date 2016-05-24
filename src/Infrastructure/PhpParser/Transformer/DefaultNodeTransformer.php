@@ -20,6 +20,7 @@ use NicMart\Generics\AST\Visitor\RemoveDuplicateUsesVisitor;
 use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeDefinitionTransformerVisitor;
 use NicMart\Generics\AST\Visitor\TypeUsageTransformerVisitor;
+use NicMart\Generics\AST\Transformer\ChainNodeTransformer;
 use NicMart\Generics\Name\Assignment\SimpleNameAssignmentContext;
 use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
@@ -29,6 +30,8 @@ use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
 use NicMart\Generics\Name\Transformer\GenericNameTransformer;
+use NicMart\Generics\Name\Transformer\NameTransformer;
+use NicMart\Generics\Name\Transformer\SimpleNameTransformer;
 use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Node;
@@ -92,9 +95,12 @@ class DefaultNodeTransformer implements NodeTransformer
      */
     public function transformNodes(array $nodes)
     {
-        $nodes = $this->typeReplacer()->transformNodes($nodes);
+        $transformer = new ChainNodeTransformer(array(
+            $this->typeReplacer(),
+            $this->nameSimplifier()
+        ));
 
-        return $this->nameSimplifier()->transformNodes($nodes);
+        return $transformer->transformNodes($nodes);
     }
 
     /**
@@ -132,14 +138,24 @@ class DefaultNodeTransformer implements NodeTransformer
             )
         ;
 
-        // Define the visitor chain
+        return $this->typeTransformerVisitor(
+            $typeUsageTransformer,
+            $typeDefAssignments
+        );
+
+    }
+
+    private function typeTransformerVisitor(
+        NameTransformer $typeUsageTransformer,
+        SimpleNameTransformer $typeDefTransformer
+    ) {
         return TraverserNodeTransformer::fromVisitors(array(
             // Set the namespace
             $this->namespaceContextVisitor,
             // Transforms type usages
             new TypeUsageTransformerVisitor($typeUsageTransformer),
             // Transforms type definitions (class/interfaces)
-            new TypeDefinitionTransformerVisitor($typeDefAssignments),
+            new TypeDefinitionTransformerVisitor($typeDefTransformer),
             // Transforms phpdocs
             new PhpDocTransformerVisitor(
                 new ReplaceTypePhpDocTransformer(
@@ -169,6 +185,16 @@ class DefaultNodeTransformer implements NodeTransformer
 
         $simplifyNameTransformer = new SimplifierNameTransformer($uses);
 
+        return $this->nameSimplifierTransformer($simplifyNameTransformer);
+    }
+
+    /**
+     * @param $simplifyNameTransformer
+     * @return TraverserNodeTransformer
+     */
+    private function nameSimplifierTransformer(
+        NameTransformer $simplifyNameTransformer
+    ) {
         return TraverserNodeTransformer::fromVisitors(array(
             //new AddUsesVisitor($uses),
             $this->namespaceContextVisitor,
