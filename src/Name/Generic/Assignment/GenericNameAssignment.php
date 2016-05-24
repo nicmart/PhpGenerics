@@ -13,6 +13,7 @@ namespace NicMart\Generics\Name\Generic\Assignment;
 
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use NicMart\Generics\Name\Assignment\NameAssignment;
+use NicMart\Generics\Name\Assignment\SimpleNameAssignment;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
@@ -118,6 +119,17 @@ final class GenericNameAssignment
     public function mainAssignment()
     {
         return $this->nameAssignment;
+    }
+
+    /**
+     * @return SimpleNameAssignment
+     */
+    public function mainSimpleNameAssignment()
+    {
+        return new SimpleNameAssignment(
+            $this->nameAssignment->from()->last(),
+            $this->nameAssignment->to()->last()
+        );
     }
 
     /**

@@ -16,6 +16,7 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\DefaultNodeTransformer;
 use NicMart\Generics\Infrastructure\Source\Transformer\PhpParserSourceTransformer;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\Assignment\GenericNameAssignment;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
@@ -81,13 +82,11 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
     }
 
     /**
-     * @param GenericName $generic
-     * @param FullName[] $typeParameters
+     * @param GenericNameAssignment $genericNameAssignment
      * @return PhpParserSourceTransformer
      */
     public function transformer(
-        GenericName $generic,
-        array $typeParameters
+        GenericNameAssignment $genericNameAssignment
     ) {
         return new PhpParserSourceTransformer(
             $this->phpParser,
@@ -95,9 +94,7 @@ class DefaultGenericTransformerProvider implements GenericTransformerProvider
                 $this->phpParserDocToPhpdoc,
                 $this->phpDocSerializer,
                 $this->namespaceContextVisitor,
-                $this->genericNameFactory,
-                $generic,
-                $typeParameters
+                $genericNameAssignment
             ),
             $this->phpPrettyPrinter
         );

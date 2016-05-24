@@ -27,6 +27,7 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\Assignment\GenericNameAssignment;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Name\Name;
@@ -45,16 +46,6 @@ use PhpParser\Node;
 class DefaultNodeTransformer implements NodeTransformer
 {
     /**
-     * @var GenericName
-     */
-    private $generic;
-
-    /**
-     * @var FullName[]
-     */
-    private $typeParameters;
-
-    /**
      * @var PhpParserDocToPhpdoc
      */
     private $phpParserDocToPhpdoc;
@@ -63,38 +54,34 @@ class DefaultNodeTransformer implements NodeTransformer
      * @var Serializer
      */
     private $phpDocSerializer;
+
     /**
      * @var NamespaceContextVisitor
      */
     private $namespaceContextVisitor;
+
     /**
-     * @var GenericNameFactory
+     * @var GenericNameAssignment
      */
-    private $genericNameFactory;
+    private $genericNameAssignment;
 
     /**
      * DefaultNodeTransformer constructor.
      * @param PhpParserDocToPhpdoc $phpParserDocToPhpdoc
      * @param Serializer $phpDocSerializer
      * @param NamespaceContextVisitor $namespaceContextVisitor
-     * @param GenericNameFactory $genericNameFactory
-     * @param GenericName $generic
-     * @param array $typeParameters
+     * @param GenericNameAssignment $genericNameAssignment
      */
     public function __construct(
         PhpParserDocToPhpdoc $phpParserDocToPhpdoc,
         Serializer $phpDocSerializer,
         NamespaceContextVisitor $namespaceContextVisitor,
-        GenericNameFactory $genericNameFactory,
-        GenericName $generic,
-        array $typeParameters
+        GenericNameAssignment $genericNameAssignment
     ) {
-        $this->generic = $generic;
-        $this->typeParameters = $typeParameters;
         $this->phpParserDocToPhpdoc = $phpParserDocToPhpdoc;
         $this->phpDocSerializer = $phpDocSerializer;
         $this->namespaceContextVisitor = $namespaceContextVisitor;
-        $this->genericNameFactory = $genericNameFactory;
+        $this->genericNameAssignment = $genericNameAssignment;
     }
 
     /**
@@ -113,26 +100,14 @@ class DefaultNodeTransformer implements NodeTransformer
      */
     private function typeReplacer()
     {
-        $factory = $this->genericNameFactory;
-
-        // Assignments for type usages: from generict type param to concrete types
-        $typeUsageAssignment = $this->generic->assignments(
-            $this->typeParameters
-        );
-
-        $appliedGeneric = $this->generic->apply($this->typeParameters);
-
         // Assignment for type definition replacement
         $typeDefAssignments = new SimpleNameAssignmentContext(array(
-            new SimpleNameAssignment(
-                $this->genericNameFactory->fromGeneric($this->generic)->last(),
-                $this->genericNameFactory->fromGeneric($appliedGeneric)->last()
-            )
+            $this->genericNameAssignment->mainSimpleNameAssignment()
         ));
 
         // Transform type vars in concrete types
         $simpleTypeUsageTransformer = new ByFullNameNameTransformer(
-            $typeUsageAssignment
+            $this->genericNameAssignment->typeAssignments()
         );
 
         // Recursive type transformer, transform type vars in concrete types,
@@ -182,9 +157,9 @@ class DefaultNodeTransformer implements NodeTransformer
     private function nameSimplifier()
     {
         $uses = new Uses();
-        foreach ($this->typeParameters as $typeParameter) {
-            if (!$typeParameter->isNative()) {
-                $uses = $uses->withUse(new Use_($typeParameter));
+        foreach ($this->genericNameAssignment->typeArguments() as $typeArgument) {
+            if (!$typeArgument->isNative()) {
+                $uses = $uses->withUse(new Use_($typeArgument));
             }
         }
 

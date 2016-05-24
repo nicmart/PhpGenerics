@@ -13,6 +13,7 @@ namespace NicMart\Generics\Source\Compiler;
 
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\Assignment\GenericNameAssignment;
 use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Source\Generic\GenericTransformerProvider;
@@ -75,9 +76,15 @@ class DefaultGenericCompiler implements GenericCompiler
         $context = $this->namespaceContextExtractor->contextOf($code);
         $generic = $this->genericNameFactory->toGeneric($genericName, $context);
 
+        $genericNameAssignment = GenericNameAssignment::fromName(
+            $genericName,
+            $typeParameters,
+            $context,
+            $this->genericNameFactory
+        );
+
         $transformer = $this->genericTransformerProvider->transformer(
-            $generic,
-            $typeParameters
+            $genericNameAssignment
         );
 
         $appliedGeneric = $generic->apply($typeParameters);

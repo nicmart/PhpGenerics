@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Source\Generic;
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\Assignment\GenericNameAssignment;
 use NicMart\Generics\Name\Generic\GenericName;
 use NicMart\Generics\Source\Transformer\SourceTransformer;
 
@@ -21,12 +22,10 @@ use NicMart\Generics\Source\Transformer\SourceTransformer;
 interface GenericTransformerProvider
 {
     /**
-     * @param GenericName $generic
-     * @param FullName[] $typeParameters
+     * @param GenericNameAssignment $genericNameAssignment
      * @return SourceTransformer
      */
     public function transformer(
-        GenericName $generic,
-        array $typeParameters
+        GenericNameAssignment $genericNameAssignment
     );
 }
