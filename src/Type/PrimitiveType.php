@@ -35,6 +35,31 @@ final class PrimitiveType implements Type
     }
 
     /**
+     * @param FullName $name
+     * @return bool
+     */
+    public static function isPrimitive(FullName $name)
+    {
+        switch ($name->toString()) {
+            case "string":
+            case "int":
+            case "callable":
+            case "array":
+            case "resource":
+            case "float":
+            case "double":
+            case "bool":
+            case "void":
+            case "static":
+            case "self":
+            case "parent":
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
      * PrimitiveType constructor.
      * @param FullName $name
      */
@@ -59,30 +84,10 @@ final class PrimitiveType implements Type
      */
     private function assertValidName(FullName $name)
     {
-        if (!count($name->parts()) != 1) {
+        if (!$this->isPrimitive($name)) {
             throw new InvalidArgumentException(
-                "Invalid primitive type name, too many parts"
+                "Invalid primitive type name"
             );
         }
-
-        switch ($name->toString()) {
-            case "string":
-            case "int":
-            case "callable":
-            case "array":
-            case "resource":
-            case "float":
-            case "double":
-            case "bool":
-            case "void":
-            case "static":
-            case "self":
-            case "parent":
-                return;
-        }
-
-        throw new InvalidArgumentException(
-            "Invalid primitive type name"
-        );
     }
 }

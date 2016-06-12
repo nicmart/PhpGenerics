@@ -19,11 +19,35 @@ use NicMart\Generics\Name\FullName;
 final class GenericType implements ReferenceType
 {
     /**
+     * @var VariableType[]
+     */
+    private $parameters;
+
+    /**
+     * @var FullName
+     */
+    private $name;
+
+    /**
+     * GenericType constructor.
+     * @param FullName $name
+     * @param VariableType[] $parameters
+     */
+    public function __construct(FullName $name, array $parameters)
+    {
+        $this->name = $name;
+        foreach ($parameters as $parameter) {
+            $this->addParameter($parameter);
+        }
+    }
+
+
+    /**
      * @return FullName
      */
     public function name()
     {
-
+        return $this->name;
     }
 
     /**
@@ -31,7 +55,7 @@ final class GenericType implements ReferenceType
      */
     public function parameters()
     {
-
+        return $this->parameters;
     }
 
     /**
@@ -39,6 +63,14 @@ final class GenericType implements ReferenceType
      */
     public function arity()
     {
+        return count($this->parameters);
+    }
 
+    /**
+     * @param VariableType $parameter
+     */
+    private function addParameter(VariableType $parameter)
+    {
+        $this->parameters[] = $parameter;
     }
 }

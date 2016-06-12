@@ -19,19 +19,42 @@ use NicMart\Generics\Name\FullName;
 final class ParametrizedType implements ReferenceType
 {
     /**
+     * @var VariableType[]
+     */
+    private $arguments;
+
+    /**
+     * @var FullName
+     */
+    private $name;
+
+    /**
+     * GenericType constructor.
+     * @param FullName $name
+     * @param Type[] $arguments
+     */
+    public function __construct(FullName $name, array $arguments)
+    {
+        $this->name = $name;
+        foreach ($arguments as $argument) {
+            $this->addArgument($argument);
+        }
+    }
+
+    /**
      * @return FullName
      */
     public function name()
     {
-
+        return $this->name;
     }
 
     /**
-     * @return Type[]
+     * @return VariableType[]
      */
     public function arguments()
     {
-
+        return $this->arguments;
     }
 
     /**
@@ -39,6 +62,14 @@ final class ParametrizedType implements ReferenceType
      */
     public function arity()
     {
+        return count($this->arguments);
+    }
 
+    /**
+     * @param Type $argument
+     */
+    private function addArgument(Type $argument)
+    {
+        $this->arguments[] = $argument;
     }
 }
