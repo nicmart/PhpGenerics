@@ -27,36 +27,6 @@ class ChainNameTransformer implements NameTransformer
     private $nameTransformers = array();
 
     /**
-     * Accepts a factory callable that returns the NameTransformer array
-     *
-     * The factory will receive THIS instance as argument, making possible
-     * self-recursive definitions of the transformation, maintaining
-     * immutability.
-     *
-     * Please not that immutability is compromised during the execution
-     * of the factory.
-     *
-     * @param callable $factory
-     * @return ChainNameTransformer
-     * @throws UnexpectedValueException
-     */
-    public static function fromNameTransformerFactory($factory) {
-        if (!is_callable($factory)) {
-            throw new UnexpectedValueException(
-                "NameTransformer factory must be a valid php callable"
-            );
-        }
-
-        $chain = new self(array());
-
-        foreach ($factory($chain) as $transformer) {
-            $chain->addNameTransformer($transformer);
-        }
-
-        return $chain;
-    }
-
-    /**
      * ChainPhpParserNameTransformer constructor.
      *
      * @param NameTransformer[] $nameTransformers
