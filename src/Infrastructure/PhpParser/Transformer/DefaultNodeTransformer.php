@@ -124,11 +124,11 @@ class DefaultNodeTransformer implements NodeTransformer
 
         // Recursive name transformer!
         $typeUsageTransformer = new LazyNameTransformer(function (
-            NameTransformer $chain
+            NameTransformer $self
         ) use ($simpleTypeUsageTransformer, $factory) {
             return new ChainNameTransformer(array(
                 new GenericNameTransformer(
-                    $chain,
+                    $self,
                     $factory
                 ),
                 $simpleTypeUsageTransformer

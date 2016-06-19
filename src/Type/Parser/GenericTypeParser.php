@@ -12,6 +12,7 @@ namespace NicMart\Generics\Type\Parser;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Type\Type;
 
 /**
@@ -22,8 +23,10 @@ class GenericTypeParser implements TypeParser
 {
     /**
      * @param FullName $name
+     * @param NameQualifier $nameQualifier
+     * @return Type|void
      */
-    public function parse(FullName $name)
+    public function parse(FullName $name, NameQualifier $nameQualifier)
     {
         // TODO: Implement parse() method.
     }

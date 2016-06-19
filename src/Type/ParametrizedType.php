@@ -19,7 +19,7 @@ use NicMart\Generics\Name\FullName;
 final class ParametrizedType implements ReferenceType
 {
     /**
-     * @var VariableType[]
+     * @var Type[]
      */
     private $arguments;
 
@@ -50,7 +50,7 @@ final class ParametrizedType implements ReferenceType
     }
 
     /**
-     * @return VariableType[]
+     * @return Type[]
      */
     public function arguments()
     {
