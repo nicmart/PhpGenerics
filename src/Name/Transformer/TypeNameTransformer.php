@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Name\Transformer;
 
-
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
@@ -21,6 +20,10 @@ use NicMart\Generics\Type\Transformer\TypeTransformer;
 /**
  * Class TypeNameTransformer
  * @package NicMart\Generics\Name\Transformer
+ *
+ * Transform a TypeTransformer to a NameTransformer
+ *
+ * NameTransformer(name) := TypeSerializer(TypeTransformer(TypeParser(name)))
  */
 final class TypeNameTransformer implements NameTransformer
 {
@@ -69,7 +72,7 @@ final class TypeNameTransformer implements NameTransformer
 
         return $this->typeSerializer->serialize(
             $this->typeTransformer->transform(
-                $this->typeParser->parse($fullname)
+                $this->typeParser->parse($fullname, $namespaceContext)
             )
         );
     }
