@@ -14,7 +14,7 @@ use NicMart\Generics\AST\Transformer\NodeTransformer;
 use NicMart\Generics\Source\Transformer\SourceTransformer;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\Serializer;
+use PhpParser\Standard;
 
 class PhpParserSourceTransformer implements SourceTransformer
 {

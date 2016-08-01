@@ -8,20 +8,20 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Type\Loader;
+namespace NicMart\Generics\Type\Resolver;
 
 
 use NicMart\Generics\Type\ParametrizedType;
 
 /**
- * Interface ParametrizedTypeLoader
- * @package NicMart\Generics\Type\Loader
+ * Interface GenericTypeResolver
+ * @package NicMart\Generics\Type\Resolver
  */
-interface ParametrizedTypeLoader
+interface GenericTypeResolver
 {
     /**
      * @param ParametrizedType $parametrizedType
      * @return mixed
      */
-    public function load(ParametrizedType $parametrizedType);
+    public function toGenericType(ParametrizedType $parametrizedType);
 }
