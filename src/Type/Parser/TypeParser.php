@@ -12,6 +12,7 @@ namespace NicMart\Generics\Type\Parser;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Type\Type;
 
@@ -27,9 +28,9 @@ use NicMart\Generics\Type\Type;
 interface TypeParser
 {
     /**
-     * @param FullName $name
+     * @param Name $name
      * @param NameQualifier $nameQualifier
      * @return Type
      */
-    public function parse(FullName $name, NameQualifier $nameQualifier);
+    public function parse(Name $name, NameQualifier $nameQualifier);
 }
