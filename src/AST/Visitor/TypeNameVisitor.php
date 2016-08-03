@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
+use NicMart\Generics\AST\Visitor\Name\NameVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Expr;
@@ -29,9 +30,9 @@ class TypeNameVisitor implements Visitor
 
     /**
      * TypeParserVisitor constructor.
-     * @param callable $nameVisitor
+     * @param callable|NameVisitor $nameVisitor
      */
-    public function __construct($nameVisitor)
+    public function __construct(NameVisitor $nameVisitor)
     {
         $this->nameVisitor = $nameVisitor;
     }
@@ -110,9 +111,6 @@ class TypeNameVisitor implements Visitor
      */
     private function visitName(Node\Name $name)
     {
-        return call_user_func(
-            $this->nameVisitor,
-            $name
-        );
+        return $this->visitName($name);
     }
 }

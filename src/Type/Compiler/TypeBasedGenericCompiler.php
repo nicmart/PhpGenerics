@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Type\Compiler;
 
 
-use NicMart\Generics\AST\Serializer\PhpParserNodeSerializer;
+use NicMart\Generics\AST\Serializer\DefaultNodeSerializer;
 use NicMart\Generics\AST\Transformer\TypeToNodeTransformer;
 use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Type\GenericType;
@@ -31,7 +31,7 @@ class TypeBasedGenericCompiler implements GenericCompiler
     private $typeToNodeTransformer;
 
     /**
-     * @var PhpParserNodeSerializer
+     * @var DefaultNodeSerializer
      */
     private $nodeSerializer;
 
@@ -43,12 +43,12 @@ class TypeBasedGenericCompiler implements GenericCompiler
     /**
      * TypeBasedGenericCompiler constructor.
      * @param TypeToNodeTransformer $typeToNodeTransformer
-     * @param PhpParserNodeSerializer $nodeSerializer
+     * @param DefaultNodeSerializer $nodeSerializer
      * @param TypeSerializer $typeSerializer
      */
     public function __construct(
         TypeToNodeTransformer $typeToNodeTransformer,
-        PhpParserNodeSerializer $nodeSerializer,
+        DefaultNodeSerializer $nodeSerializer,
         TypeSerializer $typeSerializer
     ) {
         $this->typeToNodeTransformer = $typeToNodeTransformer;
@@ -67,6 +67,7 @@ class TypeBasedGenericCompiler implements GenericCompiler
         ParametrizedType $parametrizedType,
         SourceUnit $sourceUnit
     ) {
+        // @todo abstract it?
         $typeTransformer = new ParametricTypeTransformer(
             $genericType,
             $parametrizedType

@@ -11,6 +11,9 @@
 namespace NicMart\Generics\AST\Transformer;
 
 
+use NicMart\Generics\AST\Visitor\Name\TypeTransformerNameVisitor;
+use NicMart\Generics\AST\Visitor\TypeNameVisitor;
+use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Type\Transformer\TypeTransformer;
 
 /**
@@ -36,6 +39,12 @@ class TypeAnnotationTypeToNodeTransformer implements TypeToNodeTransformer
      */
     public function nodeTransformer(TypeTransformer $typeTransformer)
     {
-        // TODO: Implement nodeTransformer() method.
+        return TraverserNodeTransformer::fromVisitors(array(
+            new TypeNameVisitor(
+                new TypeTransformerNameVisitor(
+                    $typeTransformer
+                )
+            )
+        ));
     }
 }

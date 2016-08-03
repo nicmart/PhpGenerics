@@ -10,14 +10,13 @@
 
 namespace NicMart\Generics\AST\Serializer;
 
-use PhpParser\Standard;
-use PhpParser\Parser;
+use NicMart\Generics\AST\Parser\Parser;
 
 /**
  * Class PhpParserNodeSerializer
  * @package NicMart\Generics\AST\Serializer
  */
-class PhpParserNodeSerializer implements NodeSerializer
+class DefaultNodeSerializer implements NodeSerializer
 {
     /**
      * @var Parser
@@ -25,16 +24,16 @@ class PhpParserNodeSerializer implements NodeSerializer
     private $parser;
 
     /**
-     * @var Standard
+     * @var Serializer
      */
     private $serializer;
 
     /**
      * PhpParserNodeSerializer constructor.
      * @param Parser $parser
-     * @param Standard $serializer
+     * @param Serializer $serializer
      */
-    public function __construct(Parser $parser, Standard $serializer)
+    public function __construct(Parser $parser, Serializer $serializer)
     {
         $this->parser = $parser;
         $this->serializer = $serializer;

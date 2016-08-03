@@ -11,6 +11,8 @@
 namespace NicMart\Generics\AST\Visitor\Name;
 
 
+use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
+use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
@@ -26,7 +28,7 @@ use PhpParser\Node;
  *
  * @package NicMart\Generics\AST\Visitor\Name
  */
-final class TypeAnnotatorNameVisitor
+final class TypeAnnotatorNameVisitor implements NameVisitor
 {
     /**
      *
@@ -49,9 +51,9 @@ final class TypeAnnotatorNameVisitor
 
     /**
      * @param Node\Name $name
-     * @return Node\Name
+     * @return EnterNodeAction
      */
-    public function __invoke(Node\Name $name)
+    public function visitName(Node\Name $name)
     {
         $this->assertValidContext($name);
 
@@ -63,7 +65,7 @@ final class TypeAnnotatorNameVisitor
             )
         );
 
-        return $name;
+        return new ReplaceNodeWith($name);
     }
 
     /**

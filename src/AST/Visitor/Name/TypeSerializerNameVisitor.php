@@ -10,6 +10,8 @@
 
 namespace NicMart\Generics\AST\Visitor\Name;
 
+use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
+use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
@@ -19,7 +21,7 @@ use PhpParser\Node;
  * Class TypeSerializerNameVisitor
  * @package NicMart\Generics\AST\Visitor\Name
  */
-final class TypeSerializerNameVisitor
+final class TypeSerializerNameVisitor implements NameVisitor
 {
     /**
      * @var TypeSerializer
@@ -37,19 +39,19 @@ final class TypeSerializerNameVisitor
 
     /**
      * @param Node\Name $name
-     * @return Node\Name
+     * @return EnterNodeAction
      */
-    public function __invoke(Node\Name $name)
+    public function visitName(Node\Name $name)
     {
         $this->assertValidAttr($name);
 
-        return $this->fromNameToPhpName(
+        return new ReplaceNodeWith($this->fromNameToPhpName(
             $this->typeSerializer->serialize(
                 $name->getAttribute(
                     TypeAnnotatorNameVisitor::ATTR_NAME
                 )
             )
-        );
+        ));
     }
 
     /**

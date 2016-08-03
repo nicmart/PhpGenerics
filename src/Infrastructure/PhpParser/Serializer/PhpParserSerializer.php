@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Infrastructure\PhpParser;
 
 use NicMart\Generics\AST\Serializer\Serializer;
+use PhpParser\PrettyPrinterAbstract;
 
 /**
  * Class PhpParserSerializer
@@ -25,9 +26,9 @@ class PhpParserSerializer implements Serializer
 
     /**
      * PhpParserSerializer constructor.
-     * @param PhpParserSerializer $phpParserSerializer
+     * @param PrettyPrinterAbstract $phpParserSerializer
      */
-    public function __construct(PhpParserSerializer $phpParserSerializer)
+    public function __construct(PrettyPrinterAbstract $phpParserSerializer)
     {
         $this->phpParserSerializer = $phpParserSerializer;
     }
