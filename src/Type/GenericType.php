@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Type;
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\Transformer\TypeTransformer;
 
 /**
  * Class GenericType
@@ -65,6 +66,22 @@ final class GenericType implements ReferenceType
     {
         return count($this->parameters);
     }
+
+    /**
+     * @param TypeTransformer $typeTransformer
+     * @return Type
+     */
+    public function map(TypeTransformer $typeTransformer)
+    {
+        $params = array();
+
+        foreach ($this->parameters() as $param) {
+            $params[] = $typeTransformer->transform($param);
+        }
+
+        return new self($this->name(), $params);
+    }
+
 
     /**
      * @param VariableType $parameter

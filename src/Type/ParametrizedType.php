@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Type;
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\Transformer\TypeTransformer;
 
 /**
  * Class ParametrizedType
@@ -63,6 +64,21 @@ final class ParametrizedType implements ReferenceType
     public function arity()
     {
         return count($this->arguments);
+    }
+
+    /**
+     * @param TypeTransformer $typeTransformer
+     * @return Type
+     */
+    public function map(TypeTransformer $typeTransformer)
+    {
+        $arguments = array();
+
+        foreach ($this->arguments() as $argument) {
+            $arguments[] = $typeTransformer->transform($argument);
+        }
+
+        return new self($this->name(), $arguments);
     }
 
     /**

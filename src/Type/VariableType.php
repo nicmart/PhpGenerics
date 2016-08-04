@@ -12,6 +12,7 @@ namespace NicMart\Generics\Type;
 
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\Transformer\TypeTransformer;
 
 /**
  * Class VariableType
@@ -40,6 +41,15 @@ final class VariableType implements Type
     public function name()
     {
         return $this->name;
+    }
+
+    /**
+     * @param TypeTransformer $typeTransformer
+     * @return Type
+     */
+    public function map(TypeTransformer $typeTransformer)
+    {
+        return $this;
     }
 
     /**

@@ -10,23 +10,44 @@
 
 namespace NicMart\Generics\Type;
 
+
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Type\Transformer\TypeTransformer;
 
 /**
- * Interface Type
+ * Class SimpleReferenceType
  * @package NicMart\Generics\Type
  */
-interface Type
+class SimpleReferenceType implements ReferenceType
 {
+    /**
+     * @var FullName
+     */
+    private $fullName;
+
+    /**
+     * SimpleReferenceType constructor.
+     * @param FullName $fullName
+     */
+    public function __construct(FullName $fullName)
+    {
+        $this->fullName = $fullName;
+    }
+
     /**
      * @return FullName
      */
-    public function name();
+    public function name()
+    {
+        return $this->fullName;
+    }
 
     /**
      * @param TypeTransformer $typeTransformer
      * @return Type
      */
-    public function map(TypeTransformer $typeTransformer);
+    public function map(TypeTransformer $typeTransformer)
+    {
+        return $this;
+    }
 }

@@ -13,6 +13,7 @@ namespace NicMart\Generics\Type;
 
 use InvalidArgumentException;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\Transformer\TypeTransformer;
 
 /**
  * Class PrimitiveType
@@ -78,6 +79,14 @@ final class PrimitiveType implements Type
         return $this->name;
     }
 
+    /**
+     * @param TypeTransformer $typeTransformer
+     * @return Type
+     */
+    public function map(TypeTransformer $typeTransformer)
+    {
+        return $this;
+    }
 
     /**
      * @param FullName $name
