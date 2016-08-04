@@ -17,6 +17,7 @@ use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
+use NicMart\Generics\Type\Transformer\BottomUpTransformer;
 use NicMart\Generics\Type\Transformer\ParametricTypeTransformer;
 
 /**
@@ -68,10 +69,14 @@ class TypeBasedGenericCompiler implements GenericCompiler
         SourceUnit $sourceUnit
     ) {
         // @todo abstract it?
-        $typeTransformer = new ParametricTypeTransformer(
-            $genericType,
-            $parametrizedType
-        );
+        $typeTransformer =
+            new BottomUpTransformer(
+                new ParametricTypeTransformer(
+                    $genericType,
+                    $parametrizedType
+                )
+            )
+        ;
 
         $nodeTransformer = $this->typeToNodeTransformer->nodeTransformer(
             $typeTransformer
