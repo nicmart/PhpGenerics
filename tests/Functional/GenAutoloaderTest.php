@@ -68,7 +68,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 
         $nodeSerializer = new DefaultNodeSerializer($parser, $serializer);
 
-        // TO IMPLEMENT: ParametricTypeTransformer
+        // DONE: ParametricTypeTransformer
 
         $autoloader = new GenAutoloader(
             
