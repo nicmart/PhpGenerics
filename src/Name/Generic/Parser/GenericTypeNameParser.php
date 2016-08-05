@@ -31,4 +31,10 @@ interface GenericTypeNameParser
      * @return GenericNameApplication
      */
     public function parse(FullName $name);
+
+    /**
+     * @param GenericNameApplication $application
+     * @return mixed
+     */
+    public function serialize(GenericNameApplication $application);
 }

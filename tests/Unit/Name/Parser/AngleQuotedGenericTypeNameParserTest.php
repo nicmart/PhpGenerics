@@ -54,4 +54,22 @@ class AngleQuotedGenericTypeNameParserTest extends \PHPUnit_Framework_TestCase
             )
         );
     }
+
+    public function it_serializes()
+    {
+        $parser = new AngleQuotedGenericTypeNameParser();
+
+        $application = new GenericNameApplication(
+            FullName::fromString("Ns\\Class"),
+            array(
+                RelativeName::fromString('T'),
+                RelativeName::fromString('S')
+            )
+        );
+
+        $this->assertEquals(
+            FullName::fromString("Ns\\Class«T·S»"),
+            $parser->serialize($application)
+        );
+    }
 }

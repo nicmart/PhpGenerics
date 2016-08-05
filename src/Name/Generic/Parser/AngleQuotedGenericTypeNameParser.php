@@ -80,4 +80,23 @@ class AngleQuotedGenericTypeNameParser implements GenericTypeNameParser
             $typeVars
         );
     }
+
+    /**
+     * @param GenericNameApplication $application
+     * @return mixed
+     */
+    public function serialize(GenericNameApplication $application)
+    {
+        $paramStrings = array_map(
+            function (FullName $param) { return $param->last()->toString(); },
+            $application->arguments()
+        );
+
+        // A bit hackish
+        return FullName::fromString(sprintf(
+            "%s«%s»",
+            $application->main()->toString(),
+            implode("·", $paramStrings)
+        ));
+    }
 }
