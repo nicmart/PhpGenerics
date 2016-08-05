@@ -11,11 +11,19 @@
 namespace NicMart\Generics\Type\Parser;
 
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use NicMart\Generics\Map\GenericTypeApplication;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Name\Generic\GenericNameApplication;
+use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
+use NicMart\Generics\Name\Generic\Parser\GenericTypeNameParser;
 use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Type\GenericType;
+use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\PrimitiveType;
+use NicMart\Generics\Type\SimpleReferenceType;
 use NicMart\Generics\Type\VariableType;
+use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Class GenericTypeParserTest
@@ -23,13 +31,30 @@ use NicMart\Generics\Type\VariableType;
  */
 class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var GenericTypeParser|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $parser;
+
+    /**
+     * @var GenericTypeNameParser|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $nameParser;
+
+    public function setUp()
+    {
+        $this->nameParser = $this->getMock(
+            '\NicMart\Generics\Name\Generic\Parser\GenericTypeNameParser'
+        );
+
+        $this->parser = new GenericTypeParser($this->nameParser);
+    }
+
     public function testParsePrimitive()
     {
-        $parser = new GenericTypeParser();
-
         $this->assertEquals(
             new PrimitiveType(FullName::fromString("string")),
-            $parser->parse(
+            $this->parser->parse(
                 RelativeName::fromString("string"),
                 NamespaceContext::fromNamespaceName("A\\B")
             )
@@ -37,7 +62,7 @@ class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             new PrimitiveType(FullName::fromString("callable")),
-            $parser->parse(
+            $this->parser->parse(
                 RelativeName::fromString("callable"),
                 NamespaceContext::fromNamespaceName("A\\B")
             )
@@ -50,12 +75,114 @@ class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
 
         $varName = RelativeName::fromString("T");
 
-        $parser = new GenericTypeParser();
-
         $this->assertEquals(
             new VariableType(FullName::fromString('\NicMart\Generics\Variable\T')),
-            $parser->parse(
+            $this->parser->parse(
                 $varName,
+                $context
+            )
+        );
+    }
+
+    public function testParseGenericType()
+    {
+        $context = NamespaceContext::fromNamespaceName('\NicMart\Generics\Variable');
+
+        $typeName = FullName::fromString("MyGen«T·S»");
+
+        $this->nameParser
+            ->expects($this->once())
+            ->method("parse")
+            ->with($typeName)
+            ->willReturn($typeApplication = new GenericNameApplication(
+                FullName::fromString("MyGen"), array(
+                    RelativeName::fromString("T"),
+                    RelativeName::fromString("S"),
+                )
+            ))
+        ;
+
+        $this->nameParser
+            ->expects($this->once())
+            ->method("isGeneric")
+            ->with($typeName)
+            ->willReturn(true)
+        ;
+
+        $this->assertEquals(
+            new GenericType(
+                FullName::fromString("MyGen"), array(
+                    new VariableType(FullName::fromString('\NicMart\Generics\Variable\T')),
+                    new VariableType(FullName::fromString('\NicMart\Generics\Variable\S')),
+                )
+            ),
+            $this->parser->parse(
+                $typeName,
+                $context
+            )
+        );
+    }
+
+    public function testParseParametrizedType()
+    {
+        $context = NamespaceContext::fromNamespaceName('\NicMart');
+
+        $typeName = FullName::fromString("MyGen«Foo·Bar»");
+
+        $this->nameParser
+            ->expects($this->once())
+            ->method("parse")
+            ->with($typeName)
+            ->willReturn($typeApplication = new GenericNameApplication(
+                FullName::fromString("MyGen"), array(
+                    RelativeName::fromString("Foo"),
+                    RelativeName::fromString("Bar"),
+                )
+            ))
+        ;
+
+        $this->nameParser
+            ->expects($this->exactly(3))
+            ->method("isGeneric")
+            ->withConsecutive(
+                array($typeName),
+                array(FullName::fromString("NicMart\\Foo")),
+                array(FullName::fromString("NicMart\\Bar"))
+            )
+            ->willReturnOnConsecutiveCalls(true, false, false)
+        ;
+
+        $this->assertEquals(
+            new ParametrizedType(
+                FullName::fromString("MyGen"), array(
+                    new SimpleReferenceType(FullName::fromString('\NicMart\Foo')),
+                    new SimpleReferenceType(FullName::fromString('\NicMart\Bar')),
+                )
+            ),
+            $this->parser->parse(
+                $typeName,
+                $context
+            )
+        );
+    }
+
+    public function testParseSimpleReferenceType()
+    {
+        $context = NamespaceContext::fromNamespaceName('\NicMart');
+
+        $name = RelativeName::fromString("Foo");
+
+        $this->nameParser
+            ->expects($this->once())
+            ->method("isGeneric")
+            ->with(FullName::fromString('\NicMart\Foo'))
+            ->willReturn(false)
+        ;
+
+        $this->assertEquals(
+            new SimpleReferenceType(FullName::fromString('\NicMart\Foo')),
+            $this->parser->parse(
+                $name,
                 $context
             )
         );
