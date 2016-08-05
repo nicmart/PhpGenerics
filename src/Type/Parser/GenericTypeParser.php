@@ -10,11 +10,12 @@
 
 namespace NicMart\Generics\Type\Parser;
 
-
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\NameQualifier;
+use NicMart\Generics\Type\PrimitiveType;
 use NicMart\Generics\Type\Type;
+use NicMart\Generics\Type\VariableType;
 
 /**
  * Class GenericTypeParser
@@ -29,7 +30,14 @@ class GenericTypeParser implements TypeParser
      */
     public function parse(Name $name, NameQualifier $nameQualifier)
     {
-        // TODO: Implement parse() method.
-    }
+        $fullName = $nameQualifier->qualify($name);
 
+        if (PrimitiveType::isPrimitive($fullName)) {
+            return new PrimitiveType($fullName);
+        }
+
+        if (VariableType::isVariable($fullName)) {
+            return new VariableType($fullName);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of php-generics
+ * This file is part of PhpStorm
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -8,20 +8,18 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Name\Generic\Factory;
+namespace NicMart\Generics\Name\Generic\Parser;
+
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\GenericName;
+use NicMart\Generics\Name\Generic\GenericNameApplication;
 use NicMart\Generics\Name\RelativeName;
-use NicMart\Generics\Name\Transformer\NameQualifier;
 
 /**
- * Class AngleQuotedGenericNameFactory
- * @package NicMart\Generics\Name\Generic\Factory
- * 
- * @todo Remove, it is replaced by AngleQuotedGenericTypeNameParser
+ * Class AngleQuotedGenericTypeNameParser
+ * @package NicMart\Generics\Name\Generic\Parser
  */
-class AngleQuotedGenericNameFactory implements GenericNameFactory
+class AngleQuotedGenericTypeNameParser implements GenericTypeNameParser
 {
     const CHAR_CODE = 194;
 
@@ -36,14 +34,10 @@ class AngleQuotedGenericNameFactory implements GenericNameFactory
 
     /**
      * @param FullName $name
-     * @param NameQualifier $qualifier
-     *
-     * @return GenericName
+     * @return GenericNameApplication
      */
-    public function toGeneric(
-        FullName $name,
-        NameQualifier $qualifier
-    ) {
+    public function parse(FullName $name)
+    {
         $name = $name->toString();
         $nameLength = strlen($name);
 
@@ -67,9 +61,7 @@ class AngleQuotedGenericNameFactory implements GenericNameFactory
                 if ($char == "«") {
 
                 } elseif ($char == "·" || $char == "»") {
-                    $typeVars[] = $qualifier->qualify(
-                        RelativeName::fromString($currTypeVar)
-                    );
+                    $typeVars[] = RelativeName::fromString($currTypeVar);
                     $currTypeVar = "";
                 } else {
                     $mainName .= $char;
@@ -83,27 +75,9 @@ class AngleQuotedGenericNameFactory implements GenericNameFactory
             }
         }
 
-        return new GenericName(
+        return new GenericNameApplication(
             FullName::fromString($mainName),
             $typeVars
         );
-    }
-
-    /**
-     * @param GenericName $genericName
-     * @return FullName
-     */
-    public function fromGeneric(GenericName $genericName)
-    {
-        $paramStrings = array_map(
-            function (FullName $param) { return $param->last()->toString(); },
-            $genericName->parameters()
-        );
-
-        return FullName::fromString(sprintf(
-            "%s«%s»",
-            $genericName->main()->toString(),
-            implode("·", $paramStrings)
-        ));
     }
 }

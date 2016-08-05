@@ -26,6 +26,17 @@ final class VariableType implements Type
     private $name;
 
     /**
+     * @param FullName $fullName
+     * @return mixed
+     */
+    public static function isVariable(FullName $fullName)
+    {
+        $variableInterface = '\NicMart\Generics\Variable\Variable';
+
+        return is_subclass_of($fullName->toString(), $variableInterface);
+    }
+
+    /**
      * VariableType constructor.
      * @param FullName $name
      */
@@ -58,8 +69,7 @@ final class VariableType implements Type
      */
     private function assertValidVariableName(FullName $name)
     {
-        $variableInterface = '\NicMart\Generics\Variable\Variable';
-        if (!is_subclass_of($name->toString(), $variableInterface)) {
+        if (!self::isVariable($name)) {
             throw new InvalidArgumentException(
                 "Variable types must be a subclass of $variableInterface"
             );
