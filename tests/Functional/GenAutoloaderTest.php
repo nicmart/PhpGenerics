@@ -12,6 +12,7 @@ use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtrac
 use NicMart\Generics\Infrastructure\PhpParser\Parser\PhpParserParser;
 use NicMart\Generics\Infrastructure\PhpParser\PhpParserSerializer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
+use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
 use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
 use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
 use NicMart\Generics\Type\Compiler\GenericCompiler;
@@ -34,6 +35,10 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruction()
     {
+        $genericTypeParser = new GenericTypeParser(
+            new AngleQuotedGenericTypeNameParser()
+        );
+
         // This parser parses php code and annotate types
         $parser = new PostTransformParser(
             new PhpParserParser(
@@ -43,8 +48,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                 new NamespaceContextVisitor(),
                 new TypeNameVisitor(
                     new TypeAnnotatorNameVisitor(
-                        // To IMPLEMENT
-                        new GenericTypeParser()
+                        $genericTypeParser
                     )
                 )
             ))
@@ -77,8 +81,8 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                 $phpParser,
                 new NamespaceContextVisitor()
             ),
-        
-            new GenericTypeParser(),
+
+            $genericTypeParser,
         
             new DefaultParametrizedTypeLoader(
 
