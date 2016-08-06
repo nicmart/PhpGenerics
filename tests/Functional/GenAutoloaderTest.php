@@ -19,6 +19,7 @@ use NicMart\Generics\Type\Compiler\GenericCompiler;
 use NicMart\Generics\Type\Compiler\TypeBasedGenericCompiler;
 use NicMart\Generics\Type\Loader\DefaultParametrizedTypeLoader;
 use NicMart\Generics\Type\Parser\GenericTypeParser;
+use NicMart\Generics\Type\Parser\GenericTypeParserAndSerializer;
 use NicMart\Generics\Type\Resolver\GenericTypeResolver;
 use NicMart\Generics\Type\Serializer\GenericTypeSerializer;
 use NicMart\Generics\Type\Source\GenericSourceUnitLoader;
@@ -35,7 +36,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruction()
     {
-        $genericTypeParser = new GenericTypeParser(
+        $genericTypeParserAndSerializer = new GenericTypeParserAndSerializer(
             new AngleQuotedGenericTypeNameParser()
         );
 
@@ -48,7 +49,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                 new NamespaceContextVisitor(),
                 new TypeNameVisitor(
                     new TypeAnnotatorNameVisitor(
-                        $genericTypeParser
+                        $genericTypeParserAndSerializer
                     )
                 )
             ))
@@ -59,8 +60,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
             TraverserNodeTransformer::fromVisitors(array(
                 new TypeNameVisitor(
                     new TypeSerializerNameVisitor(
-                        // TO IMPLEMENT
-                        new GenericTypeSerializer()
+                        $genericTypeParserAndSerializer
                     )
                 )
             )),
@@ -82,7 +82,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                 new NamespaceContextVisitor()
             ),
 
-            $genericTypeParser,
+            $genericTypeParserAndSerializer,
         
             new DefaultParametrizedTypeLoader(
 
@@ -98,8 +98,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                 
                     $nodeSerializer,
                 
-                    // To IMPLEMENT
-                    new GenericTypeSerializer()
+                    $genericTypeParserAndSerializer
                 ),
             
                 new IncludeDumpedSourceUnitEvaluation(

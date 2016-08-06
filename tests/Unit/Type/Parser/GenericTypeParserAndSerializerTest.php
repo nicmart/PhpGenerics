@@ -10,12 +10,9 @@
 
 namespace NicMart\Generics\Type\Parser;
 
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
-use NicMart\Generics\Map\GenericTypeApplication;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\GenericNameApplication;
-use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
 use NicMart\Generics\Name\Generic\Parser\GenericTypeNameParser;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Type\GenericType;
@@ -29,7 +26,7 @@ use PHPUnit_Framework_MockObject_MockObject;
  * Class GenericTypeParserTest
  * @package NicMart\Generics\Type\Parser
  */
-class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
+class GenericTypeParserAndSerializerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var GenericTypeParserAndSerializer|PHPUnit_Framework_MockObject_MockObject
