@@ -32,7 +32,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var GenericTypeParser|PHPUnit_Framework_MockObject_MockObject
+     * @var GenericTypeParserAndSerializer|PHPUnit_Framework_MockObject_MockObject
      */
     private $parser;
 
@@ -47,7 +47,7 @@ class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
             '\NicMart\Generics\Name\Generic\Parser\GenericTypeNameParser'
         );
 
-        $this->parser = new GenericTypeParser($this->nameParser);
+        $this->parser = new GenericTypeParserAndSerializer($this->nameParser);
     }
 
     public function testParsePrimitive()
@@ -185,6 +185,35 @@ class GenericTypeParserTest extends \PHPUnit_Framework_TestCase
                 $name,
                 $context
             )
+        );
+    }
+
+    public function testSerialize()
+    {
+         $type = new ParametrizedType(
+            FullName::fromString("NicMart\\MyGen"), array(
+                new SimpleReferenceType(FullName::fromString('\NicMart\Foo')),
+                new SimpleReferenceType(FullName::fromString('\NicMart\Bar')),
+            )
+        );
+
+        $this->nameParser
+            ->expects($this->once())
+            ->method("serialize")
+            ->with(
+                new GenericNameApplication(
+                    FullName::fromString('NicMart\MyGen'), array(
+                        FullName::fromString('NicMart\Foo'),
+                        FullName::fromString('NicMart\Bar')
+                    )
+                )
+            )
+            ->willReturn(FullName::fromString("NicMart\\MyGen«Foo·Bar»"))
+        ;
+
+        $this->assertEquals(
+            FullName::fromString("NicMart\\MyGen«Foo·Bar»"),
+            $this->parser->serialize($type)
         );
     }
 }
