@@ -24,10 +24,12 @@ class GenAutoloader
      * @var NamespaceContextExtractor
      */
     private $namespaceContextExtractor;
+    
     /**
      * @var TypeParser
      */
     private $typeParser;
+    
     /**
      * @var ParametrizedTypeLoader
      */

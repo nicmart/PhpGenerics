@@ -126,6 +126,7 @@ class ComposerGenericTypeResolverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param $file
      * @return NamespaceContextExtractor
      */
     private function namespaceExtractor($file)

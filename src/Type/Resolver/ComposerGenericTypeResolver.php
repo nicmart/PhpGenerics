@@ -13,11 +13,9 @@ namespace NicMart\Generics\Type\Resolver;
  use NicMart\Generics\Composer\DirectoryResolver;
  use NicMart\Generics\Name\Context\NamespaceContextExtractor;
  use NicMart\Generics\Name\FullName;
- use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
  use NicMart\Generics\Type\GenericType;
  use NicMart\Generics\Type\ParametrizedType;
  use NicMart\Generics\Type\Parser\TypeParser;
- use NicMart\Generics\Type\Serializer\GenericTypeSerializer;
  use NicMart\Generics\Type\Serializer\TypeSerializer;
  use NicMart\Generics\Type\SimpleReferenceType;
  use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
@@ -92,7 +90,7 @@ namespace NicMart\Generics\Type\Resolver;
         /** @var SplFileInfo $file */
         foreach ($finder as $file) {
             $name = $nsName->down($file->getBasename(".php"));
-            if (!$this->isGeneric($name)) continue; 
+            if (!$this->isGeneric($name)) continue;
 
             $context = $this->contextExtractor->contextOf(
                 file_get_contents($file->getPathname())
