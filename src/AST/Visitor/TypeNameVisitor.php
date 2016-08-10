@@ -43,6 +43,16 @@ class TypeNameVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
+        if ($node instanceof Stmt\Interface_) {
+            var_dump("ENTERING INTERFACE " . $node->name);
+        }
+
+        if (!$node instanceof Node\Name) {
+            return new MaintainNode();
+        }
+
+        return $this->nameVisitor->visitName($node);
+
         if ($node instanceof Stmt\Class_) {
             if (null !== $node->extends) {
                 $this->visitName($node->extends);
@@ -111,6 +121,6 @@ class TypeNameVisitor implements Visitor
      */
     private function visitName(Node\Name $name)
     {
-        return $this->visitName($name);
+        return $this->nameVisitor->visitName($name);
     }
 }

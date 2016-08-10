@@ -14,11 +14,14 @@ namespace NicMart\Generics\AST\Visitor\Name;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use NicMart\Generics\Infrastructure\PhpParser\PrettyPrinter;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Type\Parser\TypeParser;
 use PhpParser\Node;
+use PhpParser\NodeDumper;
+use PhpParser\PrettyPrinter\Standard;
 
 /**
  * Class TypeAnnotatorNameVisitor
@@ -74,7 +77,11 @@ final class TypeAnnotatorNameVisitor implements NameVisitor
     private function assertValidContext(Node\Name $node)
     {
         if (!$node->hasAttribute(NamespaceContextVisitor::ATTR_NAME)) {
-            throw new \RuntimeException("Namespace context not found in node");
+            $dumper = new NodeDumper();
+            throw new \RuntimeException(sprintf(
+                "Namespace context not found in node. Node Content:\n%s",
+                $dumper->dump($node)
+            ));
         }
     }
 

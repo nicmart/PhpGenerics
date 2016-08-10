@@ -8,7 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Infrastructure\PhpParser;
+namespace NicMart\Generics\Infrastructure\PhpParser\Serializer;
 
 use NicMart\Generics\AST\Serializer\Serializer;
 use PhpParser\PrettyPrinterAbstract;
@@ -20,12 +20,12 @@ use PhpParser\PrettyPrinterAbstract;
 class PhpParserSerializer implements Serializer
 {
     /**
-     * @var PhpParserSerializer
+     * @var PrettyPrinterAbstract
      */
     private $phpParserSerializer;
 
     /**
-     * PhpParserSerializer constructor.
+     * PrettyPrinterAbstract constructor.
      * @param PrettyPrinterAbstract $phpParserSerializer
      */
     public function __construct(PrettyPrinterAbstract $phpParserSerializer)
@@ -39,6 +39,6 @@ class PhpParserSerializer implements Serializer
      */
     public function serialize(array $nodes)
     {
-        return $this->phpParserSerializer->serialize($nodes);
+        return $this->phpParserSerializer->prettyPrint($nodes);
     }
 }

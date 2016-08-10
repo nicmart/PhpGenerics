@@ -5,29 +5,28 @@ use NicMart\Generics\AST\Serializer\PreTransformSerializer;
 use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
 use NicMart\Generics\AST\Visitor\Name\TypeAnnotatorNameVisitor;
 use NicMart\Generics\AST\Visitor\Name\TypeSerializerNameVisitor;
+use NicMart\Generics\AST\Visitor\Name\TypeTransformerNameVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\TypeNameVisitor;
 use NicMart\Generics\Autoloader\ComposerAutoloaderBuilder;
 use NicMart\Generics\Autoloader\GenAutoloader;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
-use NicMart\Generics\Composer\ComposerGenericNameResolver;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\PhpParser\Parser\PhpParserParser;
-use NicMart\Generics\Infrastructure\PhpParser\PhpParserSerializer;
+use NicMart\Generics\Infrastructure\PhpParser\Serializer\PhpParserSerializer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
 use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
 use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
-use NicMart\Generics\Type\Compiler\GenericCompiler;
 use NicMart\Generics\Type\Compiler\TypeBasedGenericCompiler;
 use NicMart\Generics\Type\Loader\DefaultParametrizedTypeLoader;
-use NicMart\Generics\Type\Parser\GenericTypeParser;
 use NicMart\Generics\Type\Parser\GenericTypeParserAndSerializer;
 use NicMart\Generics\Type\Resolver\ComposerGenericTypeResolver;
-use NicMart\Generics\Type\Resolver\GenericTypeResolver;
-use NicMart\Generics\Type\Serializer\GenericTypeSerializer;
-use NicMart\Generics\Type\Source\GenericSourceUnitLoader;
 use NicMart\Generics\Type\Source\ReflectionGenericSourceUnitLoader;
+
+use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
+use NicMart\Generics\Type\Type;
 
 /**
  * This file is part of PhpStorm
@@ -112,11 +111,14 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                 ),
             
                 new IncludeDumpedSourceUnitEvaluation(
-                    new Psr0SourceUnitDumper(__DIR__)
+                    new Psr0SourceUnitDumper(__DIR__ . "/../../cache")
                 )
             )
         );
 
-        $autoloader->autoload("Foo\\Bar", __FILE__);
+        $autoloader->autoload(
+            '\NicMart\Generics\Example\Option\Option«FullName»',
+            __FILE__
+        );
     }
 }
