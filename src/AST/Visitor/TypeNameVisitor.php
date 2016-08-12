@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
+use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\AST\Visitor\Name\NameVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
@@ -43,8 +44,8 @@ class TypeNameVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
-        if ($node instanceof Stmt\Interface_) {
-            var_dump("ENTERING INTERFACE " . $node->name);
+        if ($node instanceof Stmt\Interface_ || $node instanceof Stmt\Class_) {
+            return $this->visitClass($node);
         }
 
         if (!$node instanceof Node\Name) {
@@ -82,6 +83,31 @@ class TypeNameVisitor implements Visitor
             );
         } elseif ($node instanceof Stmt\UseUse) {
             $this->visitName($node->name);
+        }
+
+        return new MaintainNode();
+    }
+
+    /**
+     * A bit rough here. Since a class or interface name is not traversed,
+     * I build the Name node manually and I pass it to the name visitor.
+     *
+     * @param Stmt\Class_|Stmt\Interface_ $node
+     * @return MaintainNode
+     */
+    private function visitClass($node)
+    {
+        $name = new Node\Name\Relative($node->name, $node->getAttributes());
+        $action = $this->visitName($name);
+
+        foreach ($name->getAttributes() as $attr => $val) {
+            $node->setAttribute($attr, $val);
+        }
+
+        if ($action instanceof ReplaceNodeWith) {
+            /** @var Node\Name $newName */
+            $newName = $action->node();
+            $node->name = $newName->getLast();
         }
 
         return new MaintainNode();

@@ -19,6 +19,7 @@ use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
 use NicMart\Generics\Type\Transformer\BottomUpTransformer;
 use NicMart\Generics\Type\Transformer\ParametricTypeTransformer;
+use NicMart\Generics\Type\Transformer\TopDownTransformer;
 
 /**
  * Class TypeBasedGenericCompiler
@@ -70,7 +71,7 @@ class TypeBasedGenericCompiler implements GenericCompiler
     ) {
         // @todo abstract it?
         $typeTransformer =
-            new BottomUpTransformer(
+            new TopDownTransformer(
                 new ParametricTypeTransformer(
                     $genericType,
                     $parametrizedType
