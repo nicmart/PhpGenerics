@@ -29,6 +29,7 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Example\Option\Option«FullName»;
 use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Type;
+use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
 
 /**
  * This file is part of PhpStorm
@@ -124,8 +125,15 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $autoloader->autoload(
+        /**
+         $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«Option«FullName»»',
+            __FILE__
+        );
+         */
+
+        $autoloader->autoload(
+            '\NicMart\Generics\Example\Func\CallableFunction1«Option«FullName»·FullName»',
             __FILE__
         );
     }
