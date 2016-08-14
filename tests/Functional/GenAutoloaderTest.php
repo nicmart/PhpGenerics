@@ -3,16 +3,15 @@ use NicMart\Generics\AST\Parser\PostTransformParser;
 use NicMart\Generics\AST\Serializer\DefaultNodeSerializer;
 use NicMart\Generics\AST\Serializer\PreTransformSerializer;
 use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
-use NicMart\Generics\AST\Visitor\Name\TypeAnnotatorNameVisitor;
-use NicMart\Generics\AST\Visitor\Name\TypeSerializerNameVisitor;
-use NicMart\Generics\AST\Visitor\Name\TypeTransformerNameVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
-use NicMart\Generics\AST\Visitor\TypeNameVisitor;
+use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
+use NicMart\Generics\AST\Visitor\TypeSerializerVisitor;
 use NicMart\Generics\Autoloader\ComposerAutoloaderBuilder;
 use NicMart\Generics\Autoloader\GenAutoloader;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\PhpParser\Parser\PhpParserParser;
+use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Infrastructure\PhpParser\Serializer\PhpParserSerializer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
@@ -46,15 +45,14 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 
         // This parser parses php code and annotate types
         $parser = new PostTransformParser(
-            new PhpParserParser(
+            new PhpParserParser( 
                 $phpParser = new \PhpParser\Parser(new \PhpParser\Lexer())
             ),
             TraverserNodeTransformer::fromVisitors(array(
-                new NamespaceContextVisitor(),
-                new TypeNameVisitor(
-                    new TypeAnnotatorNameVisitor(
-                        $genericTypeParserAndSerializer
-                    )
+                new TypeAnnotatorVisitor(
+                    $genericTypeParserAndSerializer,
+                    new NamespaceContextVisitor(),
+                    new PhpNameAdapter()
                 )
             ))
         );
@@ -62,10 +60,9 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
         // This serializer serializes php nodes and serialize type annotations
         $serializer = new PreTransformSerializer(
             TraverserNodeTransformer::fromVisitors(array(
-                new TypeNameVisitor(
-                    new TypeSerializerNameVisitor(
-                        $genericTypeParserAndSerializer
-                    )
+                new TypeSerializerVisitor(
+                    $genericTypeParserAndSerializer,
+                    new PhpNameAdapter()
                 )
             )),
             new PhpParserSerializer(

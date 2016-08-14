@@ -62,6 +62,14 @@ class GenericTypeParserAndSerializer implements TypeParser, TypeSerializer
             return new VariableType($fullName);
         }
 
+
+        var_dump(sprintf(
+            "Parsing type %s (%s). Name Class: %s",
+            $fullName->toString(),
+            $name->toString(),
+            get_class($name)
+        ));
+
         if ($this->genericTypeNameParser->isGeneric($fullName)) {
             return $this->parseGenericName($fullName, $nameQualifier);
         }

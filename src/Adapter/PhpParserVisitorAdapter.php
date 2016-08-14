@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Adapter;
 
 
+use NicMart\Generics\AST\Visitor\Action\DontTraverseChildren;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\AST\Visitor\Action\RemoveNode;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
@@ -18,6 +19,7 @@ use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWithList;
 use NicMart\Generics\AST\Visitor\Action\VisitorAction;
 use NicMart\Generics\AST\Visitor\Visitor;
 use PhpParser\Node;
+use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 
@@ -83,6 +85,10 @@ class PhpParserVisitorAdapter extends NodeVisitorAbstract
 
         if ($action instanceof ReplaceNodeWithList) {
             return $action->nodeList()->nodes();
+        }
+
+        if ($action instanceof DontTraverseChildren) {
+            return NodeTraverserInterface::DONT_TRAVERSE_CHILDREN;
         }
     }
 }
