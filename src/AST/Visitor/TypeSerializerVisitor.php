@@ -111,7 +111,7 @@ class TypeSerializerVisitor implements Visitor
             return $node->name = $name->last()->toString();
         }
     }
-
+    
     /**
      * @param Node $node
      */

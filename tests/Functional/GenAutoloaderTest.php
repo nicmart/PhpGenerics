@@ -2,7 +2,9 @@
 use NicMart\Generics\AST\Parser\PostTransformParser;
 use NicMart\Generics\AST\Serializer\DefaultNodeSerializer;
 use NicMart\Generics\AST\Serializer\PreTransformSerializer;
+use NicMart\Generics\AST\Transformer\ChainNodeTransformer;
 use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
+use NicMart\Generics\AST\Visitor\NameSimplifierVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
 use NicMart\Generics\AST\Visitor\TypeSerializerVisitor;
@@ -24,6 +26,7 @@ use NicMart\Generics\Type\Resolver\ComposerGenericTypeResolver;
 use NicMart\Generics\Type\Source\ReflectionGenericSourceUnitLoader;
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Example\Option\Option«FullName»;
 use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Type;
 
@@ -59,11 +62,19 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 
         // This serializer serializes php nodes and serialize type annotations
         $serializer = new PreTransformSerializer(
-            TraverserNodeTransformer::fromVisitors(array(
-                new TypeSerializerVisitor(
-                    $genericTypeParserAndSerializer,
-                    new PhpNameAdapter()
-                )
+            new ChainNodeTransformer(array(
+                TraverserNodeTransformer::fromVisitors(array(
+                    new TypeSerializerVisitor(
+                        $genericTypeParserAndSerializer,
+                        new PhpNameAdapter()
+                    )
+                )),
+                TraverserNodeTransformer::fromVisitors(array(
+                    new NameSimplifierVisitor(
+                        new PhpNameAdapter(),
+                        new NamespaceContextVisitor()
+                    )
+                )),
             )),
             new PhpParserSerializer(
                 new \PhpParser\PrettyPrinter\Standard()
@@ -114,7 +125,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
         );
 
         $autoloader->autoload(
-            '\NicMart\Generics\Example\Option\Option«FullName»',
+            '\NicMart\Generics\Example\Option\Option«Option«FullName»»',
             __FILE__
         );
     }
