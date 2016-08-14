@@ -133,6 +133,11 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
          */
 
         $autoloader->autoload(
+            'NicMart\Generics\Example\Func\Function1«Option«FullName»·FullName»',
+            __FILE__
+        );
+
+        $autoloader->autoload(
             '\NicMart\Generics\Example\Func\CallableFunction1«Option«FullName»·FullName»',
             __FILE__
         );
