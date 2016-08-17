@@ -12,7 +12,7 @@ namespace NicMart\Generics\Infrastructure\PhpParser\Parser;
 
 
 use NicMart\Generics\AST\Parser\Parser;
-use PhpParser\ParserAbstract as PhpParser;
+use PhpParser\Parser as PhpParser;
 
 /**
  * Class PhpParserParser

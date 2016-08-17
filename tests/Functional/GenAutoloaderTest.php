@@ -30,6 +30,7 @@ use NicMart\Generics\Example\Option\Option«FullName»;
 use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Type;
 use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
+use PhpParser\ParserFactory;
 
 /**
  * This file is part of PhpStorm
@@ -46,11 +47,13 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
         $genericTypeParserAndSerializer = new GenericTypeParserAndSerializer(
             new AngleQuotedGenericTypeNameParser()
         );
+        
+        $phpParser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
 
         // This parser parses php code and annotate types
         $parser = new PostTransformParser(
-            new PhpParserParser( 
-                $phpParser = new \PhpParser\Parser(new \PhpParser\Lexer())
+            new PhpParserParser(
+                $phpParser
             ),
             TraverserNodeTransformer::fromVisitors(array(
                 new TypeAnnotatorVisitor(
