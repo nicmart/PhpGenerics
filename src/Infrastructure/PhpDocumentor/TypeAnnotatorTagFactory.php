@@ -22,7 +22,9 @@ use NicMart\Generics\Type\UnionType;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\TagFactory;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
+use phpDocumentor\Reflection\DocBlock\Tags\Property;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Context as TypeContext;
@@ -105,6 +107,8 @@ class TypeAnnotatorTagFactory implements TagFactory
             );
         };
 
+        //@todo Move this functor mechanics elsewhere
+
         if ($tag instanceof Param) {
             return new Param(
                 $tag->getVariableName(),
@@ -120,6 +124,24 @@ class TypeAnnotatorTagFactory implements TagFactory
                 $tag->getDescription()
             );
         }
+
+        if ($tag instanceof Var_) {
+            return new Var_(
+                $tag->getVariableName(),
+                $recursiveAnnotator($tag->getType()),
+                $tag->getDescription()
+            );
+        }
+
+        if ($tag instanceof Property) {
+            return new Property(
+                $tag->getVariableName(),
+                $recursiveAnnotator($tag->getType()),
+                $tag->getDescription()
+            );
+        }
+
+        return $tag;
     }
 
     /**
