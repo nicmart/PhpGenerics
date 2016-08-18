@@ -107,41 +107,7 @@ class TypeAnnotatorTagFactory implements TagFactory
             );
         };
 
-        //@todo Move this functor mechanics elsewhere
-
-        if ($tag instanceof Param) {
-            return new Param(
-                $tag->getVariableName(),
-                $recursiveAnnotator($tag->getType()),
-                $tag->isVariadic(),
-                $tag->getDescription()
-            );
-        }
-        
-        if ($tag instanceof Return_) {
-            return new Return_(
-                $recursiveAnnotator($tag->getType()),
-                $tag->getDescription()
-            );
-        }
-
-        if ($tag instanceof Var_) {
-            return new Var_(
-                $tag->getVariableName(),
-                $recursiveAnnotator($tag->getType()),
-                $tag->getDescription()
-            );
-        }
-
-        if ($tag instanceof Property) {
-            return new Property(
-                $tag->getVariableName(),
-                $recursiveAnnotator($tag->getType()),
-                $tag->getDescription()
-            );
-        }
-
-        return $tag;
+        return TagTypeFunctor::map($tag, $recursiveAnnotator);
     }
 
     /**
