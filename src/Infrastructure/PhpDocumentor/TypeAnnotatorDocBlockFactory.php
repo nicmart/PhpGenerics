@@ -24,7 +24,7 @@ use phpDocumentor\Reflection\Types;
  * Class TypeAnnotatorBlockFactory
  * @package NicMart\Generics\Infrastructure\PhpDocumentor
  */
-class TypeAnnotatorBlockFactory
+class TypeAnnotatorDocBlockFactory
 {
     /**
      * @param TypeParser $typeParser

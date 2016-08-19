@@ -46,7 +46,7 @@ class TypeAnnotatorBlockFactoryTest extends PHPUnit_Framework_TestCase
  */
 EOF;
         
-        $factory = TypeAnnotatorBlockFactory::createInstance(
+        $factory = TypeAnnotatorDocBlockFactory::createInstance(
             new GenericTypeParserAndSerializer(
                 new AngleQuotedGenericTypeNameParser()
             )
