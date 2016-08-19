@@ -77,37 +77,12 @@ class TypeAnnotatorTagFactory implements TagFactory
         $tag = $this->tagFactory->create($tagLine, $context);
         $namespaceContext = $this->toNamespaceContext($context);
 
-        $annotator = function (Type $type) use ($namespaceContext) {
-            return new AnnotatedType(
-                $type,
-                $this->typeParser->parse(
-                    FullName::fromString((string) $type),
-                    $namespaceContext
-                )
-            );
-        };
-
-        $recursiveAnnotator = function (Type $type) use ($namespaceContext, $annotator, &$recursiveAnnotator) {
-            if (!$type instanceof Compound) {
-                return $annotator($type);
-            }
-
-            $annotatedTypes = array();
-            $domainTypes = array();
-
-            for ($i = 0; $type->has($i); $i++) {
-                $annotatedType = $recursiveAnnotator($type->get($i));
-                $annotatedTypes[] = $annotatedType;
-                $domainTypes[] = $annotatedType->type();
-            }
-
-            return new AnnotatedType(
-                new Compound($annotatedTypes),
-                new UnionType($domainTypes)
-            );
-        };
-
-        return TagTypeFunctor::map($tag, $recursiveAnnotator);
+        return TagTypeFunctor::map(
+            $tag,
+            TypeFunctor::bottomUp(
+                $this->annotatorMapFunction($namespaceContext)
+            )
+        );
     }
 
     /**
@@ -116,6 +91,37 @@ class TypeAnnotatorTagFactory implements TagFactory
     public function registerTagHandler($tagName, $handler)
     {
         $this->tagFactory->registerTagHandler($tagName, $handler);
+    }
+
+    /**
+     * Non-recursive function that transform a type to an annotated one
+     * @param NamespaceContext $namespaceContext
+     * @return \Closure
+     */
+    private function annotatorMapFunction(NamespaceContext $namespaceContext)
+    {
+        return function (Type $type) use ($namespaceContext) {
+            if ($type instanceof Compound) {
+                $domainInnerTypes = [];
+                for ($i = 0; $type->has($i); $i++) {
+                    /** @var AnnotatedType $innerType */
+                    $innerType = $type->get($i);
+                    $domainInnerTypes[] = $innerType->type();
+                }
+                return new AnnotatedType(
+                    $type,
+                    new UnionType($domainInnerTypes)
+                );
+            }
+
+            return new AnnotatedType(
+                $type,
+                $this->typeParser->parse(
+                    FullName::fromString((string) $type),
+                    $namespaceContext
+                )
+            );
+        };
     }
 
     /**
