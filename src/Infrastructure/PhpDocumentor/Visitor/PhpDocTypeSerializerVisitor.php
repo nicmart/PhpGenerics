@@ -20,6 +20,7 @@ use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
 use NicMart\Generics\Infrastructure\PhpDocumentor\DocBlockTagFunctor;
 use NicMart\Generics\Infrastructure\PhpDocumentor\TypeDocBlockSerializer;
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node;
 
 class PhpDocTypeSerializerVisitor implements Visitor
@@ -28,15 +29,22 @@ class PhpDocTypeSerializerVisitor implements Visitor
      * @var TypeDocBlockSerializer
      */
     private $typeDocBlockSerializer;
+    /**
+     * @var PhpDocContextAdapter
+     */
+    private $contextAdapter;
 
     /**
      * PhpDocTypeSerializerVisitor constructor.
      * @param TypeDocBlockSerializer $typeDocBlockSerializer
+     * @param PhpDocContextAdapter $contextAdapter
      */
     public function __construct(
-        TypeDocBlockSerializer $typeDocBlockSerializer
+        TypeDocBlockSerializer $typeDocBlockSerializer,
+        PhpDocContextAdapter $contextAdapter
     ) {
         $this->typeDocBlockSerializer = $typeDocBlockSerializer;
+        $this->contextAdapter = $contextAdapter;
     }
 
     /**
@@ -51,6 +59,17 @@ class PhpDocTypeSerializerVisitor implements Visitor
 
         /** @var DocBlock $docBlock */
         $docBlock = $node->getAttribute(PhpDocTypeAnnotatorVisitor::ATTR_NAME);
+        $context = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
+
+        $docBlock = new DocBlock(
+            $docBlock->getSummary(),
+            $docBlock->getDescription(),
+            $docBlock->getTags(),
+            $this->contextAdapter->toPhpDocContext($context),
+            $docBlock->getLocation(),
+            $docBlock->isTemplateStart(),
+            $docBlock->isTemplateEnd()
+        );
         
         $node->getDocComment()->setText(
             $this->typeDocBlockSerializer->serialize($docBlock)

@@ -89,16 +89,17 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                     new TypeSerializerVisitor(
                         $genericTypeParserAndSerializer,
                         new PhpNameAdapter()
-                    ),
+                    )
+                )),
+                TraverserNodeTransformer::fromVisitors(array(
                     new PhpDocTypeSerializerVisitor(
                         new TypeDocBlockSerializer(
                             new TypeResolver(new FqsenResolver()),
                             $genericTypeParserAndSerializer,
                             new Serializer()
-                        )
-                    )
-                )),
-                TraverserNodeTransformer::fromVisitors(array(
+                        ),
+                        new PhpDocContextAdapter()
+                    ),
                     new NameSimplifierVisitor(
                         new PhpNameAdapter(),
                         new NamespaceContextVisitor()
@@ -153,12 +154,15 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        /**
+        $autoloader->autoload(
+            '\NicMart\Generics\Example\Option\Option«FullName»',
+            __FILE__
+        );
+
          $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«Option«FullName»»',
             __FILE__
         );
-         */
 
         $autoloader->autoload(
             'NicMart\Generics\Example\Func\Function1«Option«FullName»·FullName»',

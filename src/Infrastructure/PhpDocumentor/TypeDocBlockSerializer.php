@@ -59,7 +59,7 @@ class TypeDocBlockSerializer
      */
     public function serialize(DocBlock $docBlock)
     {
-        return $this->serializer->getDocComment(
+        $docBlock = $this->serializer->getDocComment(
             DocBlockTagFunctor::map(
                 $docBlock,
                 TagTypeFunctor::lift(function (AnnotatedType $type) {
@@ -69,6 +69,8 @@ class TypeDocBlockSerializer
                 })
             )
         );
+
+        return $docBlock;
     }
 
     /**

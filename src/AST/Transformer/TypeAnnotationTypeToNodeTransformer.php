@@ -14,6 +14,8 @@ namespace NicMart\Generics\AST\Transformer;
 use NicMart\Generics\AST\Visitor\Name\TypeTransformerNameVisitor;
 use NicMart\Generics\AST\Visitor\TypeNameVisitor;
 use NicMart\Generics\AST\Visitor\TypeTransformerVisitor;
+use NicMart\Generics\Infrastructure\PhpDocumentor\TypeDocBlockTransformer;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Visitor\PhpDocTypeTransformerVisitor;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Type\Transformer\TypeTransformer;
 
@@ -43,6 +45,11 @@ class TypeAnnotationTypeToNodeTransformer implements TypeToNodeTransformer
         return TraverserNodeTransformer::fromVisitors(array(
             new TypeTransformerVisitor(
                 $typeTransformer
+            ),
+            new PhpDocTypeTransformerVisitor(
+                new TypeDocBlockTransformer(
+                    $typeTransformer
+                )
             )
         ));
     }

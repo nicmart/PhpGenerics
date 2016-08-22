@@ -9,10 +9,17 @@
             "email": "nicolo@martini.io"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/nicmart/ReflectionCommon"
+        }
+    ],
     "require": {
         "php": ">=5.5",
         "nikic/php-parser": "~2",
         "phpdocumentor/reflection-docblock": "~3.1",
+        "phpdocumentor/reflection-common": "dev-fqsn-chars as 1.0.x-dev",
         "composer-plugin-api": "^1.0",
         "symfony/finder": "~3"
     },
