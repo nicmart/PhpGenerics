@@ -100,6 +100,10 @@ class TypeAnnotatorVisitor implements Visitor
      */
     private function extractName(Node $node)
     {
+        // Sometimes the name is not in the format we expect, and its
+        // meaning depends on the parent. In that case we set an attribute
+        // when we are visiting the parent, and we retrieve it later when
+        // visiting the child
         if ($node->hasAttribute(self::ATTR_OVERRIDEN_NAME)) {
             return $node->getAttribute(self::ATTR_OVERRIDEN_NAME);
         }
@@ -114,7 +118,7 @@ class TypeAnnotatorVisitor implements Visitor
     }
 
     /**
-     * In PhpParser there can be names that are neithwe Relative nor FullQualified
+     * In PhpParser there can be names that are neither Relative nor FullQualified
      *
      * This is a workaround for when that happens (Use statements)
      *

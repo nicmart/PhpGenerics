@@ -12,6 +12,11 @@ use NicMart\Generics\Autoloader\ComposerAutoloaderBuilder;
 use NicMart\Generics\Autoloader\GenAutoloader;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
+use NicMart\Generics\Infrastructure\PhpDocumentor\TypeAnnotatorDocBlockFactory;
+use NicMart\Generics\Infrastructure\PhpDocumentor\TypeDocBlockSerializer;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Visitor\PhpDocTypeAnnotatorVisitor;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Visitor\PhpDocTypeSerializerVisitor;
 use NicMart\Generics\Infrastructure\PhpParser\Parser\PhpParserParser;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Infrastructure\PhpParser\Serializer\PhpParserSerializer;
@@ -23,6 +28,7 @@ use NicMart\Generics\Type\Compiler\TypeBasedGenericCompiler;
 use NicMart\Generics\Type\Loader\DefaultParametrizedTypeLoader;
 use NicMart\Generics\Type\Parser\GenericTypeParserAndSerializer;
 use NicMart\Generics\Type\Resolver\ComposerGenericTypeResolver;
+use NicMart\Generics\Type\Serializer\GenericTypeSerializer;
 use NicMart\Generics\Type\Source\ReflectionGenericSourceUnitLoader;
 
 use NicMart\Generics\Name\FullName;
@@ -30,6 +36,9 @@ use NicMart\Generics\Example\Option\Option«FullName»;
 use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Type;
 use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
+use phpDocumentor\Reflection\DocBlock\Serializer;
+use phpDocumentor\Reflection\FqsenResolver;
+use phpDocumentor\Reflection\TypeResolver;
 use PhpParser\ParserFactory;
 
 /**
@@ -50,6 +59,9 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
         
         $phpParser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
 
+        // TODO: before serializing we should put the new namespace
+        // into the DocBlock, otherwise it will be serialized with the old context
+
         // This parser parses php code and annotate types
         $parser = new PostTransformParser(
             new PhpParserParser(
@@ -60,6 +72,12 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                     $genericTypeParserAndSerializer,
                     new NamespaceContextVisitor(),
                     new PhpNameAdapter()
+                ),
+                new PhpDocTypeAnnotatorVisitor(
+                    TypeAnnotatorDocBlockFactory::createInstance(
+                        $genericTypeParserAndSerializer
+                    ),
+                    new PhpDocContextAdapter()
                 )
             ))
         );
@@ -71,6 +89,13 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                     new TypeSerializerVisitor(
                         $genericTypeParserAndSerializer,
                         new PhpNameAdapter()
+                    ),
+                    new PhpDocTypeSerializerVisitor(
+                        new TypeDocBlockSerializer(
+                            new TypeResolver(new FqsenResolver()),
+                            $genericTypeParserAndSerializer,
+                            new Serializer()
+                        )
                     )
                 )),
                 TraverserNodeTransformer::fromVisitors(array(

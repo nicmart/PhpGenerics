@@ -25,7 +25,7 @@ final class TagTypeFunctor
 {
     public static function map(Tag $tag, callable $f)
     {
-        if ($tag instanceof Param) {
+        if ($tag instanceof Param && $tag->getType()) {
             return new Param(
                 $tag->getVariableName(),
                 $f($tag->getType()),
@@ -34,14 +34,14 @@ final class TagTypeFunctor
             );
         }
 
-        if ($tag instanceof Return_) {
+        if ($tag instanceof Return_ && $tag->getType()) {
             return new Return_(
                 $f($tag->getType()),
                 $tag->getDescription()
             );
         }
 
-        if ($tag instanceof Var_) {
+        if ($tag instanceof Var_ && $tag->getType()) {
             return new Var_(
                 $tag->getVariableName(),
                 $f($tag->getType()),
@@ -49,7 +49,7 @@ final class TagTypeFunctor
             );
         }
 
-        if ($tag instanceof Property) {
+        if ($tag instanceof Property && $tag->getType()) {
             return new Property(
                 $tag->getVariableName(),
                 $f($tag->getType()),
