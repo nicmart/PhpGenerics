@@ -8,7 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Infrastructure\PhpDocumentor;
+namespace NicMart\Generics\Infrastructure\PhpDocumentor\Type;
 
 
 use NicMart\Generics\Type\Transformer\TypeTransformer;

@@ -17,7 +17,7 @@ use phpDocumentor\Reflection\DocBlock;
  * Class Serializer
  * @package NicMart\Generics\Infrastructure\PhpDocumentor
  */
-class Serializer extends \phpDocumentor\Reflection\DocBlock\Serializer
+class Serializer extends DocBlock\Serializer
 {
     /**
      * @param DocBlock $docblock

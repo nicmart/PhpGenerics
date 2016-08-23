@@ -9,6 +9,7 @@
 namespace NicMart\Generics\Infrastructure\PhpDocumentor;
 
 
+use NicMart\Generics\Infrastructure\PhpDocumentor\Type\AnnotatedType;
 use NicMart\Generics\Type\Transformer\TypeTransformer;
 use phpDocumentor\Reflection\DocBlock;
 

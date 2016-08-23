@@ -13,6 +13,7 @@ use NicMart\Generics\Autoloader\GenAutoloader;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Serializer as PrettySerializer;
 use NicMart\Generics\Infrastructure\PhpDocumentor\TypeAnnotatorDocBlockFactory;
 use NicMart\Generics\Infrastructure\PhpDocumentor\TypeDocBlockSerializer;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Visitor\PhpDocTypeAnnotatorVisitor;
@@ -92,18 +93,19 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
                     )
                 )),
                 TraverserNodeTransformer::fromVisitors(array(
+                    new NameSimplifierVisitor(
+                        new PhpNameAdapter(),
+                        new NamespaceContextVisitor()
+                    ),
                     new PhpDocTypeSerializerVisitor(
                         new TypeDocBlockSerializer(
                             new TypeResolver(new FqsenResolver()),
                             $genericTypeParserAndSerializer,
-                            new Serializer()
+                            new PrettySerializer(),
+                            new PhpDocContextAdapter()
                         ),
                         new PhpDocContextAdapter()
                     ),
-                    new NameSimplifierVisitor(
-                        new PhpNameAdapter(),
-                        new NamespaceContextVisitor()
-                    )
                 )),
             )),
             new PhpParserSerializer(

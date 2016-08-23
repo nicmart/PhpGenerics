@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Infrastructure\PhpDocumentor;
 
 
+use NicMart\Generics\Infrastructure\PhpDocumentor\Type\AnnotatedType;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Type\Parser\TypeParser;

@@ -8,6 +8,11 @@
 
 namespace NicMart\Generics\Infrastructure\PhpDocumentor;
 
+use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Type\AnnotatedType;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Type\RenderedType;
+use NicMart\Generics\Name\Context\NamespaceContext;
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
 use NicMart\Generics\Type\Type;
 use NicMart\Generics\Type\UnionType;
@@ -15,6 +20,7 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Type as PhpDocType;
 use phpDocumentor\Reflection\Types\Compound;
+use phpDocumentor\Reflection\Types\Object_;
 
 /**
  * Class TypeDocBlockSerializer
@@ -36,21 +42,28 @@ class TypeDocBlockSerializer
      * @var TypeResolver
      */
     private $typeResolver;
+    /**
+     * @var PhpDocContextAdapter
+     */
+    private $contextAdapter;
 
     /**
      * TypeDocBlockSerializer constructor.
      * @param TypeResolver $typeResolver
      * @param TypeSerializer $typeSerializer
      * @param DocBlock\Serializer $serializer
+     * @param PhpDocContextAdapter $contextAdapter
      */
     public function __construct(
         TypeResolver $typeResolver,
         TypeSerializer $typeSerializer,
-        DocBlock\Serializer $serializer
+        DocBlock\Serializer $serializer,
+        PhpDocContextAdapter $contextAdapter
     ) {
         $this->serializer = $serializer;
         $this->typeSerializer = $typeSerializer;
         $this->typeResolver = $typeResolver;
+        $this->contextAdapter = $contextAdapter;
     }
 
     /**
@@ -59,18 +72,59 @@ class TypeDocBlockSerializer
      */
     public function serialize(DocBlock $docBlock)
     {
-        $docBlock = $this->serializer->getDocComment(
-            DocBlockTagFunctor::map(
-                $docBlock,
-                TagTypeFunctor::lift(function (AnnotatedType $type) {
-                    return $this->domainTypeToPhpDocType(
-                        $type->type()
-                    );
-                })
-            )
+        // First, flatten the annotated types
+        $docBlock = DocBlockTagFunctor::map(
+            $docBlock,
+            $this->typeFlattener()
         );
 
-        return $docBlock;
+        $nsContext = $this->contextAdapter->fromPhpDocContext(
+            $docBlock->getContext()
+        );
+
+        // This is to get around PhpDocumentor limits on types formatting
+        $docBlock = DocBlockTagFunctor::map(
+            $docBlock,
+            $this->typeRenderer($nsContext)
+        );
+
+        return $this->serializer->getDocComment($docBlock);
+    }
+
+    /**
+     * @return \Closure
+     */
+    private function typeFlattener()
+    {
+        return TagTypeFunctor::lift(function (AnnotatedType $type) {
+            return $this->domainTypeToPhpDocType(
+                $type->type()
+            );
+        });
+    }
+
+    /**
+     * @param NamespaceContext $namespaceContext
+     * @return \Closure
+     */
+    private function typeRenderer(NamespaceContext $namespaceContext)
+    {
+        $renderer = function (PhpDocType $type) use ($namespaceContext) {
+            if (!$type instanceof Object_) {
+                return $type;
+            }
+
+            return new RenderedType(
+                $type,
+                $namespaceContext->simplify(FullName::fromString(
+                    (string) $type
+                ))->toString()
+            );
+        };
+
+        $recursiveRenderer = TypeFunctor::bottomUp($renderer);
+
+        return TagTypeFunctor::lift($recursiveRenderer);
     }
 
     /**
