@@ -18,6 +18,8 @@ use NicMart\Generics\Name\Transformer\NameQualifier;
 /**
  * Class AngleQuotedGenericNameFactory
  * @package NicMart\Generics\Name\Generic\Factory
+ * 
+ * @todo Remove, it is replaced by AngleQuotedGenericTypeNameParser
  */
 class AngleQuotedGenericNameFactory implements GenericNameFactory
 {

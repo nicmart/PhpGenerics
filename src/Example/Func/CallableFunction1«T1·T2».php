@@ -22,9 +22,9 @@ class CallableFunction1«T1·T2» implements Function1«T1·T2»
     private $callable;
 
     /**
-     * @param $callable
+     * @param callable $callable
      */
-    public function __construct($callable)
+    public function __construct(callable $callable)
     {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException(

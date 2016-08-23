@@ -30,6 +30,7 @@ use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
 use NicMart\Generics\Name\Transformer\ByFullNameNameTransformer;
 use NicMart\Generics\Name\Transformer\ChainNameTransformer;
 use NicMart\Generics\Name\Transformer\GenericNameTransformer;
+use NicMart\Generics\Name\Transformer\LazyNameTransformer;
 use NicMart\Generics\Name\Transformer\NameTransformer;
 use NicMart\Generics\Name\Transformer\SimpleNameTransformer;
 use NicMart\Generics\Name\Transformer\SimplifierNameTransformer;
@@ -120,23 +121,19 @@ class DefaultNodeTransformer implements NodeTransformer
 
         $factory = $this->genericNameFactory;
 
-        // Recursive type transformer, transform type vars in concrete types,
-        // and transform generic arguments recursively
-        $typeUsageTransformer =
-            ChainNameTransformer::fromNameTransformerFactory(
-                function (
-                    ChainNameTransformer $chain
-                ) use ($simpleTypeUsageTransformer, $factory) {
-                    return array(
-                        new GenericNameTransformer(
-                            $chain,
-                            $factory
-                        ),
-                        $simpleTypeUsageTransformer
-                    );
-                }
-            )
-        ;
+
+        // Recursive name transformer!
+        $typeUsageTransformer = new LazyNameTransformer(function (
+            NameTransformer $self
+        ) use ($simpleTypeUsageTransformer, $factory) {
+            return new ChainNameTransformer(array(
+                new GenericNameTransformer(
+                    $self,
+                    $factory
+                ),
+                $simpleTypeUsageTransformer
+            ));
+        });
 
         return $this->typeTransformerVisitor(
             $typeUsageTransformer,
