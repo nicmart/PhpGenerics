@@ -13,12 +13,14 @@ namespace NicMart\Generics\Type\Resolver;
  use NicMart\Generics\Composer\DirectoryResolver;
  use NicMart\Generics\Name\Context\NamespaceContextExtractor;
  use NicMart\Generics\Name\FullName;
+ use NicMart\Generics\Name\Name;
  use NicMart\Generics\Type\GenericType;
  use NicMart\Generics\Type\ParametrizedType;
  use NicMart\Generics\Type\Parser\TypeParser;
  use NicMart\Generics\Type\Serializer\TypeSerializer;
  use NicMart\Generics\Type\SimpleReferenceType;
  use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
+ use NicMart\Generics\Type\Type;
  use SplFileInfo;
  use Symfony\Component\Finder\Finder;
 
@@ -96,16 +98,19 @@ namespace NicMart\Generics\Type\Resolver;
                 file_get_contents($file->getPathname())
             );
 
-            return $this->typeParser->parse(
+            $parsedType = $this->typeParser->parse(
                 $name,
                 $context
             );
 
+            $this->assertGenericType($parsedType, $name, $file);
+
+            return $parsedType;
         }
 
         throw new \UnderflowException(sprintf(
             "Unable to resolve Generic Type file for parametrized type %s",
-            $parametrizedType->name()->toString()
+            $this->typeSerializer->serialize($parametrizedType)->toString()
         ));
     }
 
@@ -146,4 +151,23 @@ namespace NicMart\Generics\Type\Resolver;
             $genericRegexpFullName->last()->toString()
         );
     }
-}
+
+     /**
+      * @param $parsedType
+      * @param $name
+      * @param $file
+      */
+     private function assertGenericType(Type $parsedType, Name $name, SplFileInfo $file)
+     {
+         if (!$parsedType instanceof GenericType) {
+             throw new \RuntimeException(sprintf(
+                 "Type Name '%s' from file '%s' has not been parsed to a Generic Type."
+                 . "It has been parsed to '%s' of type '%s'.",
+                 $name->toString(),
+                 $file->getPathname(),
+                 $this->typeSerializer->serialize($parsedType)->toString(),
+                 get_class($parsedType)
+             ));
+         }
+     }
+ }

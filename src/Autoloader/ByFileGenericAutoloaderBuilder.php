@@ -16,6 +16,7 @@ use NicMart\Generics\AST\Transformer\ChainNodeTransformer;
 use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
 use NicMart\Generics\AST\Visitor\NameSimplifierVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use NicMart\Generics\AST\Visitor\RemoveDuplicateUsesVisitor;
 use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
 use NicMart\Generics\AST\Visitor\TypeSerializerVisitor;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
@@ -91,7 +92,7 @@ class ByFileGenericAutoloaderBuilder
                     new TypeSerializerVisitor(
                         $genericTypeParserAndSerializer,
                         new PhpNameAdapter()
-                    )
+                    ),
                 )),
                 TraverserNodeTransformer::fromVisitors(array(
                     new NameSimplifierVisitor(
@@ -108,6 +109,11 @@ class ByFileGenericAutoloaderBuilder
                         $phpDocContextAdapter
                     ),
                 )),
+                // This breaks
+                TraverserNodeTransformer::fromVisitors(array(
+                    new NamespaceContextVisitor(),
+                    new RemoveDuplicateUsesVisitor()
+                ))
             )),
             new PhpParserSerializer(
                 new \PhpParser\PrettyPrinter\Standard()

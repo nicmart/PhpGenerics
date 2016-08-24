@@ -76,7 +76,7 @@ class ByFileGenericAutoloader
         if (!$type instanceof ParametrizedType) {
             return;
         }
-        
+
         $this->parametrizedTypeLoader->load($type);
     }
 }

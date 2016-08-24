@@ -31,9 +31,10 @@ final class VariableType implements Type
      */
     public static function isVariable(FullName $fullName)
     {
-        $variableInterface = '\NicMart\Generics\Variable\Variable';
+        $variableInterfaceSuffix = 'NicMart\Generics\Variable\\';
 
-        return is_subclass_of($fullName->toString(), $variableInterface);
+        return substr($fullName->toString(), 0, strlen($variableInterfaceSuffix))
+            === $variableInterfaceSuffix;
     }
 
     /**

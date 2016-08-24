@@ -22,7 +22,7 @@ use NicMart\Generics\Example\Option\Some«string»;
 use NicMart\Generics\Example\Option\Some«FullName»;
 
 $option = new Some«FullName»(FullName::fromString("foo"));
-
+return 1;
 $map = function (FullName $fullName) {
     return $fullName->toRelative();
 };
