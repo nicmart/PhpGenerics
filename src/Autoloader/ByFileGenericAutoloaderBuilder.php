@@ -59,11 +59,8 @@ class ByFileGenericAutoloaderBuilder
             new AngleQuotedGenericTypeNameParser()
         );
 
-        $phpParser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
+        $phpParser = (new ParserFactory)->create(ParserFactory::ONLY_PHP5);
         $phpDocContextAdapter = new PhpDocContextAdapter();
-
-        // TODO: before serializing we should put the new namespace
-        // into the DocBlock, otherwise it will be serialized with the old context
 
         // This parser parses php code and annotate types
         $parser = new PostTransformParser(
@@ -99,6 +96,7 @@ class ByFileGenericAutoloaderBuilder
                         new PhpNameAdapter(),
                         new NamespaceContextVisitor()
                     ),
+                    new RemoveDuplicateUsesVisitor(),
                     new PhpDocTypeSerializerVisitor(
                         new TypeDocBlockSerializer(
                             new TypeResolver(new FqsenResolver()),
@@ -109,11 +107,6 @@ class ByFileGenericAutoloaderBuilder
                         $phpDocContextAdapter
                     ),
                 )),
-                // This breaks
-                TraverserNodeTransformer::fromVisitors(array(
-                    new NamespaceContextVisitor(),
-                    new RemoveDuplicateUsesVisitor()
-                ))
             )),
             new PhpParserSerializer(
                 new \PhpParser\PrettyPrinter\Standard()

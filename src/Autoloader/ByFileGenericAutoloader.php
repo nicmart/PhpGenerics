@@ -14,6 +14,7 @@ namespace NicMart\Generics\Autoloader;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Parser\TypeParser;
 use NicMart\Generics\Type\Loader\ParametrizedTypeLoader;
@@ -72,6 +73,16 @@ class ByFileGenericAutoloader
             FullName::fromString($className),
             $namespaceContext
         );
+
+        // If it happens we are autoloading a generic type, it means
+        // it is a another generic with variables renamed. We need to generate
+        // the code as if it was a ParametrizedType
+        if ($type instanceof GenericType) {
+            $type = new ParametrizedType(
+                $type->name(),
+                $type->parameters()
+            );
+        }
 
         if (!$type instanceof ParametrizedType) {
             return;
