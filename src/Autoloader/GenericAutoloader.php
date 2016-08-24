@@ -56,28 +56,21 @@ class GenericAutoloader
     private $genericNameFactory;
 
     /**
+     * @var ByFileGenericAutoloader
+     */
+    private $byFileGenericAutoloader;
+
+    /**
      * GenericAutoloader constructor.
-     * @param DefaultGenericCompiler $compiler
-     * @param SourceUnitEvaluation $evaluation
+     * @param ByFileGenericAutoloader $byFileGenericAutoloader
      * @param CallerFilenameResolver $filenameResolver
-     * @param NamespaceContextExtractor $namespaceContextExtractor
-     * @param GenericNameResolver $genericNameResolver
-     * @param GenericNameFactory $genericNameFactory
      */
     public function __construct(
-        DefaultGenericCompiler $compiler,
-        SourceUnitEvaluation $evaluation,
-        CallerFilenameResolver $filenameResolver,
-        NamespaceContextExtractor $namespaceContextExtractor,
-        GenericNameResolver $genericNameResolver,
-        GenericNameFactory $genericNameFactory
+        ByFileGenericAutoloader $byFileGenericAutoloader,
+        CallerFilenameResolver $filenameResolver
     ) {
-        $this->compiler = $compiler;
-        $this->evaluation = $evaluation;
+        $this->byFileGenericAutoloader = $byFileGenericAutoloader;
         $this->filenameResolver = $filenameResolver;
-        $this->namespaceContextExtractor = $namespaceContextExtractor;
-        $this->genericNameResolver = $genericNameResolver;
-        $this->genericNameFactory = $genericNameFactory;
     }
 
     /**
@@ -86,29 +79,10 @@ class GenericAutoloader
      */
     public function __invoke($className)
     {
-        $name = FullName::fromString($className);
-
-        if (!$this->genericNameFactory->isGeneric($name)) {
-            return;
-        }
-
-        $namespaceContext = $this->namespaceContextOfCaller();
-
-        $appliedGeneric = $this->genericNameFactory->toGeneric(
-            $name,
-            $namespaceContext
+        $this->byFileGenericAutoloader->autoload(
+            $className,
+            $this->callerFilename()
         );
-
-        $genericParams = $appliedGeneric->parameters();
-
-        $genericName = $this->genericNameResolver->resolve($appliedGeneric);
-
-        $source = $this->compiler->compile(
-            $genericName,
-            $genericParams
-        );
-
-        $this->evaluation->evaluate($source);
 
         return true;
     }
@@ -116,12 +90,8 @@ class GenericAutoloader
     /**
      * @return NamespaceContext
      */
-    private function namespaceContextOfCaller()
+    private function callerFilename()
     {
-        $callerFilename = $this->filenameResolver->filename(array(__FILE__));
-
-        return $this->namespaceContextExtractor->contextOf(
-            file_get_contents($callerFilename)
-        );
+        return $this->filenameResolver->filename(array(__FILE__));
     }
 }

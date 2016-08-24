@@ -38,7 +38,7 @@ class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
     private $parametrizedTypeLoader;
 
     /**
-     * @var GenAutoloader
+     * @var ByFileGenericAutoloader
      */
     private $genAutoloader;
 
@@ -48,7 +48,7 @@ class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
         $this->namespaceContextExtractor = $this->getMock('\NicMart\Generics\Name\Context\NamespaceContextExtractor');
         $this->parametrizedTypeLoader = $this->getMock('\NicMart\Generics\Type\Loader\ParametrizedTypeLoader');
 
-        $this->genAutoloader = new GenAutoloader(
+        $this->genAutoloader = new ByFileGenericAutoloader(
             $this->namespaceContextExtractor,
             $this->typeParser,
             $this->parametrizedTypeLoader

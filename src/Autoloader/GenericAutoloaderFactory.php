@@ -36,42 +36,12 @@ class GenericAutoloaderFactory
      */
     public static function registerAutoloader($baseDir)
     {
-        $srcDir = dirname(__DIR__);
-        $filenameResolver = new CallerFilenameResolver(array(
-            $srcDir . "/Name/Generic/CallerContextGenericNameResolver.php",
-            $srcDir . "/Autoloader/GenericAutoloader.php",
+        spl_autoload_register(new GenericAutoloader(
+            ByFileGenericAutoloaderBuilder::build($baseDir),
+            new CallerFilenameResolver(array(
+               // $srcDir . "/Name/Generic/CallerContextGenericNameResolver.php",
+            ))
         ));
-        $genericFactory = new AngleQuotedGenericNameFactory();
-        $nsExtractor = new PhpParserNamespaceContextExtractor(
-            new Parser(new Lexer()),
-            new NamespaceContextVisitor()
-        );
-
-        $resolver = new CallerContextGenericNameResolver(
-            $genericFactory,
-            $filenameResolver,
-            $nsExtractor
-        );
-
-        $resolver = new ComposerGenericNameResolver(
-            $genericFactory,
-            new ClassLoaderDirectoryResolver(
-                static::composerClassLoader()
-            )
-        );
-
-        $genericAutoloader = new GenericAutoloader(
-            GenericCompilerFactory::compiler(),
-            new IncludeDumpedSourceUnitEvaluation(
-                new Psr0SourceUnitDumper($baseDir)
-            ),
-            $filenameResolver,
-            $nsExtractor,
-            $resolver,
-            $genericFactory
-        );
-
-        spl_autoload_register($genericAutoloader);
     }
 
     /**

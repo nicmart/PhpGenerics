@@ -18,7 +18,14 @@ use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Parser\TypeParser;
 use NicMart\Generics\Type\Loader\ParametrizedTypeLoader;
 
-class GenAutoloader
+/**
+ * Class ByFileGenericAutoloader
+ *
+ * Autoload a class having the information of the caller file path
+ *
+ * @package NicMart\Generics\Autoloader
+ */
+class ByFileGenericAutoloader
 {
     /**
      * @var NamespaceContextExtractor
@@ -51,10 +58,14 @@ class GenAutoloader
         $this->parametrizedTypeLoader = $parametrizedTypeLoader;
     }
 
-    public function autoload($className, $fileName)
+    /**
+     * @param $className
+     * @param $callerFilename
+     */
+    public function autoload($className, $callerFilename)
     {
         $namespaceContext = $this->namespaceContextExtractor->contextOf(
-            file_get_contents($fileName)
+            file_get_contents($callerFilename)
         );
 
         $type = $this->typeParser->parse(

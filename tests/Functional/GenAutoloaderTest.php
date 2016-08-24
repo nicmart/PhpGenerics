@@ -9,7 +9,8 @@ use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
 use NicMart\Generics\AST\Visitor\TypeSerializerVisitor;
 use NicMart\Generics\Autoloader\ComposerAutoloaderBuilder;
-use NicMart\Generics\Autoloader\GenAutoloader;
+use NicMart\Generics\Autoloader\ByFileGenericAutoloader;
+use NicMart\Generics\Autoloader\ByFileGenericAutoloaderBuilder;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
@@ -54,107 +55,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruction()
     {
-        $genericTypeParserAndSerializer = new GenericTypeParserAndSerializer(
-            new AngleQuotedGenericTypeNameParser()
-        );
-        
-        $phpParser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
-
-        // TODO: before serializing we should put the new namespace
-        // into the DocBlock, otherwise it will be serialized with the old context
-
-        // This parser parses php code and annotate types
-        $parser = new PostTransformParser(
-            new PhpParserParser(
-                $phpParser
-            ),
-            TraverserNodeTransformer::fromVisitors(array(
-                new TypeAnnotatorVisitor(
-                    $genericTypeParserAndSerializer,
-                    new NamespaceContextVisitor(),
-                    new PhpNameAdapter()
-                ),
-                new PhpDocTypeAnnotatorVisitor(
-                    TypeAnnotatorDocBlockFactory::createInstance(
-                        $genericTypeParserAndSerializer
-                    ),
-                    new PhpDocContextAdapter()
-                )
-            ))
-        );
-
-        // This serializer serializes php nodes and serialize type annotations
-        $serializer = new PreTransformSerializer(
-            new ChainNodeTransformer(array(
-                TraverserNodeTransformer::fromVisitors(array(
-                    new TypeSerializerVisitor(
-                        $genericTypeParserAndSerializer,
-                        new PhpNameAdapter()
-                    )
-                )),
-                TraverserNodeTransformer::fromVisitors(array(
-                    new NameSimplifierVisitor(
-                        new PhpNameAdapter(),
-                        new NamespaceContextVisitor()
-                    ),
-                    new PhpDocTypeSerializerVisitor(
-                        new TypeDocBlockSerializer(
-                            new TypeResolver(new FqsenResolver()),
-                            $genericTypeParserAndSerializer,
-                            new PrettySerializer(),
-                            new PhpDocContextAdapter()
-                        ),
-                        new PhpDocContextAdapter()
-                    ),
-                )),
-            )),
-            new PhpParserSerializer(
-                new \PhpParser\PrettyPrinter\Standard()
-            )
-        );
-
-
-        $nodeSerializer = new DefaultNodeSerializer($parser, $serializer);
-
-        // DONE: ParametricTypeTransformer
-
-        $autoloader = new GenAutoloader(
-            
-            $contextExtractor = new PhpParserNamespaceContextExtractor(
-                // @todo: put our parser
-                $phpParser,
-                new NamespaceContextVisitor()
-            ),
-
-            $genericTypeParserAndSerializer,
-        
-            new DefaultParametrizedTypeLoader(
-
-                new ComposerGenericTypeResolver(
-                    $genericTypeParserAndSerializer,
-                    $genericTypeParserAndSerializer,
-                    new ClassLoaderDirectoryResolver(
-                        ComposerAutoloaderBuilder::autoloader()
-                    ),
-                    $contextExtractor
-                ),
-
-                new ReflectionGenericSourceUnitLoader($genericTypeParserAndSerializer),
-
-                new TypeBasedGenericCompiler(
-
-                    new TypeAnnotationTypeToNodeTransformer(),
-                
-                    $nodeSerializer,
-                
-                    $genericTypeParserAndSerializer
-                ),
-            
-                new IncludeDumpedSourceUnitEvaluation(
-                    new Psr0SourceUnitDumper(__DIR__ . "/../../cache")
-                )
-            )
-        );
+        $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache");
 
         $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«FullName»',
