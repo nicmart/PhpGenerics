@@ -15,6 +15,7 @@ use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Name\Name;
+use NicMart\Generics\Type\PrimitiveType;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
 use PhpParser\Node;
 
@@ -64,11 +65,17 @@ class TypeSerializerVisitor implements Visitor
     {
         $this->skipChildren($node);
 
+        if ($node instanceof Node\Param) {
+            // PHP < 7
+            $this->removePrimitiveTypeHints($node);
+        }
+
         if (!$this->isValidNode($node)) {
             return new MaintainNode();
         }
 
         $type = $node->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+
         $name = $this->typeSerializer->serialize($type);
 
         $this->setName($node, $name);
@@ -142,5 +149,18 @@ class TypeSerializerVisitor implements Visitor
             self::ATTR_SKIP,
             true
         );
+    }
+
+    private function removePrimitiveTypeHints(Node\Param $param)
+    {
+        if (!$param->type instanceof Node\Name) {
+            return;
+        }
+        
+        $type = $param->type->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+
+        if ($type instanceof PrimitiveType) {
+            $param->type = null;
+        }
     }
 }
