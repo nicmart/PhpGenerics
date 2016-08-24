@@ -17,6 +17,7 @@ use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
 use NicMart\Generics\AST\Visitor\NameSimplifierVisitor;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\RemoveDuplicateUsesVisitor;
+use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
 use NicMart\Generics\AST\Visitor\TypeSerializerVisitor;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
@@ -30,6 +31,7 @@ use NicMart\Generics\Infrastructure\PhpParser\Parser\PhpParserParser;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Infrastructure\PhpParser\Serializer\PhpParserSerializer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
+use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
 use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
 use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
@@ -97,6 +99,10 @@ class ByFileGenericAutoloaderBuilder
                         new NamespaceContextVisitor()
                     ),
                     new RemoveDuplicateUsesVisitor(),
+                    // Remove Generic marker interface
+                    new RemoveParentTypeVisitor(array(
+                        FullName::fromString('\NicMart\Generics\Generic')
+                    )),
                     new PhpDocTypeSerializerVisitor(
                         new TypeDocBlockSerializer(
                             new TypeResolver(new FqsenResolver()),

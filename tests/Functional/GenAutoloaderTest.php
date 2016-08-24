@@ -43,6 +43,8 @@ use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
 use PhpParser\ParserFactory;
 
+use NicMart\Generics\Variable\T2;
+
 /**
  * This file is part of PhpStorm
  *
@@ -74,6 +76,11 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 
         $autoloader->autoload(
             '\NicMart\Generics\Example\Func\CallableFunction1«Option«FullName»·FullName»',
+            __FILE__
+        );
+
+        $autoloader->autoload(
+            '\NicMart\Generics\Example\Option\Option«T2»',
             __FILE__
         );
     }
