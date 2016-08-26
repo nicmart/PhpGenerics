@@ -39,12 +39,12 @@ class GenericAutoloaderFactory
         spl_autoload_register(new GenericAutoloader(
             ByFileGenericAutoloaderBuilder::build($baseDir),
             new CallerFilenameResolver(array(
-               // $srcDir . "/Name/Generic/CallerContextGenericNameResolver.php",
             ))
         ));
     }
 
     /**
+     * @todo Why we needed this ones?
      * @return mixed
      */
     private static function composerClassLoader()

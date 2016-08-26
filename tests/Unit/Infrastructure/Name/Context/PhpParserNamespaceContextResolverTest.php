@@ -17,6 +17,7 @@ use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use PhpParser\Lexer;
 use PhpParser\Parser;
+use PhpParser\ParserFactory;
 
 class PhpParserNamespaceContextResolverTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +27,7 @@ class PhpParserNamespaceContextResolverTest extends \PHPUnit_Framework_TestCase
     public function it_gets_context_from_backtrace()
     {
         $resolver = new PhpParserNamespaceContextExtractor(
-            new Parser(new Lexer()),
+            (new ParserFactory)->create(ParserFactory::ONLY_PHP5),
             new NamespaceContextVisitor()
         );
 

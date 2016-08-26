@@ -9,7 +9,9 @@
 namespace NicMart\Generics\Infrastructure\PhpDocumentor;
 
 
+use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Type\AnnotatedType;
+use NicMart\Generics\Infrastructure\PhpDocumentor\Type\RenderedType;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Type\PrimitiveType;
@@ -43,7 +45,8 @@ class TypeDocBlockSerializerTest extends \PHPUnit_Framework_TestCase
         $serializer = new TypeDocBlockSerializer(
             new TypeResolver(),
             $typeSerializer,
-            $phpDocSerializer = new Serializer()
+            $phpDocSerializer = new Serializer(),
+            new PhpDocContextAdapter()
         );
 
         $docBlock = new DocBlock(
@@ -85,13 +88,22 @@ class TypeDocBlockSerializerTest extends \PHPUnit_Framework_TestCase
                 new DocBlock\Tags\Author("john", "john@example.com"),
                 new DocBlock\Tags\Param(
                     "foo",
-                    new Object_(new Fqsen("\\" . FullName::class))
+                    new RenderedType(
+                        new Object_(new Fqsen("\\" . FullName::class)),
+                        FullName::class
+                    )
                 ),
                 new DocBlock\Tags\Param(
                     "bar",
                     new Compound(array(
-                        new Object_(new Fqsen("\\" . FullName::class)),
-                        new Object_(new Fqsen("\\" . RelativeName::class)),
+                        new RenderedType(
+                            new Object_(new Fqsen("\\" . FullName::class)),
+                            FullName::class
+                        ),
+                        new RenderedType(
+                            new Object_(new Fqsen("\\" . RelativeName::class)),
+                            RelativeName::class
+                        ),
                     ))
                 ),
                 new DocBlock\Tags\Return_(
