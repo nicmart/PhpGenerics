@@ -10,7 +10,7 @@
 
 namespace NicMart\Generics\Infrastructure\PhpParser\Transformer;
 
-use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
+use NicMart\Generics\Infrastructure\PhpParser\PhpParserVisitorAdapter;
 use NicMart\Generics\AST\Transformer\NodeTransformer;
 use NicMart\Generics\AST\Visitor\Visitor;
 use PhpParser\Node;

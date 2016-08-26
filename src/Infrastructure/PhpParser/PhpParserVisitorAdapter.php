@@ -8,7 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Adapter;
+namespace NicMart\Generics\Infrastructure\PhpParser;
 
 
 use NicMart\Generics\AST\Visitor\Action\DontTraverseChildren;

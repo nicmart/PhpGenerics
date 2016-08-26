@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Infrastructure\Name\Context;
 
 
-use NicMart\Generics\Adapter\PhpParserVisitorAdapter;
+use NicMart\Generics\Infrastructure\PhpParser\PhpParserVisitorAdapter;
 use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
