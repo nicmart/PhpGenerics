@@ -37,7 +37,7 @@ $f2 = new CallableFunction2«FullName·FullName·FullName»(function (FullName $
 });
 
 $this->assertEquals(
-    $f2(Fullname::fromString("a"), FullName::fromString("b")),
+    $f2(FullName::fromString("a"), FullName::fromString("b")),
     FullName::fromString("a\\b")
 );
 

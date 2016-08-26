@@ -65,13 +65,6 @@ class ParametricTypeTransformer implements TypeTransformer
      */
     public function transform(Type $type)
     {
-        if ($type instanceof GenericType) {
-            return new ParametrizedType(
-                $type->name(),
-                $type->parameters()
-            );
-        }
-
         if (!$type instanceof VariableType) {
             return $type;
         }

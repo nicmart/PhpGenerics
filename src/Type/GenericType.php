@@ -68,18 +68,16 @@ final class GenericType implements ReferenceType
     }
 
     /**
+     * This can look strange, but since a GenericType can contain only
+     * VariableType, we consider it as an empty container of types, like
+     * the other leaves in the type graph.
+     *
      * @param TypeTransformer $typeTransformer
      * @return Type
      */
     public function map(TypeTransformer $typeTransformer)
     {
-        $params = array();
-
-        foreach ($this->parameters() as $param) {
-            $params[] = $typeTransformer->transform($param);
-        }
-
-        return new self($this->name(), $params);
+        return $this;
     }
 
 

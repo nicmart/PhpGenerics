@@ -69,6 +69,9 @@ class ByFileGenericAutoloader
             file_get_contents($callerFilename)
         );
 
+        // @todo to improbe efficiency, we should do a simple string check instead
+        // of parsing everytime all the types
+
         $type = $this->typeParser->parse(
             FullName::fromString($className),
             $namespaceContext

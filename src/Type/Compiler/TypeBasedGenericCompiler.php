@@ -18,8 +18,11 @@ use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
 use NicMart\Generics\Type\Transformer\BottomUpTransformer;
+use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
+use NicMart\Generics\Type\Transformer\ChainTypeTransformer;
 use NicMart\Generics\Type\Transformer\ParametricTypeTransformer;
 use NicMart\Generics\Type\Transformer\TopDownTransformer;
+use NicMart\Generics\Type\Type;
 
 /**
  * Class TypeBasedGenericCompiler
@@ -69,18 +72,8 @@ class TypeBasedGenericCompiler implements GenericCompiler
         ParametrizedType $parametrizedType,
         SourceUnit $sourceUnit
     ) {
-        // @todo abstract it?
-        $typeTransformer =
-            new TopDownTransformer(
-                new ParametricTypeTransformer(
-                    $genericType,
-                    $parametrizedType
-                )
-            )
-        ;
-
         $nodeTransformer = $this->typeToNodeTransformer->nodeTransformer(
-            $typeTransformer
+            $this->transformer($genericType, $parametrizedType)
         );
 
         $genericNodes = $this->nodeSerializer->toNodes($sourceUnit->source());
@@ -94,5 +87,36 @@ class TypeBasedGenericCompiler implements GenericCompiler
             $this->typeSerializer->serialize($parametrizedType),
             $parametrizedSource
         );
+    }
+
+    // @todo abstract it?
+    private function transformer(
+        GenericType $genericType,
+        ParametrizedType $parametrizedType
+    ) {
+        $typeTransformer = new BottomUpTransformer(
+            new ParametricTypeTransformer(
+                $genericType,
+                $parametrizedType
+            )
+        );
+        
+        $genericToParametrized = new TopDownTransformer(
+            new ByCallableTypeTransformer(function (Type $type) {
+                if (!$type instanceof GenericType) {
+                    return $type;
+                }
+                
+                return new ParametrizedType(
+                    $type->name(),
+                    $type->parameters()
+                );
+            })
+        );
+
+        return new ChainTypeTransformer([
+            $genericToParametrized,
+            $typeTransformer
+        ]);
     }
 }

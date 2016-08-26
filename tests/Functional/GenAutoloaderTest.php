@@ -44,6 +44,9 @@ use phpDocumentor\Reflection\TypeResolver;
 use PhpParser\ParserFactory;
 
 use NicMart\Generics\Variable\T2;
+use NicMart\Generics\Variable\T1;
+use NicMart\Generics\Example\Func\Function1«T1·T2»;
+use NicMart\Generics\Example\Func\Function2«Function1«T1·T2»·T1·T2»;
 
 /**
  * This file is part of PhpStorm
@@ -59,7 +62,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
     {
         $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache");
 
-        $autoloader->autoload(
+        /*$autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«FullName»',
             __FILE__
         );
@@ -81,6 +84,12 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 
         $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«T2»',
+            __FILE__
+        );*/
+
+
+        $autoloader->autoload(
+            '\NicMart\Generics\Example\Func\Function2«Function1«T1·T2»·T1·T2»',
             __FILE__
         );
     }
