@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
+use NicMart\Generics\AST\Visitor\Action\RemoveNode;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Name\Name;
@@ -68,6 +69,10 @@ class TypeSerializerVisitor implements Visitor
         if ($node instanceof Node\Param) {
             // PHP < 7
             $this->removePrimitiveTypeHints($node);
+        }
+
+        if ($node instanceof Node\Stmt\Use_) {
+            $this->removePrimitiveTypeUsages($node);
         }
 
         if (!$this->isValidNode($node)) {
@@ -161,6 +166,16 @@ class TypeSerializerVisitor implements Visitor
 
         if ($type instanceof PrimitiveType) {
             $param->type = null;
+        }
+    }
+
+    private function removePrimitiveTypeUsages(Node\Stmt\Use_ $use)
+    {
+        foreach ($use->uses as $i => $useUse) {
+            $type = $useUse->name->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+            if ($type instanceof PrimitiveType) {
+                unset($use->uses[$i]);
+            }
         }
     }
 }

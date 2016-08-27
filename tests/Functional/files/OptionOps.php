@@ -33,10 +33,9 @@ $optionRelative = OptionMap«FullName·RelativeName»::map(
     $map
 );
 
-
 $this->assertEquals(
-    $optionRelative->getOrElse(RelativeName::fromString("boo")),
-    RelativeName::fromString("foo")
+    RelativeName::fromString("foo"),
+    $optionRelative->getOrElse(RelativeName::fromString("NONE"))
 );
 
 $noFullName = new None«FullName»();

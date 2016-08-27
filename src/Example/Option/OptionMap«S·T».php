@@ -15,6 +15,7 @@ use NicMart\Generics\Example\Option\Option«S»;
 
 use NicMart\Generics\Example\Option\None«T»;
 use NicMart\Generics\Example\Option\None«S»;
+use NicMart\Generics\Example\Option\Some«S»;
 
 use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\S;
@@ -29,11 +30,11 @@ class OptionMap«S·T» implements Generic
      */
     public static function map(Option«S» $option, $callable)
     {
-        if ($option instanceof None«S») {
-            return new None«T»();
+        if ($option instanceof Some«S») {
+            return new Some«T»($callable($option->get()));
         }
 
-        return new Some«T»($callable($option->get()));
+        return None«T»::instance();
     }
 
     /**
@@ -43,10 +44,10 @@ class OptionMap«S·T» implements Generic
      */
     public static function flatMap(Option«S» $option, $callable)
     {
-        if ($option instanceof None«S») {
-            return new None«T»();
+        if ($option instanceof Some«S») {
+            return $callable($option->get());
         }
 
-        return $callable($option->get());
+        return None«T»::instance();
     }
 }
