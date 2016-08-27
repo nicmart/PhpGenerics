@@ -19,13 +19,18 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\RelativeName;
 
 use NicMart\Generics\Example\Option\Some«string»;
+use NicMart\Generics\Example\Option\Option«string»;
 use NicMart\Generics\Example\Option\Some«FullName»;
+
+use NicMart\Generics\Example\Func\CallableFunction1«FullName·RelativeName»;
+use NicMart\Generics\Example\Func\CallableFunction1«FullName·Option«RelativeName»»;
+use NicMart\Generics\Example\Func\CallableFunction1«FullName·Option«string»»;
 
 $option = new Some«FullName»(FullName::fromString("foo"));
 
-$map = function (FullName $fullName) {
+$map = new CallableFunction1«FullName·RelativeName»(function (FullName $fullName) {
     return $fullName->toRelative();
-};
+});
 
 
 $optionRelative = OptionMap«FullName·RelativeName»::map(
@@ -50,13 +55,13 @@ $this->assertEquals(
     $noRelativeName
 );
 
-$flatmap = function (FullName $fullName) {
+$flatmap = new CallableFunction1«FullName·Option«string»»(function (FullName $fullName) {
     $str = $fullName->toString();
     if (strlen($str) >= 3) {
         return new Some«string»(substr($str, 0, 3));
     }
     return None«string»::instance();
-};
+});
 
 $fullnameForFlatmap1 = FullName::fromString("Abcdefgh");
 $fullnameForFlatmap2 = FullName::fromString("Ab");
