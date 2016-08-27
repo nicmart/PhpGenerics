@@ -60,9 +60,9 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruction()
     {
-        $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache");
+        $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache/generics");
 
-        /*$autoloader->autoload(
+        $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«FullName»',
             __FILE__
         );
@@ -85,7 +85,7 @@ class GenAutoloaderTest extends PHPUnit_Framework_TestCase
         $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«T2»',
             __FILE__
-        );*/
+        );
 
 
         $autoloader->autoload(

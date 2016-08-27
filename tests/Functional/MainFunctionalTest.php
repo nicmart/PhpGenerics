@@ -8,13 +8,15 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
-namespace NicMart\Generics\Code;
+namespace NicMart\Generics;
+
+use NicMart\Generics\GenericFunctionalTestCase;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class GenericApplicationsTest extends GenericFunctionalTestCase
+class MainFunctionalTest extends GenericFunctionalTestCase
 {
     /**
      * @test

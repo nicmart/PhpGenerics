@@ -20,9 +20,9 @@ use NicMart\Generics\Example\Func\Function1«FullName·RelativeName»;
 
 use NicMart\Generics\Example\Func\Composition«A·B·C»;
 
-use NicMart\Generics\Code\A;
-use NicMart\Generics\Code\B;
-use NicMart\Generics\Code\C;
+use NicMart\Generics\A;
+use NicMart\Generics\B;
+use NicMart\Generics\C;
 
 
 $f1 = new CallableFunction1«Function1«FullName·RelativeName»·Function1«FullName·RelativeName»»(function () {});
