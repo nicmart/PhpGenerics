@@ -19,3 +19,7 @@ script:
 
 after_script:
   - php vendor/bin/coveralls -v
+
+addons:
+    code_climate:
+        repo_token: 816794d0b77c426044505c96d157e8e0cdc13eb94e28323ee80e3d09eeb761d1
