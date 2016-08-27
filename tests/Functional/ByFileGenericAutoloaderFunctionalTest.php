@@ -56,7 +56,7 @@ use NicMart\Generics\Example\Func\Function2«Function1«T1·T2»·T1·T2»;
  *
  * @author Nicolò Martini <nicolo@martini.io>
  */
-class GenAutoloaderTest extends PHPUnit_Framework_TestCase
+class ByFileGenericAutoloaderFunctionalTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruction()
     {
