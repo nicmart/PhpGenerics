@@ -120,7 +120,11 @@ namespace NicMart\Generics\Type\Resolver;
      */
     private function isGeneric(FullName $name)
     {
-        return is_a($name->toString(), '\NicMart\Generics\Generic', true);
+        try {
+            return is_a($name->toString(), '\NicMart\Generics\Generic', true);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
      /**
