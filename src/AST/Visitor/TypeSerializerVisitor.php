@@ -45,6 +45,8 @@ class TypeSerializerVisitor implements Visitor
      */
     private $phpNameAdapter;
 
+    private $isPHP7 = false;
+
     /**
      * TypeSerializerVisitor constructor.
      * @param TypeSerializer $typeSerializer
@@ -56,6 +58,8 @@ class TypeSerializerVisitor implements Visitor
     ) {
         $this->typeSerializer = $typeSerializer;
         $this->phpNameAdapter = $phpNameAdapter;
+
+        $this->isPHP7 = version_compare(phpversion(), '7.0.0', '>=');
     }
 
     /**
@@ -66,7 +70,7 @@ class TypeSerializerVisitor implements Visitor
     {
         $this->skipChildren($node);
 
-        if ($node instanceof Node\Param) {
+        if ($node instanceof Node\Param && !$this->isPHP7) {
             // PHP < 7
             $this->removePrimitiveTypeHints($node);
         }

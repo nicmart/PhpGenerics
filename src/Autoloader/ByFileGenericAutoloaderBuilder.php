@@ -61,7 +61,8 @@ class ByFileGenericAutoloaderBuilder
             new AngleQuotedGenericTypeNameParser()
         );
 
-        $phpParser = (new ParserFactory)->create(ParserFactory::ONLY_PHP5);
+        $phpParser = (new ParserFactory)->create(static::parserKind());
+
         $phpDocContextAdapter = new PhpDocContextAdapter();
 
         // This parser parses php code and annotate types
@@ -158,5 +159,13 @@ class ByFileGenericAutoloaderBuilder
                 )
             )
         );
+    }
+
+    private static function parserKind()
+    {
+        return version_compare(phpversion(), '7.0.0', '>=')
+            ? ParserFactory::ONLY_PHP7
+            : ParserFactory::ONLY_PHP5
+        ;
     }
 }
