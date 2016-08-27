@@ -60,7 +60,7 @@ class ByFileGenericAutoloaderFunctionalTest extends PHPUnit_Framework_TestCase
 {
     public function testConstruction()
     {
-        $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache/generics");
+        $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache");
 
         $autoloader->autoload(
             '\NicMart\Generics\Example\Option\Option«FullName»',

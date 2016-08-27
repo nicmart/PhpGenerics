@@ -25,7 +25,7 @@ class GenericFunctionalTestCase extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$cacheDir = __DIR__ . "/../../cache";
-        self::$genericsCacheDir = self::$cacheDir . "/generics";
+        self::$genericsCacheDir = self::$cacheDir;
         GenericAutoloaderFactory::registerAutoloader(
             self::$genericsCacheDir
         );
@@ -34,7 +34,7 @@ class GenericFunctionalTestCase extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        $dir = __DIR__ . "/../../../cache/generics";
+        $dir = __DIR__ . "/../../../cache";
         //exec("rm -rf $dir");
     }
 
