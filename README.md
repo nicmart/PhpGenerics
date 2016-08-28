@@ -1,5 +1,8 @@
 # Php Generics
 
+[![Build Status](https://travis-ci.org/nicmart/PhpGenerics.svg?branch=master)](https://travis-ci.org/nicmart/PhpGenerics)
+[![Code Climate](https://codeclimate.com/github/nicmart/PhpGenerics/badges/gpa.svg)](https://codeclimate.com/github/nicmart/PhpGenerics)
+
 Under development.
 
 ## Install
