@@ -21,6 +21,7 @@ use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
 use NicMart\Generics\AST\Visitor\TypeSerializerVisitor;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
+use NicMart\Generics\Infrastructure\Name\Context\OptimizedNamespaceExtractor;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
 use NicMart\Generics\Infrastructure\PhpDocumentor\TypeAnnotatorDocBlockFactory;
@@ -125,7 +126,6 @@ class ByFileGenericAutoloaderBuilder
         return new ByFileGenericAutoloader(
 
             $contextExtractor = new PhpParserNamespaceContextExtractor(
-            // @todo: put our parser
                 $phpParser,
                 new NamespaceContextVisitor()
             ),
