@@ -8,6 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
+use NicMart\Generics\Example\PHP7\Option\Some«mixed»;
 use NicMart\Generics\Example\PHP7\Option\Some«FullName»;
 use NicMart\Generics\Example\PHP7\Option\Some«RelativeName»;
 
@@ -48,3 +49,7 @@ $this->assertEquals(
     $name,
     $noFullname->getOrElse($name)
 );
+
+// Types of everything: T -> mixed
+
+$some = new Some«mixed»($name);

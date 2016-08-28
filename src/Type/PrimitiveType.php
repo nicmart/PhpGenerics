@@ -42,18 +42,23 @@ final class PrimitiveType implements Type
     public static function isPrimitive(FullName $name)
     {
         switch ($name->toString()) {
+            // PHP 5
+            case "callable":
+            case "static":
+            case "array":
+            case "self":
+
+            // PHP 7
             case "string":
             case "int":
-            case "callable":
-            case "array":
             case "resource":
             case "float":
             case "double":
             case "bool":
             case "void":
-            case "static":
-            case "self":
-            case "parent":
+
+            // Unsupported
+            case "mixed":
                 return true;
         }
 
@@ -86,6 +91,34 @@ final class PrimitiveType implements Type
     public function map(TypeTransformer $typeTransformer)
     {
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSupportedType()
+    {
+        static $isPhp7;
+
+        if (!isset($isPhp7)) {
+            $isPhp7 = version_compare(phpversion(), '7.0.0', '>=');
+        }
+
+        $name = $this->name->toString();
+
+        if ($isPhp7) {
+            return $name != "mixed";
+        }
+
+        switch ($this->name->toString()) {
+            case "callable":
+            case "static":
+            case "array":
+            case "self":
+                return true;
+        }
+
+        return false;
     }
 
     /**

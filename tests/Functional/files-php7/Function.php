@@ -20,6 +20,7 @@ use NicMart\Generics\Example\PHP7\Func\Apply«FullName·RelativeName»;
 use NicMart\Generics\Example\PHP7\Func\CallableUnaryOperator«FullName»;
 
 use NicMart\Generics\Example\PHP7\Func\Functions«FullName»;
+use NicMart\Generics\Example\PHP7\Func\Functions«mixed»;
 
 $f = new CallableFunction1«FullName·RelativeName»(function (FullName $name) {
     return $name->toRelative();
@@ -62,6 +63,13 @@ $this->assertSame(
 );
 
 $supplierOfName = Functions«FullName»::constant($name);
+
+$this->assertSame(
+    $name,
+    $supplierOfName()
+);
+
+$supplierOfAnything = Functions«mixed»::constant($name);
 
 $this->assertSame(
     $name,

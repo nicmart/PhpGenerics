@@ -23,7 +23,7 @@ interface Product
      * @param $n
      * @return mixed
      */
-    public function element($n): mixed;
+    public function element($n);
 
     /**
      * @return \Iterator

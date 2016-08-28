@@ -18,6 +18,8 @@ use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Type\PrimitiveType;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
+use NicMart\Generics\Type\SimpleReferenceType;
+use NicMart\Generics\Type\Type;
 use PhpParser\Node;
 
 /**
@@ -45,8 +47,6 @@ class TypeSerializerVisitor implements Visitor
      */
     private $phpNameAdapter;
 
-    private $isPHP7 = false;
-
     /**
      * TypeSerializerVisitor constructor.
      * @param TypeSerializer $typeSerializer
@@ -58,8 +58,6 @@ class TypeSerializerVisitor implements Visitor
     ) {
         $this->typeSerializer = $typeSerializer;
         $this->phpNameAdapter = $phpNameAdapter;
-
-        $this->isPHP7 = version_compare(phpversion(), '7.0.0', '>=');
     }
 
     /**
@@ -70,13 +68,12 @@ class TypeSerializerVisitor implements Visitor
     {
         $this->skipChildren($node);
 
-        if ($node instanceof Node\Param && !$this->isPHP7) {
-            // PHP < 7
-            $this->removePrimitiveTypeHints($node);
+        if ($typeHintField = $this->typeHintField($node)) {
+            $this->removeTypeHints($node, $typeHintField);
         }
 
         if ($node instanceof Node\Stmt\Use_) {
-            $this->removePrimitiveTypeUsages($node);
+            $this->removeTypesInUses($node);
         }
 
         if (!$this->isValidNode($node)) {
@@ -86,8 +83,9 @@ class TypeSerializerVisitor implements Visitor
         $type = $node->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
 
         $name = $this->typeSerializer->serialize($type);
+        $phpParserName = $this->phpNameAdapter->toPhpName($name);
 
-        $this->setName($node, $name);
+        $this->setName($node, $phpParserName);
 
         return new ReplaceNodeWith($node);
     }
@@ -102,6 +100,8 @@ class TypeSerializerVisitor implements Visitor
             if ($node->name->hasAttribute(self::ATTR_CHANGED)) {
                 $node->alias = $node->name->getLast();
             }
+
+            return new MaintainNode();
         }
 
         return new MaintainNode();
@@ -109,22 +109,21 @@ class TypeSerializerVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @param Name $name
+     * @param Node\Name $name
      * @return Node\Name|Node\Name\FullyQualified|string
      */
-    private function setName(Node &$node, Name $name)
+    private function setName(Node &$node, Node\Name $name)
     {
         if ($node instanceof Node\Name) {
-            $newName = $this->phpNameAdapter->toPhpName($name);
-            $newName->setAttribute(
+            $name->setAttribute(
                 self::ATTR_CHANGED,
                 true
             );
-            return $node = $newName;
+            return $node = $name;
         }
 
         if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_) {
-            return $node->name = $name->last()->toString();
+            return $node->name = $name->getLast();
         }
     }
     
@@ -160,26 +159,63 @@ class TypeSerializerVisitor implements Visitor
         );
     }
 
-    private function removePrimitiveTypeHints(Node\Param $param)
+    /**
+     * @param Type $type
+     * @return bool
+     */
+    private function hasTypeToBeErased(Type $type)
     {
-        if (!$param->type instanceof Node\Name) {
+        if ($type instanceof PrimitiveType) {
+            return !$type->isSupportedType();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $paramOrFunction
+     * @param $field
+     */
+    private function removeTypeHints($paramOrFunction, $field)
+    {
+        if (!$paramOrFunction->$field instanceof Node\Name) {
             return;
         }
-        
-        $type = $param->type->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
 
-        if ($type instanceof PrimitiveType) {
-            $param->type = null;
+        $type = $paramOrFunction->$field->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+
+        if ($this->hasTypeToBeErased($type)) {
+            $paramOrFunction->$field = null;
         }
     }
 
-    private function removePrimitiveTypeUsages(Node\Stmt\Use_ $use)
+    /**
+     * @param Node\Stmt\Use_ $use
+     */
+    private function removeTypesInUses(Node\Stmt\Use_ $use)
     {
         foreach ($use->uses as $i => $useUse) {
             $type = $useUse->name->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
-            if ($type instanceof PrimitiveType) {
+            if ($type instanceof PrimitiveType || $this->hasTypeToBeErased($type)) {
                 unset($use->uses[$i]);
             }
         }
+    }
+
+    /**
+     * @param Node $node
+     * @return bool
+     */
+    private function typeHintField(Node $node)
+    {
+        if ($node instanceof Node\Param) {
+            return "type";
+        }
+
+        if ($node instanceof Node\FunctionLike) {
+            return "returnType";
+        }
+
+        return null;
     }
 }

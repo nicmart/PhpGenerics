@@ -81,12 +81,19 @@ namespace NicMart\Generics\Type\Resolver;
 
         $finder = new Finder();
 
+        $atLeasteOneDirExists = false;
+
         foreach ($dirs as $dir) {
             if (is_dir($dir)) {
+                $atLeasteOneDirExists = true;
                 $finder->in($dir);
             }
         }
 
+        if (!$atLeasteOneDirExists) {
+            $this->unableToResolve($parametrizedType);
+        }
+        
         $finder->name($this->regexp($parametrizedType));
 
         /** @var SplFileInfo $file */
@@ -108,10 +115,7 @@ namespace NicMart\Generics\Type\Resolver;
             return $parsedType;
         }
 
-        throw new \UnderflowException(sprintf(
-            "Unable to resolve Generic Type file for parametrized type %s",
-            $this->typeSerializer->serialize($parametrizedType)->toString()
-        ));
+        $this->unableToResolve($parametrizedType);
     }
 
     /**
@@ -173,5 +177,17 @@ namespace NicMart\Generics\Type\Resolver;
                  get_class($parsedType)
              ));
          }
+     }
+
+     /**
+      * @todo Use a custom Domain Exception
+      * @param ParametrizedType $parametrizedType
+      */
+     private function unableToResolve(ParametrizedType $parametrizedType)
+     {
+         throw new \UnderflowException(sprintf(
+             "Unable to resolve Generic Type file for parametrized type %s",
+             $this->typeSerializer->serialize($parametrizedType)->toString()
+         ));
      }
  }
