@@ -34,10 +34,10 @@ use NicMart\Generics\Type\Serializer\GenericTypeSerializer;
 use NicMart\Generics\Type\Source\ReflectionGenericSourceUnitLoader;
 
 use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Example\Option\Option«FullName»;
+use NicMart\Generics\Example\PHP5\Option\Option«FullName»;
 use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Type;
-use NicMart\Generics\Example\Func\CallableFunction1«T1·T2»;
+use NicMart\Generics\Example\PHP5\Func\CallableFunction1«T1·T2»;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
@@ -45,8 +45,8 @@ use PhpParser\ParserFactory;
 
 use NicMart\Generics\Variable\T2;
 use NicMart\Generics\Variable\T1;
-use NicMart\Generics\Example\Func\Function1«T1·T2»;
-use NicMart\Generics\Example\Func\Function2«Function1«T1·T2»·T1·T2»;
+use NicMart\Generics\Example\PHP5\Func\Function1«T1·T2»;
+use NicMart\Generics\Example\PHP5\Func\Function2«Function1«T1·T2»·T1·T2»;
 
 /**
  * This file is part of PhpStorm
@@ -63,33 +63,33 @@ class ByFileGenericAutoloaderFunctionalTest extends PHPUnit_Framework_TestCase
         $autoloader = ByFileGenericAutoloaderBuilder::build(__DIR__ . "/../../cache");
 
         $autoloader->autoload(
-            '\NicMart\Generics\Example\Option\Option«FullName»',
+            '\NicMart\Generics\Example\PHP5\Option\Option«FullName»',
             __FILE__
         );
 
          $autoloader->autoload(
-            '\NicMart\Generics\Example\Option\Option«Option«FullName»»',
+            '\NicMart\Generics\Example\PHP5\Option\Option«Option«FullName»»',
             __FILE__
         );
 
         $autoloader->autoload(
-            'NicMart\Generics\Example\Func\Function1«Option«FullName»·FullName»',
+            'NicMart\Generics\Example\PHP5\Func\Function1«Option«FullName»·FullName»',
             __FILE__
         );
 
         $autoloader->autoload(
-            '\NicMart\Generics\Example\Func\CallableFunction1«Option«FullName»·FullName»',
+            '\NicMart\Generics\Example\PHP5\Func\CallableFunction1«Option«FullName»·FullName»',
             __FILE__
         );
 
         $autoloader->autoload(
-            '\NicMart\Generics\Example\Option\Option«T2»',
+            '\NicMart\Generics\Example\PHP5\Option\Option«T2»',
             __FILE__
         );
 
 
         $autoloader->autoload(
-            '\NicMart\Generics\Example\Func\Function2«Function1«T1·T2»·T1·T2»',
+            '\NicMart\Generics\Example\PHP5\Func\Function2«Function1«T1·T2»·T1·T2»',
             __FILE__
         );
     }
