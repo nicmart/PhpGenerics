@@ -94,25 +94,29 @@ class TypeBasedGenericCompiler implements GenericCompiler
         GenericType $genericType,
         ParametrizedType $parametrizedType
     ) {
-        $typeTransformer = new BottomUpTransformer(
-            new ParametricTypeTransformer(
-                $genericType,
-                $parametrizedType
-            )
-        );
-        
+
+        // First, transforms all generic to parametrized types, top down
         $genericToParametrized = new TopDownTransformer(
             new ByCallableTypeTransformer(function (Type $type) {
                 if (!$type instanceof GenericType) {
                     return $type;
                 }
-                
+
                 return new ParametrizedType(
                     $type->name(),
                     $type->parameters()
                 );
             })
         );
+
+        // Then, transform the types, bottom up
+        $typeTransformer = new BottomUpTransformer(
+            new ParametricTypeTransformer(
+                $genericType,
+                $parametrizedType
+            )
+        );
+
 
         return new ChainTypeTransformer([
             $genericToParametrized,

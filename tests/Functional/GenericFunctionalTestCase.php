@@ -26,6 +26,7 @@ class GenericFunctionalTestCase extends \PHPUnit_Framework_TestCase
     {
         self::$cacheDir = __DIR__ . "/../../cache";
         self::$genericsCacheDir = self::$cacheDir;
+
         GenericAutoloaderFactory::registerAutoloader(
             self::$genericsCacheDir
         );
@@ -36,19 +37,6 @@ class GenericFunctionalTestCase extends \PHPUnit_Framework_TestCase
     {
         $dir = __DIR__ . "/../../../cache";
         //exec("rm -rf $dir");
-    }
-
-    /**
-     * @param $code
-     */
-    public function include_($code)
-    {
-        $dir = __DIR__ . "/../../../cache/";
-        $filename = md5($code) . ".php";
-        $path = $dir . $filename;
-
-        file_put_contents($path, "<?php\n\n" . $code);
-        include $path;
     }
 }
 

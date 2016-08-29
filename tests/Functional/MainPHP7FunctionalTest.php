@@ -80,6 +80,6 @@ class MainPHP7FunctionalTest extends GenericFunctionalTestCase
      */
     public function it_works_with_complex_test()
     {
-        include __DIR__ . "/files-php7/ComplexTest.php";
+        require __DIR__ . "/files-php7/Complex.php";
     }
 }
