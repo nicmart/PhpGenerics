@@ -80,7 +80,6 @@ final class GenericType implements ReferenceType
         return $this;
     }
 
-
     /**
      * @param VariableType $parameter
      */

@@ -32,31 +32,23 @@ class ByFileGenericAutoloader
      * @var NamespaceContextExtractor
      */
     private $namespaceContextExtractor;
-    
+
     /**
-     * @var TypeParser
+     * @var ByContextGenericAutoloader
      */
-    private $typeParser;
-    
-    /**
-     * @var ParametrizedTypeLoader
-     */
-    private $parametrizedTypeLoader;
+    private $byContextGenericAutoloader;
 
     /**
      * GenAutoloader constructor.
      * @param NamespaceContextExtractor $namespaceContextExtractor
-     * @param TypeParser $typeParser
-     * @param ParametrizedTypeLoader $parametrizedTypeLoader
+     * @param ByContextGenericAutoloader $byContextGenericAutoloader
      */
     public function __construct(
         NamespaceContextExtractor $namespaceContextExtractor,
-        TypeParser $typeParser,
-        ParametrizedTypeLoader $parametrizedTypeLoader
+        ByContextGenericAutoloader $byContextGenericAutoloader
     ) {
         $this->namespaceContextExtractor = $namespaceContextExtractor;
-        $this->typeParser = $typeParser;
-        $this->parametrizedTypeLoader = $parametrizedTypeLoader;
+        $this->byContextGenericAutoloader = $byContextGenericAutoloader;
     }
 
     /**
@@ -69,28 +61,9 @@ class ByFileGenericAutoloader
             file_get_contents($callerFilename)
         );
 
-        // @todo to improbe efficiency, we should do a simple string check instead
-        // of parsing everytime all the types
-
-        $type = $this->typeParser->parse(
-            FullName::fromString($className),
+        $this->byContextGenericAutoloader->autoload(
+            $className,
             $namespaceContext
         );
-
-        // If it happens we are autoloading a generic type, it means
-        // it is a another generic with variables renamed. We need to generate
-        // the code as if it was a ParametrizedType
-        if ($type instanceof GenericType) {
-            $type = new ParametrizedType(
-                $type->name(),
-                $type->parameters()
-            );
-        }
-
-        if (!$type instanceof ParametrizedType) {
-            return;
-        }
-
-        $this->parametrizedTypeLoader->load($type);
     }
 }

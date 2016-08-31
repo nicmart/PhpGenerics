@@ -24,7 +24,7 @@ interface GenericCompiler
      * @param GenericType $genericType
      * @param ParametrizedType $parametrizedType
      * @param SourceUnit $sourceUnit
-     * @return SourceUnit
+     * @return CompilationResult
      */
     public function compile(
         GenericType $genericType,
