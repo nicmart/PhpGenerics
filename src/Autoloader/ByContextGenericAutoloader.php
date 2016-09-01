@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Autoloader;
 
 
+use NicMart\Generics\Infrastructure\PhpDocumentor\TypeFunctor;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
@@ -22,6 +23,8 @@ use NicMart\Generics\Type\Loader\ParametrizedTypeLoader;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Parser\TypeParser;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
+use NicMart\Generics\Type\Transformer\BottomUpTransformer;
+use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Type;
 
 /**
@@ -105,6 +108,24 @@ class ByContextGenericAutoloader
         }
     }
 
+    private function collectTypes(Type $type)
+    {
+        $types = [];
+
+        $traverser = new ByCallableTypeTransformer(function (Type $t) use (&$types) {
+            $types[] = $t;
+            return $t;
+        });
+
+        (new BottomUpTransformer($traverser))->transform($type);
+
+        file_put_contents("/tmp/log", print_r($types, 1) . "\n", FILE_APPEND);
+
+        var_dump($types);
+
+        return $types;
+    }
+
     /**
      * @param Type $type
      * @param TypeSerializer $typeSerializer
@@ -112,10 +133,7 @@ class ByContextGenericAutoloader
      */
     private function contextOfType(Type $type, TypeSerializer $typeSerializer)
     {
-        $types = [];
-        if ($type instanceof ParametrizedType) {
-            $types = $type->arguments();
-        }
+        $types = $this->collectTypes($type);
 
         $uses = [];
 

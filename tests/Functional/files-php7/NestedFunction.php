@@ -15,6 +15,7 @@ use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Example\PHP7\Func\CallableFunction1«Function1«FullName·RelativeName»·Function1«FullName·RelativeName»»;
 use NicMart\Generics\Example\PHP7\Func\CallableFunction1«A·B»;
 use NicMart\Generics\Example\PHP7\Func\CallableFunction1«B·C»;
+use NicMart\Generics\Example\PHP7\Func\CallableFunction1«FullName·RelativeName»;
 
 use NicMart\Generics\Example\PHP7\Func\Function1«FullName·RelativeName»;
 
@@ -31,6 +32,10 @@ $this->assertInstanceOf(
     'NicMart\Generics\Example\PHP7\Func\Function1«Function1«FullName·RelativeName»·Function1«FullName·RelativeName»»',
     $f1
 );
+
+$callable1 = new CallableFunction1«FullName·RelativeName»(function () {});
+$callable1(FullName::fromString("AAAAA"));
+$f($callable1);
 
 $composite = new Composition«A·B·C»(
     new CallableFunction1«B·C»(function (B $b) { $c = new C; $c->b = $b; return $c; }),

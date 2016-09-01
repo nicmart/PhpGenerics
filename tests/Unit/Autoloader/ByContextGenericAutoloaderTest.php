@@ -14,13 +14,16 @@ namespace NicMart\Generics\Autoloader;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Source\SourceUnit;
+use NicMart\Generics\Type\Compiler\CompilationResult;
 use NicMart\Generics\Type\Loader\ParametrizedTypeLoader;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Parser\TypeParser;
 use NicMart\Generics\Type\PrimitiveType;
+use NicMart\Generics\Type\Serializer\TypeSerializer;
 use PHPUnit_Framework_MockObject_MockObject;
 
-class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
+class ByContextGenericAutoloaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var TypeParser|PHPUnit_Framework_MockObject_MockObject
@@ -28,28 +31,21 @@ class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
     private $typeParser;
 
     /**
-     * @var NamespaceContextExtractor|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $namespaceContextExtractor;
-
-    /**
      * @var ParametrizedTypeLoader|PHPUnit_Framework_MockObject_MockObject
      */
     private $parametrizedTypeLoader;
 
     /**
-     * @var ByFileGenericAutoloader
+     * @var ByContextGenericAutoloader
      */
     private $genAutoloader;
 
     public function setUp()
     {
         $this->typeParser = $this->getMock('\NicMart\Generics\Type\Parser\TypeParser');
-        $this->namespaceContextExtractor = $this->getMock('\NicMart\Generics\Name\Context\NamespaceContextExtractor');
         $this->parametrizedTypeLoader = $this->getMock('\NicMart\Generics\Type\Loader\ParametrizedTypeLoader');
 
-        $this->genAutoloader = new ByFileGenericAutoloader(
-            $this->namespaceContextExtractor,
+        $this->genAutoloader = new ByContextGenericAutoloader(
             $this->typeParser,
             $this->parametrizedTypeLoader
         );
@@ -62,17 +58,7 @@ class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
     public function it_loads_parametrized_types()
     {
         $className = '\\Foo\\Bar';
-        $fileName = __DIR__ . "/test.php";
-        $fileContent = file_get_contents($fileName);
-        
-        $this->namespaceContextExtractor
-            ->expects($this->once())
-            ->method("contextOf")
-            ->with($fileContent)
-            ->willReturn(
-                $ns = NamespaceContext::fromNamespaceName("foo")
-            )
-        ;
+        $ns = NamespaceContext::fromNamespaceName("foo");
 
         $this->typeParser
             ->expects($this->once())
@@ -90,28 +76,27 @@ class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method("load")
             ->with($pt)
+            ->willReturn(new CompilationResult(
+                new SourceUnit(
+                    FullName::fromString("foo"),
+                    "aaaa"
+                ),
+                $this->getMock(TypeSerializer::class),
+                []
+            ))
         ;
 
-        $this->genAutoloader->autoload($className, $fileName);
+        $this->genAutoloader->autoload($className, $ns);
     }
 
     /**
      * @test
      */
-    public function it_ingores_other_types()
+    public function it_ignores_other_types()
     {
         $className = '\\Foo\\Bar';
-        $fileName = __DIR__ . "/test.php";
-        $fileContent = file_get_contents($fileName);
+        $ns = NamespaceContext::fromNamespaceName("foo");
 
-        $this->namespaceContextExtractor
-            ->expects($this->once())
-            ->method("contextOf")
-            ->with($fileContent)
-            ->willReturn(
-                $ns = NamespaceContext::fromNamespaceName("foo")
-            )
-        ;
 
         $this->typeParser
             ->expects($this->once())
@@ -127,6 +112,6 @@ class GenAutoloaderTest extends \PHPUnit_Framework_TestCase
             ->method("load")
         ;
 
-        $this->genAutoloader->autoload($className, $fileName);
+        $this->genAutoloader->autoload($className, $ns);
     }
 }
