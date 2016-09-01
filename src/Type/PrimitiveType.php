@@ -94,6 +94,22 @@ final class PrimitiveType implements Type
     }
 
     /**
+     * @param callable $z
+     * @param callable $fold
+     * @return mixed
+     */
+    public function bottomUpFold($z, callable $fold)
+    {
+        return $fold($z, $this);
+    }
+
+    public function subTypes()
+    {
+        return [];
+    }
+
+
+    /**
      * @return bool
      */
     public function isSupportedType()

@@ -82,6 +82,21 @@ final class ParametrizedType implements ReferenceType
     }
 
     /**
+     * @param callable $z
+     * @param callable $fold
+     * @return mixed
+     */
+    public function bottomUpFold($z, callable $fold)
+    {
+        foreach ($this->arguments() as $arg) {
+            $z = $fold($z, $arg);
+        }
+
+        return $fold($z, $this);
+    }
+
+
+    /**
      * @param Type $argument
      */
     private function addArgument(Type $argument)

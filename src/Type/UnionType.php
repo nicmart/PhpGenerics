@@ -69,6 +69,20 @@ final class UnionType implements Type
     }
 
     /**
+     * @param $z
+     * @param callable $fold
+     * @return mixed
+     */
+    public function bottomUpFold($z, callable $fold)
+    {
+        foreach ($this->types() as $arg) {
+            $z = $fold($z, $arg);
+        }
+
+        return $fold($z, $this);
+    }
+
+    /**
      * @param Type $type
      */
     private function addType(Type $type)

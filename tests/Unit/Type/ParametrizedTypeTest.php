@@ -47,4 +47,24 @@ class ParametrizedTypeTest extends \PHPUnit_Framework_TestCase
             $type->map($typeTransf)
         );
     }
+
+    public function testFoldBottomUp()
+    {
+        $type = new ParametrizedType(
+            FullName::fromString("ParamType1"), array(
+                $t1 = new SimpleReferenceType(FullName::fromString("A\\B")),
+                $t2 = new SimpleReferenceType(FullName::fromString("C\\D"))
+            )
+        );
+
+        $foldFunction = function (array $z, Type $t) {
+            $z[] = $t;
+            return $z;
+        };
+
+        $this->assertEquals(
+            [$t1, $t2, $type],
+            $type->bottomUpFold([], $foldFunction)
+        );
+    }
 }

@@ -29,4 +29,11 @@ interface Type
      * @return Type
      */
     public function map(TypeTransformer $typeTransformer);
+
+    /**
+     * @param $z
+     * @param callable $fold
+     * @return mixed
+     */
+    public function bottomUpFold($z, callable $fold);
 }
