@@ -37,6 +37,6 @@ class ReplaceNodeWithList implements LeaveNodeAction
      */
     public function nodeList()
     {
-        return $this->nodeList();
+        return $this->nodesList;
     }
 }

@@ -23,6 +23,7 @@ use NicMart\Generics\Type\Serializer\TypeSerializer;
 use NicMart\Generics\Type\SimpleReferenceType;
 use NicMart\Generics\Type\Transformer\ParametricTypeTransformer;
 use NicMart\Generics\Type\Type;
+use NicMart\Generics\Type\UnionType;
 use NicMart\Generics\Type\VariableType;
 
 /**

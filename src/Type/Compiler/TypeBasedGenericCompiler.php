@@ -16,13 +16,16 @@ use NicMart\Generics\AST\Transformer\TypeToNodeTransformer;
 use NicMart\Generics\Source\SourceUnit;
 use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\ParametrizedType;
+use NicMart\Generics\Type\PrimitiveType;
 use NicMart\Generics\Type\Serializer\TypeSerializer;
 use NicMart\Generics\Type\Transformer\BottomUpTransformer;
 use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
 use NicMart\Generics\Type\Transformer\ChainTypeTransformer;
+use NicMart\Generics\Type\Transformer\ListenerTypeTransformer;
 use NicMart\Generics\Type\Transformer\ParametricTypeTransformer;
 use NicMart\Generics\Type\Transformer\TopDownTransformer;
 use NicMart\Generics\Type\Type;
+use NicMart\Generics\Type\UnionType;
 
 /**
  * Class TypeBasedGenericCompiler
@@ -65,7 +68,7 @@ class TypeBasedGenericCompiler implements GenericCompiler
      * @param GenericType $genericType
      * @param ParametrizedType $parametrizedType
      * @param SourceUnit $sourceUnit
-     * @return SourceUnit
+     * @return CompilationResult
      */
     public function compile(
         GenericType $genericType,
@@ -73,7 +76,7 @@ class TypeBasedGenericCompiler implements GenericCompiler
         SourceUnit $sourceUnit
     ) {
         $nodeTransformer = $this->typeToNodeTransformer->nodeTransformer(
-            $this->transformer($genericType, $parametrizedType)
+            $this->transformer($genericType, $parametrizedType, $transformedTypes)
         );
 
         $genericNodes = $this->nodeSerializer->toNodes($sourceUnit->source());
@@ -83,17 +86,23 @@ class TypeBasedGenericCompiler implements GenericCompiler
             $parametrizedNodes
         );
 
-        return new SourceUnit(
-            $this->typeSerializer->serialize($parametrizedType),
-            $parametrizedSource
+        return new CompilationResult(
+            new SourceUnit(
+                $this->typeSerializer->serialize($parametrizedType),
+                $parametrizedSource
+            ),
+            $this->typeSerializer,
+            $transformedTypes
         );
     }
 
     // @todo abstract it?
     private function transformer(
         GenericType $genericType,
-        ParametrizedType $parametrizedType
+        ParametrizedType $parametrizedType,
+        &$transformedTypes
     ) {
+        $transformedTypes = [];
 
         // First, transforms all generic to parametrized types, top down
         $genericToParametrized = new TopDownTransformer(
@@ -117,10 +126,17 @@ class TypeBasedGenericCompiler implements GenericCompiler
             )
         );
 
+        $listener = function (Type $t) use (&$transformedTypes) {
+            if ($t instanceof UnionType || $t instanceof PrimitiveType) return;
+            $transformedTypes[] = $t;
+        };
 
-        return new ChainTypeTransformer([
-            $genericToParametrized,
-            $typeTransformer
-        ]);
+        return new ListenerTypeTransformer(
+            new ChainTypeTransformer([
+                $genericToParametrized,
+                $typeTransformer
+            ]),
+            $listener
+        );
     }
 }

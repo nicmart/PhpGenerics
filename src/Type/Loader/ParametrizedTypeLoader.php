@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Type\Loader;
 
 
+use NicMart\Generics\Type\Compiler\CompilationResult;
 use NicMart\Generics\Type\ParametrizedType;
 
 /**
@@ -21,7 +22,7 @@ interface ParametrizedTypeLoader
 {
     /**
      * @param ParametrizedType $parametrizedType
-     * @return mixed
+     * @return CompilationResult
      */
     public function load(ParametrizedType $parametrizedType);
 }

@@ -130,32 +130,34 @@ class ByFileGenericAutoloaderBuilder
                 new NamespaceContextVisitor()
             ),
 
-            $genericTypeParserAndSerializer,
+            new ByContextGenericAutoloader(
+                $genericTypeParserAndSerializer,
 
-            new DefaultParametrizedTypeLoader(
+                new DefaultParametrizedTypeLoader(
 
-                new ComposerGenericTypeResolver(
-                    $genericTypeParserAndSerializer,
-                    $genericTypeParserAndSerializer,
-                    new ClassLoaderDirectoryResolver(
-                        ComposerAutoloaderBuilder::autoloader()
+                    new ComposerGenericTypeResolver(
+                        $genericTypeParserAndSerializer,
+                        $genericTypeParserAndSerializer,
+                        new ClassLoaderDirectoryResolver(
+                            ComposerAutoloaderBuilder::autoloader()
+                        ),
+                        $contextExtractor
                     ),
-                    $contextExtractor
-                ),
 
-                new ReflectionGenericSourceUnitLoader($genericTypeParserAndSerializer),
+                    new ReflectionGenericSourceUnitLoader($genericTypeParserAndSerializer),
 
-                new TypeBasedGenericCompiler(
+                    new TypeBasedGenericCompiler(
 
-                    new TypeAnnotationTypeToNodeTransformer(),
+                        new TypeAnnotationTypeToNodeTransformer(),
 
-                    $nodeSerializer,
+                        $nodeSerializer,
 
-                    $genericTypeParserAndSerializer
-                ),
+                        $genericTypeParserAndSerializer
+                    ),
 
-                new IncludeDumpedSourceUnitEvaluation(
-                    new Psr0SourceUnitDumper($cacheFolder)
+                    new IncludeDumpedSourceUnitEvaluation(
+                        new Psr0SourceUnitDumper($cacheFolder)
+                    )
                 )
             )
         );

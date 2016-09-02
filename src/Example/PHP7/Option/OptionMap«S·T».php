@@ -13,13 +13,13 @@ namespace NicMart\Generics\Example\PHP7\Option;
 use NicMart\Generics\Example\PHP7\Option\Option«T»;
 use NicMart\Generics\Example\PHP7\Option\Option«S»;
 
-use NicMart\Generics\Example\PHP7\Option\None«T»;
-use NicMart\Generics\Example\PHP7\Option\None«S»;
-use NicMart\Generics\Example\PHP7\Option\Some«S»;
-
 use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\S;
 use NicMart\Generics\Variable\T;
+
+use NicMart\Generics\Example\PHP7\Option\None«T»;
+use NicMart\Generics\Example\PHP7\Option\None«S»;
+use NicMart\Generics\Example\PHP7\Option\Some«S»;
 
 use NicMart\Generics\Example\PHP7\Func\Function1«S·T»;
 use NicMart\Generics\Example\PHP7\Func\Function1«S·Option«T»»;

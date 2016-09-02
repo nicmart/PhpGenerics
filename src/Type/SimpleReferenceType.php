@@ -50,4 +50,14 @@ class SimpleReferenceType implements ReferenceType
     {
         return $this;
     }
+
+    /**
+     * @param callable $z
+     * @param callable $fold
+     * @return mixed
+     */
+    public function bottomUpFold($z, callable $fold)
+    {
+        return $fold($z, $this);
+    }
 }

@@ -71,12 +71,14 @@ final class DefaultParametrizedTypeLoader implements ParametrizedTypeLoader
 
         $genericSourceUnit = $this->sourceUnitLoader->loadSource($genericType);
 
-        $parametrizedSourceUnit = $this->compiler->compile(
+        $compilationResult = $this->compiler->compile(
             $genericType,
             $parametrizedType,
             $genericSourceUnit
         );
 
-        $this->sourceUnitEvaluation->evaluate($parametrizedSourceUnit);
+        $this->sourceUnitEvaluation->evaluate($compilationResult->sourceUnit());
+
+        return $compilationResult;
     }
 }

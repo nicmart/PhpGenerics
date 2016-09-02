@@ -11,9 +11,11 @@
 namespace NicMart\Generics\AST\Visitor;
 
 
+use NicMart\Generics\AST\NodesList;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\AST\Visitor\Action\RemoveNode;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
+use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWithList;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Type\PrimitiveType;
@@ -96,15 +98,52 @@ class TypeSerializerVisitor implements Visitor
      */
     public function leaveNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\UseUse) {
-            if ($node->name->hasAttribute(self::ATTR_CHANGED)) {
-                $node->alias = $node->name->getLast();
-            }
-
+        if (!$node instanceof Node\Stmt\Use_) {
             return new MaintainNode();
         }
 
-        return new MaintainNode();
+        $uses = [];
+        foreach ($node->uses as $useUse) {
+            $uses = array_merge($uses, $this->expandUseUse($useUse));
+        }
+
+        return new ReplaceNodeWithList(new NodesList($uses));
+    }
+
+    /**
+     * @param Node\Stmt\UseUse $useUse
+     * @return Node\Stmt\Use_[]
+     */
+    private function expandUseUse(Node\Stmt\UseUse $useUse)
+    {
+        if (!$useUse->name->hasAttribute(self::ATTR_CHANGED)
+            || !$useUse->name->hasAttribute(TypeAnnotatorVisitor::ATTR_NAME)
+        ) {
+            return [new Node\Stmt\Use_([$useUse])];
+        }
+
+        $type = $useUse->name->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+
+        $subTypes = $type->bottomUpFold(
+            [], function (array $z, Type $t) {
+                $z[] = $t;
+                return $z;
+            }
+        );
+
+        $uses = [];
+        foreach ($subTypes as $subType) {
+            if ($subType instanceof PrimitiveType) continue;
+            $uses[] = new Node\Stmt\Use_([
+                new Node\Stmt\UseUse(
+                    $this->phpNameAdapter->toPhpName(
+                        $this->typeSerializer->serialize($subType)
+                    )
+                )
+            ]);
+        }
+
+        return $uses;
     }
 
     /**
@@ -118,6 +157,12 @@ class TypeSerializerVisitor implements Visitor
             $name->setAttribute(
                 self::ATTR_CHANGED,
                 true
+            );
+            $name->setAttribute(
+                TypeAnnotatorVisitor::ATTR_NAME,
+                $node->getAttribute(
+                    TypeAnnotatorVisitor::ATTR_NAME
+                )
             );
             return $node = $name;
         }
