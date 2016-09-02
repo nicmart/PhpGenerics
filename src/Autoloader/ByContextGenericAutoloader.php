@@ -110,20 +110,10 @@ class ByContextGenericAutoloader
 
     private function collectTypes(Type $type)
     {
-        $types = [];
-
-        $traverser = new ByCallableTypeTransformer(function (Type $t) use (&$types) {
-            $types[] = $t;
-            return $t;
+        return $type->bottomUpFold([], function (array $z, Type $t) {
+            $z[] = $t;
+            return $z;
         });
-
-        (new BottomUpTransformer($traverser))->transform($type);
-
-        file_put_contents("/tmp/log", print_r($types, 1) . "\n", FILE_APPEND);
-
-        var_dump($types);
-
-        return $types;
     }
 
     /**
