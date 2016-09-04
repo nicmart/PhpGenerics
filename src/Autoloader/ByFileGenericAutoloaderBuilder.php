@@ -30,6 +30,7 @@ use NicMart\Generics\Infrastructure\PhpDocumentor\Visitor\PhpDocTypeAnnotatorVis
 use NicMart\Generics\Infrastructure\PhpDocumentor\Visitor\PhpDocTypeSerializerVisitor;
 use NicMart\Generics\Infrastructure\PhpParser\Parser\PhpParserParser;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
+use NicMart\Generics\Infrastructure\PhpParser\PrettyPrinter;
 use NicMart\Generics\Infrastructure\PhpParser\Serializer\PhpParserSerializer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
 use NicMart\Generics\Name\FullName;
@@ -89,23 +90,23 @@ class ByFileGenericAutoloaderBuilder
 
         // This serializer serializes php nodes and serialize type annotations
         $serializer = new PreTransformSerializer(
-            new ChainNodeTransformer(array(
-                TraverserNodeTransformer::fromVisitors(array(
+            new ChainNodeTransformer([
+                TraverserNodeTransformer::fromVisitors([
                     new TypeSerializerVisitor(
                         $genericTypeParserAndSerializer,
                         new PhpNameAdapter()
                     ),
-                )),
-                TraverserNodeTransformer::fromVisitors(array(
+                ]),
+                TraverserNodeTransformer::fromVisitors([
                     new NameSimplifierVisitor(
                         new PhpNameAdapter(),
                         new NamespaceContextVisitor()
                     ),
                     new RemoveDuplicateUsesVisitor(),
                     // Remove Generic marker interface
-                    new RemoveParentTypeVisitor(array(
+                    new RemoveParentTypeVisitor([
                         FullName::fromString('\NicMart\Generics\Generic')
-                    )),
+                    ]),
                     new PhpDocTypeSerializerVisitor(
                         new TypeDocBlockSerializer(
                             new TypeResolver(new FqsenResolver()),
@@ -115,10 +116,10 @@ class ByFileGenericAutoloaderBuilder
                         ),
                         $phpDocContextAdapter
                     ),
-                )),
-            )),
+                ]),
+            ]),
             new PhpParserSerializer(
-                new \PhpParser\PrettyPrinter\Standard()
+                new PrettyPrinter()
             )
         );
 

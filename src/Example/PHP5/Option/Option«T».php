@@ -20,7 +20,7 @@ use NicMart\Generics\Variable\T;
 interface Option«T» extends Generic
 {
     /**
-     * @param T|T|Option«T»|Option«Option«T»» $else (Types inserted just to test)
+     * @param T|T|Option«T» $else (Types inserted just to test)
      * @return mixed
      */
     public function getOrElse(T $else);

@@ -12,6 +12,7 @@ namespace NicMart\Generics\Source;
 
 
 use NicMart\Generics\Name\FullName;
+use NicMart\Generics\Type\Type;
 
 /**
  * Class SourceUnit
@@ -23,22 +24,39 @@ final class SourceUnit
      * @var FullName
      */
     private $fullName;
+
     /**
-     * @var
+     * @var string
      */
     private $source;
 
     /**
+     * @var Type
+     */
+    private $type;
+
+    /**
      * SourceUnit constructor.
+     * @param Type $type
      * @param FullName $fullName
      * @param $source
      */
     public function __construct(
+        Type $type,
         FullName $fullName,
         $source
     ) {
         $this->fullName = $fullName;
         $this->source = $source;
+        $this->type = $type;
+    }
+
+    /**
+     * @return Type
+     */
+    public function type()
+    {
+        return $this->type;
     }
 
     /**

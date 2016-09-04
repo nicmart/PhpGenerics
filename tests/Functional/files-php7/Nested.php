@@ -8,6 +8,7 @@
  * @author Nicolò Martini <nicolo@martini.io>
  */
 
+use NicMart\Generics\Variable\T;
 use NicMart\Generics\Example\PHP7\Option\Option«T»;
 use NicMart\Generics\Example\PHP7\Option\Option«Option«T»»;
 

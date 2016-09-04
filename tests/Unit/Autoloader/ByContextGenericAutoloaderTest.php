@@ -78,8 +78,7 @@ class ByContextGenericAutoloaderTest extends \PHPUnit_Framework_TestCase
             ->with($pt)
             ->willReturn(new CompilationResult(
                 new SourceUnit(
-                    FullName::fromString("foo"),
-                    "aaaa"
+                    $pt, FullName::fromString("foo"), "aaaa"
                 ),
                 $this->getMock(TypeSerializer::class),
                 []

@@ -41,6 +41,7 @@ class ReflectionGenericSourceUnitLoader implements GenericSourceUnitLoader
         $reflection = new ReflectionClass($fullName->toCanonicalString());
 
         return new SourceUnit(
+            $genericType,
             $fullName,
             file_get_contents($reflection->getFileName())
         );

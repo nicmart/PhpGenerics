@@ -76,7 +76,11 @@ class TypeBasedGenericCompiler implements GenericCompiler
         SourceUnit $sourceUnit
     ) {
         $nodeTransformer = $this->typeToNodeTransformer->nodeTransformer(
-            $this->transformer($genericType, $parametrizedType, $transformedTypes)
+            $this->transformer(
+                $genericType,
+                $parametrizedType,
+                $transformedTypes
+            )
         );
 
         $genericNodes = $this->nodeSerializer->toNodes($sourceUnit->source());
@@ -88,6 +92,7 @@ class TypeBasedGenericCompiler implements GenericCompiler
 
         return new CompilationResult(
             new SourceUnit(
+                $parametrizedType,
                 $this->typeSerializer->serialize($parametrizedType),
                 $parametrizedSource
             ),

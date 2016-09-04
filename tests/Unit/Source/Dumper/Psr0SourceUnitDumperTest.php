@@ -11,6 +11,8 @@ namespace NicMart\Generics\Source\Dumper;
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Source\SourceUnit;
+use NicMart\Generics\Type\PrimitiveType;
+use NicMart\Generics\Type\SimpleReferenceType;
 
 class Psr0SourceUnitDumperTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,8 +26,8 @@ class Psr0SourceUnitDumperTest extends \PHPUnit_Framework_TestCase
         $dumper = new Psr0SourceUnitDumper($path);
 
         $sourceUnit = new SourceUnit(
-            FullName::fromString("Ns1\\Ns2\\Class1"),
-            '
+            new SimpleReferenceType(FullName::fromString("dummy")),
+            FullName::fromString("Ns1\\Ns2\\Class1"), '
                 define(\'__GENERICS_INCLUDED\', 1);
             '
         );
