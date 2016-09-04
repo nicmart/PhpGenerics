@@ -69,6 +69,20 @@ final class UnionType implements Type
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            "%s [%s] (\n\t%s\n)",
+            $this->name()->toString(),
+            FullName::fromString(get_class($this))->last()->toString(),
+            str_replace("\n", "\n\t", implode(",\n", $this->types()))
+        );
+    }
+
+
+    /**
      * @param $z
      * @param callable $fold
      * @return mixed

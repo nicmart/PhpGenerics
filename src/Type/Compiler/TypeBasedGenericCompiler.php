@@ -102,8 +102,6 @@ class TypeBasedGenericCompiler implements GenericCompiler
         ParametrizedType $parametrizedType,
         &$transformedTypes
     ) {
-        $transformedTypes = [];
-
         // First, transforms all generic to parametrized types, top down
         $genericToParametrized = new TopDownTransformer(
             new ByCallableTypeTransformer(function (Type $type) {
@@ -126,17 +124,34 @@ class TypeBasedGenericCompiler implements GenericCompiler
             )
         );
 
-        $listener = function (Type $t) use (&$transformedTypes) {
-            if ($t instanceof UnionType || $t instanceof PrimitiveType) return;
-            $transformedTypes[] = $t;
-        };
-
+        $transformedTypes = [];
         return new ListenerTypeTransformer(
             new ChainTypeTransformer([
                 $genericToParametrized,
                 $typeTransformer
             ]),
-            $listener
+            $this->typeCollectorListener(
+                $transformedTypes
+            )
         );
+    }
+
+    /**
+     * This collects the types involved in the transformations
+     *
+     * @param $types
+     * @return \Closure
+     */
+    private function typeCollectorListener(&$types)
+    {
+        return function (Type $from, Type $to) use (&$types) {
+            if ($to instanceof UnionType
+                || $to instanceof PrimitiveType
+            ) {
+                return;
+            }
+            $types[] = $from;
+            $types[] = $to;
+        };
     }
 }

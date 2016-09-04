@@ -78,34 +78,17 @@ class ByContextGenericAutoloader
         // it is a another generic with variables renamed. We need to generate
         // the code as if it was a ParametrizedType
         if ($type instanceof GenericType) {
-            $type = new ParametrizedType(
-                $type->name(),
-                $type->parameters()
-            );
+            $type = $type->toParametrizedType();
         }
 
         if (!$type instanceof ParametrizedType) {
             return;
         }
 
-        $compilationResult = $this->parametrizedTypeLoader->load($type);
-
-        foreach ($compilationResult->transformedTypes() as $type) {
-            $typeName = $compilationResult
-                ->serializer()
-                ->serialize($type)
-                ->toString()
-            ;
-
-            if (class_exists($typeName, false)) {
-                continue;
-            }
-
-            $this->autoload(
-                "\\" . $typeName,
-                $this->contextOfType($type, $compilationResult->serializer())
-            );
-        }
+        // The Problem is here: he tries to load Option«T» as a PARAMETRIZED TYPE,
+        // AND to do so it loads the original GENERIC TYPE first, then it compiles
+        // Basically to itself...
+        $this->parametrizedTypeLoader->load($type);
     }
 
     private function collectTypes(Type $type)

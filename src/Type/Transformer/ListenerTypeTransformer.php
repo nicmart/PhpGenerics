@@ -43,7 +43,7 @@ final class ListenerTypeTransformer implements TypeTransformer
     {
         $transformedType = $this->transformer->transform($type);
 
-        call_user_func($this->listener, $transformedType);
+        call_user_func($this->listener, $type, $transformedType);
 
         return $transformedType;
     }

@@ -81,13 +81,41 @@ final class GenericType implements ReferenceType
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            "%s [%s] (\n\t%s\n)",
+            $this->name()->toString(),
+            FullName::fromString(get_class($this))->last()->toString(),
+            str_replace("\n", "\n\t", implode(",\n", $this->parameters()))
+        );
+    }
+
+    /**
      * @param callable $z
      * @param callable $fold
      * @return mixed
      */
     public function bottomUpFold($z, callable $fold)
     {
+        foreach ($this->parameters() as $arg) {
+            $z = $fold($z, $arg);
+        }
+
         return $fold($z, $this);
+    }
+
+    /**
+     * @return ParametrizedType
+     */
+    public function toParametrizedType()
+    {
+        return new ParametrizedType(
+            $this->name(),
+            $this->parameters()
+        );
     }
 
 

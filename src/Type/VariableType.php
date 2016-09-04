@@ -75,6 +75,19 @@ final class VariableType implements Type
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            "%s [%s]",
+            $this->name()->toString(),
+            FullName::fromString(get_class($this))->last()->toString()
+        );
+    }
+
+
+    /**
      * @param FullName $name
      * @return mixed
      */

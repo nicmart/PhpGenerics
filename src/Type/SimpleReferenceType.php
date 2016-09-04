@@ -52,6 +52,18 @@ class SimpleReferenceType implements ReferenceType
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            "%s [%s]",
+            $this->name()->toString(),
+            FullName::fromString(get_class($this))->last()->toString()
+        );
+    }
+
+    /**
      * @param callable $z
      * @param callable $fold
      * @return mixed

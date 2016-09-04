@@ -38,6 +38,7 @@ use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
 use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
 use NicMart\Generics\Type\Compiler\TypeBasedGenericCompiler;
 use NicMart\Generics\Type\Loader\DefaultParametrizedTypeLoader;
+use NicMart\Generics\Type\Loader\RecursiveParametrizedTypeLoader;
 use NicMart\Generics\Type\Parser\GenericTypeParserAndSerializer;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Serializer as PrettySerializer;
 use NicMart\Generics\Type\Resolver\ComposerGenericTypeResolver;
@@ -133,30 +134,32 @@ class ByFileGenericAutoloaderBuilder
             new ByContextGenericAutoloader(
                 $genericTypeParserAndSerializer,
 
-                new DefaultParametrizedTypeLoader(
+                new RecursiveParametrizedTypeLoader(
+                    new DefaultParametrizedTypeLoader(
 
-                    new ComposerGenericTypeResolver(
-                        $genericTypeParserAndSerializer,
-                        $genericTypeParserAndSerializer,
-                        new ClassLoaderDirectoryResolver(
-                            ComposerAutoloaderBuilder::autoloader()
+                        new ComposerGenericTypeResolver(
+                            $genericTypeParserAndSerializer,
+                            $genericTypeParserAndSerializer,
+                            new ClassLoaderDirectoryResolver(
+                                ComposerAutoloaderBuilder::autoloader()
+                            ),
+                            $contextExtractor
                         ),
-                        $contextExtractor
-                    ),
 
-                    new ReflectionGenericSourceUnitLoader($genericTypeParserAndSerializer),
+                        new ReflectionGenericSourceUnitLoader($genericTypeParserAndSerializer),
 
-                    new TypeBasedGenericCompiler(
+                        new TypeBasedGenericCompiler(
 
-                        new TypeAnnotationTypeToNodeTransformer(),
+                            new TypeAnnotationTypeToNodeTransformer(),
 
-                        $nodeSerializer,
+                            $nodeSerializer,
 
-                        $genericTypeParserAndSerializer
-                    ),
+                            $genericTypeParserAndSerializer
+                        ),
 
-                    new IncludeDumpedSourceUnitEvaluation(
-                        new Psr0SourceUnitDumper($cacheFolder)
+                        new IncludeDumpedSourceUnitEvaluation(
+                            new Psr0SourceUnitDumper($cacheFolder)
+                        )
                     )
                 )
             )

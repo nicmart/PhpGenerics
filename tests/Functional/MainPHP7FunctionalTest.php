@@ -12,6 +12,8 @@ namespace NicMart\Generics;
 
 use NicMart\Generics\GenericFunctionalTestCase;
 
+use NicMart\Generics\Example\PHP7\Option\Option«T»;
+
 /**
  * @requires PHP 7.0
  * @runTestsInSeparateProcesses
@@ -81,5 +83,13 @@ class MainPHP7FunctionalTest extends GenericFunctionalTestCase
     public function it_works_with_complex_test()
     {
         require __DIR__ . "/files-php7/Complex.php";
+    }
+
+    /**
+     * @test
+     */
+    public function it_works_with_edge_cases()
+    {
+        interface_exists('\NicMart\Generics\Example\PHP7\Option\Option«T»');
     }
 }

@@ -12,7 +12,9 @@ namespace NicMart\Generics\Type\Loader;
 
 
 use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
+use NicMart\Generics\Type\Compiler\CompilationResult;
 use NicMart\Generics\Type\Compiler\GenericCompiler;
+use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Resolver\GenericTypeResolver;
 use NicMart\Generics\Type\Source\GenericSourceUnitLoader;
@@ -61,13 +63,19 @@ final class DefaultParametrizedTypeLoader implements ParametrizedTypeLoader
 
     /**
      * @param ParametrizedType $parametrizedType
-     * @return mixed|void
+     * 
+     * @return CompilationResult|null
      */
     public function load(ParametrizedType $parametrizedType)
     {
+        // Note: This autoloads the generic type
         $genericType = $this->genericTypeResolver->toGenericType(
             $parametrizedType
         );
+
+        if ($genericType->toParametrizedType() == $parametrizedType) {
+            return null;
+        }
 
         $genericSourceUnit = $this->sourceUnitLoader->loadSource($genericType);
 

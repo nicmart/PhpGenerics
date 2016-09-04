@@ -22,7 +22,7 @@ interface ParametrizedTypeLoader
 {
     /**
      * @param ParametrizedType $parametrizedType
-     * @return CompilationResult
+     * @return CompilationResult|null
      */
     public function load(ParametrizedType $parametrizedType);
 }

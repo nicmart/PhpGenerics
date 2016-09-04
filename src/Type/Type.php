@@ -36,4 +36,9 @@ interface Type
      * @return mixed
      */
     public function bottomUpFold($z, callable $fold);
+
+    /**
+     * @return mixed
+     */
+    public function __toString();
 }

@@ -11,6 +11,7 @@
 namespace NicMart\Generics\Type\Resolver;
 
 
+use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\ParametrizedType;
 
 /**
@@ -21,7 +22,7 @@ interface GenericTypeResolver
 {
     /**
      * @param ParametrizedType $parametrizedType
-     * @return mixed
+     * @return GenericType
      */
     public function toGenericType(ParametrizedType $parametrizedType);
 }

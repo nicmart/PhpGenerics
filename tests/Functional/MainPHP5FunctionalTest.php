@@ -10,7 +10,7 @@
 
 namespace NicMart\Generics;
 
-use NicMart\Generics\GenericFunctionalTestCase;
+use NicMart\Generics\Example\PHP5\Option\Option«T»;
 
 /**
  * @runTestsInSeparateProcesses
@@ -72,5 +72,13 @@ class MainPHP5FunctionalTest extends GenericFunctionalTestCase
     public function it_works_with_tuples()
     {
         include __DIR__ . "/files-php5/Tuple.php";
+    }
+
+    /**
+     * @test
+     */
+    public function it_works_with_edge_cases()
+    {
+        interface_exists('\NicMart\Generics\Example\PHP5\Option\Option«T»');
     }
 }
