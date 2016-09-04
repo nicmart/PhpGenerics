@@ -36,6 +36,7 @@ use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransform
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
 use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
+use NicMart\Generics\Source\Dumper\VariableDiscriminatingSourceUntiDumper;
 use NicMart\Generics\Source\Evaluation\IncludeDumpedSourceUnitEvaluation;
 use NicMart\Generics\Type\Compiler\TypeBasedGenericCompiler;
 use NicMart\Generics\Type\Loader\DefaultParametrizedTypeLoader;
@@ -159,7 +160,10 @@ class ByFileGenericAutoloaderBuilder
                         ),
 
                         new IncludeDumpedSourceUnitEvaluation(
-                            new Psr0SourceUnitDumper($cacheFolder)
+                            new VariableDiscriminatingSourceUntiDumper(
+                                new Psr0SourceUnitDumper($cacheFolder),
+                                new Psr0SourceUnitDumper($cacheFolder . "/.auxiliary")
+                            )
                         )
                     )
                 )
