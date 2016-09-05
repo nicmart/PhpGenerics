@@ -62,6 +62,7 @@ class ByContextGenericAutoloader
      */
     public function autoload($className, NamespaceContext $namespaceContext)
     {
+        // @todo traits
         if (class_exists($className, false) || interface_exists($className, false)) {
             return;
         }
@@ -85,38 +86,6 @@ class ByContextGenericAutoloader
             return;
         }
 
-        // The Problem is here: he tries to load Option«T» as a PARAMETRIZED TYPE,
-        // AND to do so it loads the original GENERIC TYPE first, then it compiles
-        // Basically to itself...
         $this->parametrizedTypeLoader->load($type);
-    }
-
-    private function collectTypes(Type $type)
-    {
-        return $type->bottomUpFold([], function (array $z, Type $t) {
-            $z[] = $t;
-            return $z;
-        });
-    }
-
-    /**
-     * @param Type $type
-     * @param TypeSerializer $typeSerializer
-     * @return NamespaceContext
-     */
-    private function contextOfType(Type $type, TypeSerializer $typeSerializer)
-    {
-        $types = $this->collectTypes($type);
-
-        $uses = [];
-
-        foreach ($types as $type) {
-            $uses[] = new Use_($typeSerializer->serialize($type));
-        }
-
-        return new NamespaceContext(
-            Namespace_::globalNamespace(),
-            new Uses($uses)
-        );
     }
 }
