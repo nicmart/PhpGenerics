@@ -103,6 +103,19 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
     }
 
     /**
+     * @param Uses $uses
+     * @return NamespaceContext
+     */
+    public function withUses(Uses $uses)
+    {
+        $new = clone $this;
+
+        $new->uses = $uses;
+
+        return $new;
+    }
+
+    /**
      * @param Namespace_ $namespace
      * @return NamespaceContext
      */
