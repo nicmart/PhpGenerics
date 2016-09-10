@@ -95,4 +95,69 @@ class NodeFunctor
             return self::map($f($n), self::topDown($f));
         };
     }
+
+    /**
+     * @param callable $f
+     * @return \Closure
+     */
+    public static function fold(callable $f)
+    {
+        return self::topDownGenericFold(
+            [NodeFunctor::class, "foldChildren"],
+            $f
+        );
+    }
+
+    /**
+     * @param callable $childrenFold
+     * @param callable $f
+     * @return \Closure
+     */
+    public static function topDownGenericFold(callable $childrenFold, callable $f)
+    {
+        return $self = function (Node $n, $z) use ($f, &$self, $childrenFold) {
+            return call_user_func(
+                $childrenFold($self),
+                $n,
+                $f($n, $z)
+            );
+        };
+    }
+
+    /**
+     * @param callable $childrenFold
+     * @param callable $f
+     * @return \Closure
+     */
+    public static function bottomUpGenericFold(callable $childrenFold, callable $f)
+    {
+        return $self = function (Node $n, $z) use ($f, &$self, $childrenFold) {
+            return $f($n, call_user_func(
+                $childrenFold($self),
+                $n,
+                $z
+            ));
+        };
+    }
+
+    /**
+     * Apply a fold to all the children
+     *
+     * @param callable $f
+     * @return \Closure
+     */
+    public static function foldChildren(callable $f)
+    {
+        return function (Node $n, $z) use ($f) {
+            foreach ($n->getSubNodeNames() as $subNodeName) {
+                foreach ((array) $n->$subNodeName as $subNode) {
+                    if ($subNode instanceof Node) {
+                        $z = $f($subNode, $z);
+                    }
+                }
+            }
+
+            return $z;
+        };
+    }
 }

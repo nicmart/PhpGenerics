@@ -11,49 +11,111 @@
 namespace NicMart\Generics\AST\Context;
 
 
-use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
+use NicMart\Generics\AST\Transformer\NodeFunctor;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
 use PhpParser\Node;
 
+/**
+ * Class NamespaceContextNodeExtractor
+ * @package NicMart\Generics\AST\Context
+ */
 class NamespaceContextNodeExtractor
 {
     /**
-     * @var PhpNameAdapter
+     * @param Node $node
+     * @return mixed
      */
-    private $nameAdapter;
-
-    /**
-     * NamespaceContextNodeExtractor constructor.
-     * @param PhpNameAdapter $nameAdapter
-     */
-    public function __construct(PhpNameAdapter $nameAdapter)
+    public function extract(Node $node)
     {
-        $this->nameAdapter = $nameAdapter;
+        return call_user_func(
+            NodeFunctor::topDownGenericFold(
+                $this->childrenFold(),
+                $this->namespaceContextFold()
+            ),
+            $node,
+            NamespaceContext::emptyContext()
+        );
     }
 
-    private function namespaceExtractor()
+    /**
+     * @param array $nodes
+     * @return NamespaceContext
+     */
+    public function extractFromArray(array $nodes)
     {
-        return function (Node $node) {
+        $ctx = NamespaceContext::emptyContext();
+        $fold = NodeFunctor::topDownGenericFold(
+            $this->childrenFold(),
+            $this->namespaceContextFold()
+        );
 
-            if ($node instanceof Node\Stmt\Namespace_) {
-                return NamespaceContext::fromNamespaceName(
-                    $node->name->toString()
-                );
-            }
+        foreach ($nodes as $node) {
+            $ctx = $fold($node, $ctx);
+        }
 
-            if ($node instanceof Node\Stmt\UseUse) {
-                return NamespaceContext::emptyContext()
-                    ->withUse(Use_::fromStrings(
-                        $node->name->toString(),
-                        $node->alias
-                    ))
-                ;
-            }
+        return $ctx;
+    }
 
-            return NamespaceContext::emptyContext();
+    /**
+     * @return \Closure
+     */
+    private function namespaceContextFold()
+    {
+        return function (Node $node, NamespaceContext $namespaceContext) {
+            return $this->contextOf($node)->merge($namespaceContext);
         };
     }
 
-    private function map()
+
+    /**
+     * Extract the context of a node (non-recursively)
+     *
+     * @param Node $node
+     * @return NamespaceContext
+     */
+    private function contextOf(Node $node)
+    {
+        if ($node instanceof Node\Stmt\Namespace_) {
+            return NamespaceContext::fromNamespaceName(
+                $node->name->toString()
+            );
+        }
+
+        if ($node instanceof Node\Stmt\UseUse) {
+            return NamespaceContext::emptyContext()
+                ->withUse(Use_::fromStrings(
+                    $node->name->toString(),
+                    $node->alias
+                ))
+            ;
+        }
+
+        return NamespaceContext::emptyContext();
+    }
+
+    /**
+     * Recurse only on namespaces and uses
+     * @return \Closure
+     */
+    private function childrenFold() {
+        return function (callable $fold) {
+            return function (
+                Node $node,
+                NamespaceContext $namespaceContext
+            ) use ($fold) {
+                if (!$node instanceof Node\Stmt\Namespace_
+                    && !$node instanceof Node\Stmt\Use_
+                ) {
+                    return $namespaceContext;
+                }
+
+                return call_user_func(
+                    NodeFunctor::foldChildren($fold),
+                    $node,
+                    $namespaceContext
+                );
+            };
+        };
+    }
 }
