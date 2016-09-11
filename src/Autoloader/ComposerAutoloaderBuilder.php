@@ -22,7 +22,7 @@ class ComposerAutoloaderBuilder
     {
         $baseDir = dirname(dirname(__DIR__));
 
-        if (static::isComposerDependency($baseDir)) {
+        if (self::isComposerDependency($baseDir)) {
             return include dirname(dirname($baseDir)) . DIRECTORY_SEPARATOR . "autoload.php";
         }
 

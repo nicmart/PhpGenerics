@@ -12,7 +12,6 @@ namespace NicMart\Generics\Name\Context;
 
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
-use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Name\SimpleName;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Name\Transformer\NameSimplifier;
@@ -24,7 +23,7 @@ use NicMart\Generics\Name\Transformer\NameSimplifier;
 final class Use_ implements NameSimplifier, NameQualifier
 {
     /**
-     * @var null
+     * @var SimpleName
      */
     private $alias;
 
@@ -52,7 +51,7 @@ final class Use_ implements NameSimplifier, NameQualifier
      * Use_ constructor
      *
      * @param FullName $name
-     * @param SimpleName $alias
+     * @param SimpleName|null $alias
      */
     public function __construct(FullName $name, SimpleName $alias = null)
     {

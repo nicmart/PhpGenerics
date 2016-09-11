@@ -24,7 +24,7 @@ interface NodeSerializer
 
     /**
      * @param array $phpParserNodes
-     * @return array
+     * @return string
      */
     public function toSource(array $phpParserNodes);
 }

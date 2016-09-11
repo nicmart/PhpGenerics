@@ -70,7 +70,7 @@ class ByFileGenericAutoloaderBuilder
 
         $namespaceContextNodeExtractor = new NamespaceContextNodeExtractor();
 
-        $phpParser = (new ParserFactory)->create(static::parserKind());
+        $phpParser = (new ParserFactory)->create(self::parserKind());
 
         $phpDocContextAdapter = new PhpDocContextAdapter();
 
