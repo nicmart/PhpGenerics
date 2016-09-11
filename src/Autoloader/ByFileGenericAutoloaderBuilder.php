@@ -9,13 +9,15 @@
 namespace NicMart\Generics\Autoloader;
 
 
+use NicMart\Generics\AST\Context\NamespaceContextNodeExtractor;
 use NicMart\Generics\AST\Parser\PostTransformParser;
 use NicMart\Generics\AST\Serializer\DefaultNodeSerializer;
 use NicMart\Generics\AST\Serializer\PreTransformSerializer;
 use NicMart\Generics\AST\Transformer\ChainNodeTransformer;
+use NicMart\Generics\AST\Transformer\ContextDependentNodeTransformer;
+use NicMart\Generics\AST\Transformer\SetNamespaceContextNodeTransformer;
 use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
 use NicMart\Generics\AST\Visitor\NameSimplifierVisitor;
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\RemoveDuplicateUsesVisitor;
 use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
 use NicMart\Generics\AST\Visitor\TypeAnnotatorVisitor;
@@ -33,6 +35,7 @@ use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Infrastructure\PhpParser\PrettyPrinter;
 use NicMart\Generics\Infrastructure\PhpParser\Serializer\PhpParserSerializer;
 use NicMart\Generics\Infrastructure\PhpParser\Transformer\TraverserNodeTransformer;
+use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Generic\Parser\AngleQuotedGenericTypeNameParser;
 use NicMart\Generics\Source\Dumper\Psr0SourceUnitDumper;
@@ -65,28 +68,36 @@ class ByFileGenericAutoloaderBuilder
             new AngleQuotedGenericTypeNameParser()
         );
 
+        $namespaceContextNodeExtractor = new NamespaceContextNodeExtractor();
+
         $phpParser = (new ParserFactory)->create(static::parserKind());
 
         $phpDocContextAdapter = new PhpDocContextAdapter();
 
         // This parser parses php code and annotate types
         $parser = new PostTransformParser(
-            new PhpParserParser(
-                $phpParser
-            ),
-            TraverserNodeTransformer::fromVisitors(array(
-                new TypeAnnotatorVisitor(
+            new PhpParserParser($phpParser),
+            new ContextDependentNodeTransformer(
+                $namespaceContextNodeExtractor,
+                function (NamespaceContext $context) use (
                     $genericTypeParserAndSerializer,
-                    new NamespaceContextVisitor(),
-                    new PhpNameAdapter()
-                ),
-                new PhpDocTypeAnnotatorVisitor(
-                    TypeAnnotatorDocBlockFactory::createInstance(
-                        $genericTypeParserAndSerializer
-                    ),
                     $phpDocContextAdapter
-                )
-            ))
+                ) {
+                    return TraverserNodeTransformer::fromVisitors(array(
+                        new TypeAnnotatorVisitor(
+                            $genericTypeParserAndSerializer,
+                            $context,
+                            new PhpNameAdapter()
+                        ),
+                        new PhpDocTypeAnnotatorVisitor(
+                            TypeAnnotatorDocBlockFactory::createInstance(
+                                $genericTypeParserAndSerializer
+                            ),
+                            $phpDocContextAdapter->toPhpDocContext($context)
+                        )
+                    ));
+                }
+            )
         );
 
         // This serializer serializes php nodes and serialize type annotations
@@ -98,26 +109,43 @@ class ByFileGenericAutoloaderBuilder
                         new PhpNameAdapter()
                     ),
                 ]),
-                TraverserNodeTransformer::fromVisitors([
-                    new NameSimplifierVisitor(
-                        new PhpNameAdapter(),
-                        new NamespaceContextVisitor()
-                    ),
-                    new RemoveDuplicateUsesVisitor(),
-                    // Remove Generic marker interface
-                    new RemoveParentTypeVisitor([
-                        FullName::fromString('\NicMart\Generics\Generic')
-                    ]),
-                    new PhpDocTypeSerializerVisitor(
-                        new TypeDocBlockSerializer(
-                            new TypeResolver(new FqsenResolver()),
-                            $genericTypeParserAndSerializer,
-                            new PrettySerializer(),
-                            $phpDocContextAdapter
-                        ),
+                new ContextDependentNodeTransformer(
+                    $namespaceContextNodeExtractor,
+                    function (NamespaceContext $namespaceContext) use (
+                        $genericTypeParserAndSerializer,
                         $phpDocContextAdapter
-                    ),
-                ]),
+                    ) {
+                        return new ChainNodeTransformer([
+                            new SetNamespaceContextNodeTransformer(
+                                $namespaceContext,
+                                new PhpNameAdapter()
+                            ),
+                            TraverserNodeTransformer::fromVisitors([
+                                new NameSimplifierVisitor(
+                                    new PhpNameAdapter(),
+                                    $namespaceContext
+                                ),
+                                // Remove Generic marker interface
+                                new RemoveParentTypeVisitor(
+                                    $namespaceContext,
+                                    [FullName::fromString('\NicMart\Generics\Generic')]
+                                ),
+                                new PhpDocTypeSerializerVisitor(
+                                    new TypeDocBlockSerializer(
+                                        new TypeResolver(new FqsenResolver()),
+                                        $genericTypeParserAndSerializer,
+                                        new PrettySerializer(),
+                                        $phpDocContextAdapter
+                                    ),
+                                    $phpDocContextAdapter->toPhpDocContext(
+                                        $namespaceContext
+                                    )
+                                ),
+                            ])
+                        ]);
+                    }
+                )
+
             ]),
             new PhpParserSerializer(
                 new PrettyPrinter()
@@ -130,7 +158,7 @@ class ByFileGenericAutoloaderBuilder
 
             $contextExtractor = new PhpParserNamespaceContextExtractor(
                 $phpParser,
-                new NamespaceContextVisitor()
+                $namespaceContextNodeExtractor
             ),
 
             new ByContextGenericAutoloader(

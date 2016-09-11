@@ -13,10 +13,7 @@ namespace NicMart\Generics\Example\PHP5\Func;
 use NicMart\Generics\Generic;
 use NicMart\Generics\Variable\T;
 
-use NicMart\Generics\Example\PHP5\Func\CallableFunction1«T1·T2»;
 use NicMart\Generics\Example\PHP5\Func\CallableFunction1«T·T»;
-
-use NicMart\Generics\Example\PHP5\Func\Function1«T1·T2»;
 use NicMart\Generics\Example\PHP5\Func\Function1«T·T»;
 
 class CallableUnaryOperator«T» extends CallableFunction1«T·T» implements UnaryOperator«T»

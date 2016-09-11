@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
+use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Type\Parser\TypeParser;
@@ -28,9 +29,9 @@ class TypeAnnotatorVisitor implements Visitor
     const ATTR_OVERRIDEN_NAME = "generictype_name";
 
     /**
-     * @var NamespaceContextVisitor
+     * @var NamespaceContext
      */
-    private $namespaceContextVisitor;
+    private $namespaceContext;
 
     /**
      * @var PhpNameAdapter
@@ -45,15 +46,15 @@ class TypeAnnotatorVisitor implements Visitor
     /**
      * TypeAnnotatorVisitor constructor.
      * @param TypeParser $typeParser
-     * @param NamespaceContextVisitor $namespaceContextVisitor
+     * @param NamespaceContext $namespaceContext
      * @param PhpNameAdapter $phpNameAdapter
      */
     public function __construct(
         TypeParser $typeParser,
-        NamespaceContextVisitor $namespaceContextVisitor,
+        NamespaceContext $namespaceContext,
         PhpNameAdapter $phpNameAdapter
     ) {
-        $this->namespaceContextVisitor = $namespaceContextVisitor;
+        $this->namespaceContext = $namespaceContext;
         $this->phpNameAdapter = $phpNameAdapter;
         $this->typeParser = $typeParser;
     }
@@ -64,8 +65,6 @@ class TypeAnnotatorVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
-        $this->namespaceContextVisitor->enterNode($node);
-
         $this->overrideChildrenNames($node);
 
         if (!$this->isTypeNode($node)) {
@@ -76,9 +75,7 @@ class TypeAnnotatorVisitor implements Visitor
             self::ATTR_NAME,
             $this->typeParser->parse(
                 $this->extractName($node),
-                $node->getAttribute(
-                    NamespaceContextVisitor::ATTR_NAME
-                )
+                $this->namespaceContext
             )
         );
 

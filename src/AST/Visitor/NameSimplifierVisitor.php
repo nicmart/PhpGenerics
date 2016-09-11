@@ -22,9 +22,9 @@ class NameSimplifierVisitor implements Visitor
     const ATTR_SKIP = "namesimplifier_skip";
 
     /**
-     * @var NamespaceContextVisitor
+     * @var NamespaceContext
      */
-    private $namespaceContextVisitor;
+    private $namespaceContext;
     /**
      * @var PhpNameAdapter
      */
@@ -33,21 +33,19 @@ class NameSimplifierVisitor implements Visitor
     /**
      * NameTransformerVisitor constructor.
      * @param PhpNameAdapter $phpNameAdapter
-     * @param NamespaceContextVisitor $namespaceContextVisitor
+     * @param NamespaceContext $namespaceContext
      */
     public function __construct(
         PhpNameAdapter $phpNameAdapter,
-        NamespaceContextVisitor $namespaceContextVisitor
+        NamespaceContext $namespaceContext
     ) {
-        $this->namespaceContextVisitor = $namespaceContextVisitor;
+        $this->namespaceContext = $namespaceContext;
         $this->phpNameAdapter = $phpNameAdapter;
     }
 
     public function enterNode(Node $node)
     {
-        $this->namespaceContextVisitor->enterNode($node);
-
-        if ($node instanceof Node\Stmt\UseUse) {
+        if ($node instanceof Node\Stmt\UseUse || $node instanceof Node\Stmt\Namespace_) {
             $node->name->setAttribute(
                 self::ATTR_SKIP,
                 true
@@ -63,13 +61,9 @@ class NameSimplifierVisitor implements Visitor
             return new MaintainNode();
         }
 
-        /** @var NamespaceContext $context */
-        $this->namespaceContextVisitor->enterNode($node);
-        $context = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
-
         return new ReplaceNodeWith(
             $this->phpNameAdapter->toPhpName(
-                $context->simplify($context->qualify(
+                $this->namespaceContext->simplify($this->namespaceContext->qualify(
                     $this->phpNameAdapter->fromPhpName($node)
                 ))
             )
