@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 
 use NicMart\Generics\AST\NodesList;
+use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\AST\Visitor\Action\RemoveNode;
 use NicMart\Generics\AST\Visitor\Action\ReplaceNodeWith;
@@ -94,7 +95,7 @@ class TypeSerializerVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return MaintainNode
+     * @return LeaveNodeAction
      */
     public function leaveNode(Node $node)
     {

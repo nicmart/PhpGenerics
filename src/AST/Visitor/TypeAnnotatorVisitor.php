@@ -110,6 +110,7 @@ class TypeAnnotatorVisitor implements Visitor
         }
 
         if ($this->isClass($node)) {
+            /** @var Node\Stmt\Class_|Node\Stmt\Interface_ $node */
             return RelativeName::fromString($node->name);
         }
     }

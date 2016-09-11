@@ -44,8 +44,7 @@ class PhpParserVisitorAdapter extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node $node
-     * @return bool|null|Node|\PhpParser\Node[]
+     * {@inheritdoc}
      */
     public function enterNode(Node $node)
     {
@@ -55,8 +54,7 @@ class PhpParserVisitorAdapter extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node $node
-     * @return bool|null|Node|\PhpParser\Node
+     * {@inheritdoc}
      */
     public function leaveNode(Node $node)
     {
