@@ -38,7 +38,7 @@ class ReflectionGenericSourceUnitLoader implements GenericSourceUnitLoader
     public function loadSource(GenericType $genericType)
     {
         $fullName = $this->typeSerializer->serialize($genericType);
-        $reflection = new ReflectionClass($fullName->toCanonicalString());
+        $reflection = new ReflectionClass($fullName->toString());
 
         return new SourceUnit(
             $genericType,

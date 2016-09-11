@@ -14,6 +14,7 @@ use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\Transformer\NameQualifier;
 use NicMart\Generics\Name\Transformer\NameSimplifier;
+use NicMart\Generics\Type\PrimitiveType;
 
 /**
  * Class Namespace_
@@ -89,7 +90,7 @@ final class Namespace_ implements NameSimplifier, NameQualifier
      */
     public function qualify(Name $name)
     {
-        if ($name->isNative()) {
+        if (PrimitiveType::isPrimitive($name->toFullName())) {
             return $name->toFullName();
         }
 

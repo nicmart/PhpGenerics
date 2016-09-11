@@ -13,6 +13,7 @@ namespace NicMart\Generics\Infrastructure\PhpParser;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Name\Name;
 use NicMart\Generics\Name\RelativeName;
+use NicMart\Generics\Type\PrimitiveType;
 use PhpParser\Node;
 
 /**
@@ -40,7 +41,7 @@ final class PhpNameAdapter
      */
     public function toPhpName(Name $name)
     {
-        return $name instanceof FullName && !$name->isNative()
+        return $name instanceof FullName && !PrimitiveType::isPrimitive($name)
             ? new Node\Name\FullyQualified($name->parts())
             : new Node\Name($name->parts())
         ;

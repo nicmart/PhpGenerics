@@ -22,26 +22,6 @@ abstract class Name
     private $parts = array();
 
     /**
-     * @var string[]
-     */
-    private $nativeTypes = array(
-        "string",
-        "int",
-        "callable",
-        "array",
-        "resource",
-        "float",
-        "double",
-        "bool",
-        "void",
-        "mixed",
-
-        "static",
-        "self",
-        "parent"
-    );
-
-    /**
      * Returns the root path object
      *
      * @return static
@@ -82,7 +62,7 @@ abstract class Name
     {
         $this->assertValidClass();
 
-        foreach ($parts as &$part) {
+        foreach ($parts as $part) {
             $this->parts[] = (string) $part;
         }
     }
@@ -241,15 +221,6 @@ abstract class Name
     }
 
     /**
-     * @param Name $name
-     * @return Name
-     */
-    public function prepend(Name $name)
-    {
-        return $name->append($this);
-    }
-
-    /**
      * @param string $separator
      * @return string
      */
@@ -259,36 +230,11 @@ abstract class Name
     }
 
     /**
-     * @param string $separator
-     * @return string
-     */
-    public function toCanonicalString($separator = "\\")
-    {
-        if ($this->isNative() || !$this->isFullName()) {
-            return $this->toString($separator);
-        }
-
-        return $separator . $this->toString($separator);
-    }
-
-    /**
      * @return FullName
      */
     public function toFullName()
     {
         return new FullName($this->parts());
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNative()
-    {
-        $parts = $this->parts();
-        return
-            count($parts) == 1
-            && in_array($parts[0], $this->nativeTypes)
-        ;
     }
 
     /**

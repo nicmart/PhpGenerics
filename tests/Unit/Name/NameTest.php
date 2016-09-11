@@ -160,38 +160,6 @@ class NameTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_gets_canonical_string()
-    {
-        $name = new FullName(array("a", "b", "c"));
-
-        $this->assertEquals(
-            "\\a\\b\\c",
-            $name->toCanonicalString()
-        );
-
-        $this->assertEquals(
-            ".a.b.c",
-            $name->toCanonicalString(".")
-        );
-
-        $name = new RelativeName(array("a", "b"));
-
-        $this->assertEquals(
-            "a\\b",
-            $name->toCanonicalString()
-        );
-
-        $name = new FullName(array("string"));
-
-        $this->assertEquals(
-            "string",
-            $name->toCanonicalString()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function it_checks_if_prefix_of()
     {
         $name = new FullName(array("a", "b", "c"));
