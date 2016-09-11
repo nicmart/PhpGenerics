@@ -11,12 +11,9 @@
 namespace NicMart\Generics\Infrastructure\Name\Context;
 
 
-use NicMart\Generics\Infrastructure\PhpParser\PhpParserVisitorAdapter;
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use NicMart\Generics\AST\Context\NamespaceContextNodeExtractor;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
 
 /**
@@ -31,30 +28,21 @@ class PhpParserNamespaceContextExtractor implements NamespaceContextExtractor
     private $parser;
 
     /**
-     * @var NamespaceContextVisitor
+     * @var NamespaceContextNodeExtractor
      */
-    private $visitor;
-
-    /**
-     * @var NodeTraverserInterface
-     */
-    private $traverser;
+    private $namespaceContextNodeExtractor;
 
     /**
      * PhpParserNamespaceContextExtractor constructor.
      * @param Parser $parser
-     * @param NamespaceContextVisitor $visitor
+     * @param NamespaceContextNodeExtractor $namespaceContextNodeExtractor
      */
     public function __construct(
         Parser $parser,
-        NamespaceContextVisitor $visitor
+        NamespaceContextNodeExtractor $namespaceContextNodeExtractor
     ) {
         $this->parser = $parser;
-        $this->visitor = $visitor;
-        $this->traverser = new NodeTraverser();
-        $this->traverser->addVisitor(new PhpParserVisitorAdapter(
-            $visitor
-        ));
+        $this->namespaceContextNodeExtractor = $namespaceContextNodeExtractor;
     }
 
     /**
@@ -63,10 +51,8 @@ class PhpParserNamespaceContextExtractor implements NamespaceContextExtractor
      */
     public function contextOf($source)
     {
-        $this->visitor->reset();
-
         $statements = $this->parser->parse($source);
-        $this->traverser->traverse($statements);
-        return $this->visitor->context();
+
+        return $this->namespaceContextNodeExtractor->extractFromArray($statements);
     }
 }

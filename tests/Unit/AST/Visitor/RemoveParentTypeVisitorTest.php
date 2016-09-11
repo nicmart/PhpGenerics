@@ -25,19 +25,16 @@ class RemoveParentTypeVisitorTest extends \PHPUnit_Framework_TestCase
         $nameToRemove = '\NicMart\Generics\Generic';
         $nodeFactory = new BuilderFactory();
 
-        $visitor = new RemoveParentTypeVisitor(array(
-            FullName::fromString($nameToRemove)
-        ));
+        $visitor = new RemoveParentTypeVisitor(
+            NamespaceContext::emptyContext(),
+            [FullName::fromString($nameToRemove)]
+        );
 
         $class = $nodeFactory
             ->class("Boo")
             ->extend($nameToRemove)
             ->getNode()
         ;
-        $class->setAttribute(
-            NamespaceContextVisitor::ATTR_NAME,
-            NamespaceContext::emptyContext()
-        );
 
         $visitor->enterNode($class);
         $visitor->leaveNode($class);
@@ -55,19 +52,16 @@ class RemoveParentTypeVisitorTest extends \PHPUnit_Framework_TestCase
         $nameToRemove = '\NicMart\Generics\Generic';
         $nodeFactory = new BuilderFactory();
 
-        $visitor = new RemoveParentTypeVisitor(array(
-            FullName::fromString($nameToRemove)
-        ));
+        $visitor = new RemoveParentTypeVisitor(
+            NamespaceContext::emptyContext(),
+            [FullName::fromString($nameToRemove)]
+        );
 
         $interface = $nodeFactory
             ->interface("Boo")
             ->extend($nameToRemove)
             ->getNode()
         ;
-        $interface->setAttribute(
-            NamespaceContextVisitor::ATTR_NAME,
-            NamespaceContext::emptyContext()
-        );
 
         $visitor->enterNode($interface);
         $visitor->leaveNode($interface);
@@ -86,19 +80,16 @@ class RemoveParentTypeVisitorTest extends \PHPUnit_Framework_TestCase
         $nameToRemove = '\NicMart\Generics\Generic';
         $nodeFactory = new BuilderFactory();
 
-        $visitor = new RemoveParentTypeVisitor(array(
-            FullName::fromString($nameToRemove)
-        ));
+        $visitor = new RemoveParentTypeVisitor(
+            NamespaceContext::emptyContext(),
+            [FullName::fromString($nameToRemove)]
+        );
 
         $class = $nodeFactory
             ->class("Boo")
             ->implement($nameToRemove)
             ->getNode()
         ;
-        $class->setAttribute(
-            NamespaceContextVisitor::ATTR_NAME,
-            NamespaceContext::emptyContext()
-        );
 
         $visitor->enterNode($class);
         $visitor->leaveNode($class);

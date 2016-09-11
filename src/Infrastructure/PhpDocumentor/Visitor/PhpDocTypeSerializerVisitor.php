@@ -14,7 +14,6 @@ namespace NicMart\Generics\Infrastructure\PhpDocumentor\Visitor;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\AST\Visitor\Visitor;
 use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
 use NicMart\Generics\Infrastructure\PhpDocumentor\DocBlockTagFunctor;
@@ -22,6 +21,7 @@ use NicMart\Generics\Infrastructure\PhpDocumentor\TypeDocBlockSerializer;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node;
+use phpDocumentor\Reflection\Types\Context as PhpDocContext;
 
 class PhpDocTypeSerializerVisitor implements Visitor
 {
@@ -29,22 +29,23 @@ class PhpDocTypeSerializerVisitor implements Visitor
      * @var TypeDocBlockSerializer
      */
     private $typeDocBlockSerializer;
+
     /**
-     * @var PhpDocContextAdapter
+     * @var PhpDocContext
      */
-    private $contextAdapter;
+    private $phpDocContext;
 
     /**
      * PhpDocTypeSerializerVisitor constructor.
      * @param TypeDocBlockSerializer $typeDocBlockSerializer
-     * @param PhpDocContextAdapter $contextAdapter
+     * @param PhpDocContext $phpDocContext
      */
     public function __construct(
         TypeDocBlockSerializer $typeDocBlockSerializer,
-        PhpDocContextAdapter $contextAdapter
+        PhpDocContext $phpDocContext
     ) {
         $this->typeDocBlockSerializer = $typeDocBlockSerializer;
-        $this->contextAdapter = $contextAdapter;
+        $this->phpDocContext = $phpDocContext;
     }
 
     /**
@@ -59,13 +60,12 @@ class PhpDocTypeSerializerVisitor implements Visitor
 
         /** @var DocBlock $docBlock */
         $docBlock = $node->getAttribute(PhpDocTypeAnnotatorVisitor::ATTR_NAME);
-        $context = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
 
         $docBlock = new DocBlock(
             $docBlock->getSummary(),
             $docBlock->getDescription(),
             $docBlock->getTags(),
-            $this->contextAdapter->toPhpDocContext($context),
+            $this->phpDocContext,
             $docBlock->getLocation(),
             $docBlock->isTemplateStart(),
             $docBlock->isTemplateEnd()

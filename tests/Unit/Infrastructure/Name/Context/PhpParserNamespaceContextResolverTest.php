@@ -11,7 +11,7 @@
 namespace NicMart\Generics\Infrastructure\Name\Context;
 
 
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use NicMart\Generics\AST\Context\NamespaceContextNodeExtractor;
 use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\Use_;
@@ -28,7 +28,7 @@ class PhpParserNamespaceContextResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new PhpParserNamespaceContextExtractor(
             (new ParserFactory)->create(ParserFactory::ONLY_PHP5),
-            new NamespaceContextVisitor()
+            new NamespaceContextNodeExtractor()
         );
 
         $context = $resolver->contextOf(

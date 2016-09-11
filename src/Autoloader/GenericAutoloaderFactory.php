@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Autoloader;
 
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
 use NicMart\Generics\Composer\ClassLoaderDirectoryResolver;
 use NicMart\Generics\Composer\ComposerGenericNameResolver;
 use NicMart\Generics\Infrastructure\Name\Context\PhpParserNamespaceContextExtractor;
@@ -41,42 +40,5 @@ class GenericAutoloaderFactory
             new CallerFilenameResolver(array(
             ))
         ));
-    }
-
-    /**
-     * @todo Why we needed this ones?
-     * @return mixed
-     */
-    private static function composerClassLoader()
-    {
-        $baseDir = dirname(dirname(__DIR__));
-
-        if (static::isComposerDependency($baseDir)) {
-            return include dirname(dirname($baseDir)) . DIRECTORY_SEPARATOR . "autoload.php";
-        }
-
-        $path = $baseDir . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
-
-        if (file_exists($path)) {
-            return include $path;
-        }
-
-        throw new RuntimeException("Unable to find composer autoload.php file");
-    }
-
-    /**
-     * @param $baseDir
-     * @return bool
-     */
-    private static function isComposerDependency($baseDir)
-    {
-        $nicmartVendorFolder = dirname($baseDir);
-        $vendorFolder = dirname($nicmartVendorFolder);
-
-        return
-            basename($baseDir) == "php-generics"
-            && basename($nicmartVendorFolder) == "nicmart"
-            && file_exists($vendorFolder . DIRECTORY_SEPARATOR . "autoload.php")
-        ;
     }
 }

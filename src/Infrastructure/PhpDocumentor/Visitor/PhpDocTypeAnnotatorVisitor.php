@@ -14,12 +14,15 @@ namespace NicMart\Generics\Infrastructure\PhpDocumentor\Visitor;
 use NicMart\Generics\AST\Visitor\Action\EnterNodeAction;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
-use NicMart\Generics\AST\Visitor\NamespaceContextVisitor;
+use phpDocumentor\Reflection\Types\Context as PhpDocContext;
 use NicMart\Generics\AST\Visitor\Visitor;
-use NicMart\Generics\Infrastructure\PhpDocumentor\Adapter\PhpDocContextAdapter;
 use phpDocumentor\Reflection\DocBlockFactory;
 use PhpParser\Node;
 
+/**
+ * Class PhpDocTypeAnnotatorVisitor
+ * @package NicMart\Generics\Infrastructure\PhpDocumentor\Visitor
+ */
 class PhpDocTypeAnnotatorVisitor implements Visitor
 {
     const ATTR_NAME = "PhpDoc";
@@ -28,22 +31,23 @@ class PhpDocTypeAnnotatorVisitor implements Visitor
      * @var DocBlockFactory
      */
     private $docBlockFactory;
+
     /**
-     * @var PhpDocContextAdapter
+     * @var PhpDocContext
      */
-    private $contextAdapter;
+    private $phpDocContext;
 
     /**
      * PhpDocTypeAnnotatorVisitor constructor.
      * @param DocBlockFactory $docBlockFactory
-     * @param PhpDocContextAdapter $contextAdapter
+     * @param PhpDocContext $phpDocContext
      */
     public function __construct(
         DocBlockFactory $docBlockFactory,
-        PhpDocContextAdapter $contextAdapter
+        PhpDocContext $phpDocContext
     ) {
         $this->docBlockFactory = $docBlockFactory;
-        $this->contextAdapter = $contextAdapter;
+        $this->phpDocContext = $phpDocContext;
     }
 
 
@@ -58,13 +62,11 @@ class PhpDocTypeAnnotatorVisitor implements Visitor
             return new MaintainNode();
         }
         
-        $context = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
-
         $node->setAttribute(
             self::ATTR_NAME,
             $this->docBlockFactory->create(
                 $comment->getText(),
-                $this->contextAdapter->toPhpDocContext($context)
+                $this->phpDocContext
             )
         );
 

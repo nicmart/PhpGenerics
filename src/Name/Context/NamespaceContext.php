@@ -103,6 +103,19 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
     }
 
     /**
+     * @param Uses $uses
+     * @return NamespaceContext
+     */
+    public function withUses(Uses $uses)
+    {
+        $new = clone $this;
+
+        $new->uses = $uses;
+
+        return $new;
+    }
+
+    /**
      * @param Namespace_ $namespace
      * @return NamespaceContext
      */
@@ -113,6 +126,27 @@ final class NamespaceContext implements NameSimplifier, NameQualifier
         $new->namespace = $namespace;
 
         return $new;
+    }
+
+    /**
+     * Merge two contexts. If one of the two has an empty namespace,
+     * use the namespace of the other one. Otherwise the namespace will
+     * be the one of the current one
+     * 
+     * @param NamespaceContext $namespaceContext
+     * @return NamespaceContext
+     */
+    public function merge(NamespaceContext $namespaceContext)
+    {
+        if ($this->namespace == Namespace_::globalNamespace()) {
+            return $namespaceContext->withUses(
+                $namespaceContext->uses()->merge($this->uses())
+            );
+        }
+
+        return $this->withUses(
+            $this->uses()->merge($namespaceContext->uses())
+        );
     }
 
     /**

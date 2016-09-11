@@ -31,16 +31,25 @@ class RemoveParentTypeVisitor implements Visitor
      * @var FullName[]
      */
     private $names = array();
+    /**
+     * @var NamespaceContext
+     */
+    private $namespaceContext;
 
     /**
      * RemoveParentTypeVisitor constructor.
+     * @param NamespaceContext $namespaceContext
      * @param FullName[] $names
      */
-    public function __construct(array $names)
-    {
+    public function __construct(
+        NamespaceContext $namespaceContext,
+        array $names
+    ) {
         foreach ($names as $name) {
             $this->addName($name);
         }
+
+        $this->namespaceContext = $namespaceContext;
     }
 
     /**
@@ -49,7 +58,7 @@ class RemoveParentTypeVisitor implements Visitor
      */
     public function leaveNode(Node $node)
     {
-        $nsContext = $node->getAttribute(NamespaceContextVisitor::ATTR_NAME);
+        $nsContext = $this->namespaceContext;
 
         if ($node instanceof Stmt\Class_) {
             if ($this->hasNameToBeRemoved($node->extends, $nsContext)) {
