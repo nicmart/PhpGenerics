@@ -12,6 +12,7 @@ namespace NicMart\Generics\AST\Visitor;
 
 
 use NicMart\Generics\AST\NodesList;
+use NicMart\Generics\AST\Type\NodeNameTypeAdapter;
 use NicMart\Generics\AST\Visitor\Action\LeaveNodeAction;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\AST\Visitor\Action\RemoveNode;
@@ -49,18 +50,25 @@ class TypeSerializerVisitor implements Visitor
      * @var PhpNameAdapter
      */
     private $phpNameAdapter;
+    /**
+     * @var NodeNameTypeAdapter
+     */
+    private $nameTypeAdapter;
 
     /**
      * TypeSerializerVisitor constructor.
      * @param TypeSerializer $typeSerializer
      * @param PhpNameAdapter $phpNameAdapter
+     * @param NodeNameTypeAdapter $nameTypeAdapter
      */
     public function __construct(
         TypeSerializer $typeSerializer,
-        PhpNameAdapter $phpNameAdapter
+        PhpNameAdapter $phpNameAdapter,
+        NodeNameTypeAdapter $nameTypeAdapter
     ) {
         $this->typeSerializer = $typeSerializer;
         $this->phpNameAdapter = $phpNameAdapter;
+        $this->nameTypeAdapter = $nameTypeAdapter;
     }
 
     /**
@@ -69,6 +77,19 @@ class TypeSerializerVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
+        $type = $node->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+
+        if (!$type) {
+            return new MaintainNode();
+        }
+
+        $name = $this->typeSerializer->serialize($type);
+        $phpParserName = $this->phpNameAdapter->toPhpName($name);
+
+        $this->nameTypeAdapter->withTypeName($node, $phpParserName);
+
+        return new MaintainNode();
+
         $this->skipChildren($node);
 
         // Basically removes scalar typehints in PHP < 7

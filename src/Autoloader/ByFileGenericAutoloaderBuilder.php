@@ -17,6 +17,7 @@ use NicMart\Generics\AST\Transformer\ChainNodeTransformer;
 use NicMart\Generics\AST\Transformer\ContextDependentNodeTransformer;
 use NicMart\Generics\AST\Transformer\SetNamespaceContextNodeTransformer;
 use NicMart\Generics\AST\Transformer\TypeAnnotationTypeToNodeTransformer;
+use NicMart\Generics\AST\Type\NodeNameTypeAdapter;
 use NicMart\Generics\AST\Visitor\NameSimplifierVisitor;
 use NicMart\Generics\AST\Visitor\RemoveDuplicateUsesVisitor;
 use NicMart\Generics\AST\Visitor\RemoveParentTypeVisitor;
@@ -87,7 +88,8 @@ class ByFileGenericAutoloaderBuilder
                         new TypeAnnotatorVisitor(
                             $genericTypeParserAndSerializer,
                             $context,
-                            new PhpNameAdapter()
+                            new PhpNameAdapter(),
+                            new NodeNameTypeAdapter()
                         ),
                         new PhpDocTypeAnnotatorVisitor(
                             TypeAnnotatorDocBlockFactory::createInstance(
@@ -106,7 +108,8 @@ class ByFileGenericAutoloaderBuilder
                 TraverserNodeTransformer::fromVisitors([
                     new TypeSerializerVisitor(
                         $genericTypeParserAndSerializer,
-                        new PhpNameAdapter()
+                        new PhpNameAdapter(),
+                        new NodeNameTypeAdapter()
                     ),
                 ]),
                 new ContextDependentNodeTransformer(

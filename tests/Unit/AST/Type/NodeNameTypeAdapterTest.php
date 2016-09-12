@@ -58,13 +58,14 @@ class NodeNameTypeAdapterTest extends \PHPUnit_Framework_TestCase
 
         return [
             [
-                $name1,
+                // We correct the name making it fully qualified
+                new Name\FullyQualified($name1->parts),
                 $name2,
                 new UseUse($name1),
                 new UseUse($name2)
             ],
             [
-                $name1,
+                new Name\FullyQualified($name1->parts),
                 $name2,
                 new UseUse($name1, "ah"),
                 new UseUse($name2, "ah")

@@ -11,6 +11,12 @@
 namespace NicMart\Generics\AST\Type;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\UseUse;
 
 /**
  * Class NodeNameTypeAdapter
@@ -32,8 +38,12 @@ class NodeNameTypeAdapter
      */
     public function typeNameOf(Node $node)
     {
-        if ($node instanceof Node\Stmt\Namespace_) {
+        if ($node instanceof Namespace_) {
             return null;
+        }
+
+        if ($node instanceof UseUse) {
+            return new FullyQualified($node->name->parts);
         }
 
         foreach ($this->props as $prop) {
@@ -42,9 +52,9 @@ class NodeNameTypeAdapter
             }
         }
 
-        if ($node instanceof Node\Stmt\Class_
-            || $node instanceof Node\Stmt\Interface_
-            || $node instanceof Node\Stmt\Trait_
+        if ($node instanceof Class_
+            || $node instanceof Interface_
+            || $node instanceof Trait_
         ) {
             return new Node\Name\Relative($node->name);
         }
@@ -59,12 +69,12 @@ class NodeNameTypeAdapter
      */
     public function withTypeName(Node $node, Node\Name $name)
     {
-        if ($node instanceof Node\Stmt\Namespace_) {
+        if ($node instanceof Namespace_) {
             return $node;
         }
 
         // Alias handling for use uses
-        if ($node instanceof Node\Stmt\UseUse) {
+        if ($node instanceof UseUse) {
             $oldName = $node->name;
             $node->name = $name;
             if ($node->alias == $oldName->getLast()) {
@@ -79,9 +89,9 @@ class NodeNameTypeAdapter
             }
         }
 
-        if ($node instanceof Node\Stmt\Class_
-            || $node instanceof Node\Stmt\Interface_
-            || $node instanceof Node\Stmt\Trait_
+        if ($node instanceof Class_
+            || $node instanceof Interface_
+            || $node instanceof Trait_
         ) {
             $node->name = $name->getLast();
             return $node;

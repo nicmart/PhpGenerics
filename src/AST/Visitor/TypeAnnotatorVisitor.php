@@ -10,6 +10,7 @@
 
 namespace NicMart\Generics\AST\Visitor;
 
+use NicMart\Generics\AST\Type\NodeNameTypeAdapter;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Name\Context\NamespaceContext;
@@ -40,21 +41,28 @@ class TypeAnnotatorVisitor implements Visitor
      * @var TypeParser
      */
     private $typeParser;
+    /**
+     * @var NodeNameTypeAdapter
+     */
+    private $nameTypeAdapter;
 
     /**
      * TypeAnnotatorVisitor constructor.
      * @param TypeParser $typeParser
      * @param NamespaceContext $namespaceContext
      * @param PhpNameAdapter $phpNameAdapter
+     * @param NodeNameTypeAdapter $nameTypeAdapter
      */
     public function __construct(
         TypeParser $typeParser,
         NamespaceContext $namespaceContext,
-        PhpNameAdapter $phpNameAdapter
+        PhpNameAdapter $phpNameAdapter,
+        NodeNameTypeAdapter $nameTypeAdapter
     ) {
         $this->namespaceContext = $namespaceContext;
         $this->phpNameAdapter = $phpNameAdapter;
         $this->typeParser = $typeParser;
+        $this->nameTypeAdapter = $nameTypeAdapter;
     }
 
     /**
@@ -63,16 +71,16 @@ class TypeAnnotatorVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
-        $this->overrideChildrenNames($node);
+        $name = $this->nameTypeAdapter->typeNameOf($node);
 
-        if (!$this->isTypeNode($node)) {
+        if (!$name) {
             return new MaintainNode();
         }
 
         $node->setAttribute(
             self::ATTR_NAME,
             $this->typeParser->parse(
-                $this->extractName($node),
+                $this->phpNameAdapter->fromPhpName($name),
                 $this->namespaceContext
             )
         );
