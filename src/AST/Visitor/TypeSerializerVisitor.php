@@ -71,14 +71,17 @@ class TypeSerializerVisitor implements Visitor
     {
         $this->skipChildren($node);
 
+        // Basically removes scalar typehints in PHP < 7
         if ($typeHintField = $this->typeHintField($node)) {
             $this->removeTypeHints($node, $typeHintField);
         }
 
+        // Remove uses that are now associated to a non-reference type
         if ($node instanceof Node\Stmt\Use_) {
             $this->removeTypesInUses($node);
         }
 
+        // Check if it is a node we have to process
         if (!$this->isValidNode($node)) {
             return new MaintainNode();
         }

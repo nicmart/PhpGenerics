@@ -26,8 +26,6 @@ class TypeAnnotatorVisitor implements Visitor
 {
     const ATTR_NAME = "generictype";
 
-    const ATTR_OVERRIDEN_NAME = "generictype_name";
-
     /**
      * @var NamespaceContext
      */
@@ -97,14 +95,6 @@ class TypeAnnotatorVisitor implements Visitor
      */
     private function extractName(Node $node)
     {
-        // Sometimes the name is not in the format we expect, and its
-        // meaning depends on the parent. In that case we set an attribute
-        // when we are visiting the parent, and we retrieve it later when
-        // visiting the child
-        if ($node->hasAttribute(self::ATTR_OVERRIDEN_NAME)) {
-            return $node->getAttribute(self::ATTR_OVERRIDEN_NAME);
-        }
-
         if ($node instanceof Node\Name) {
             return $this->phpNameAdapter->fromPhpName($node);
         }
@@ -125,12 +115,7 @@ class TypeAnnotatorVisitor implements Visitor
     private function overrideChildrenNames(Node $node)
     {
         if ($node instanceof Node\Stmt\UseUse) {
-            $node->name->setAttribute(
-                self::ATTR_OVERRIDEN_NAME,
-                $this->phpNameAdapter->fromPhpName(
-                    $node->name
-                )->toFullName()
-            );
+            $node->name = new Node\Name\FullyQualified($node->name->parts);
         }
     }
 
