@@ -13,9 +13,13 @@ use PhpParser\Node;
 
 class TypeAnnotatorNodeTransformer implements NodeTransformer
 {
+    const ATTR_NAME = "generictype";
+    
     public function transformNodes(array $nodes)
     {
         // TODO: Implement transformNodes() method.
     }
+
+
 
 }
