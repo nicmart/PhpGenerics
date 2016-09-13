@@ -36,10 +36,6 @@ class TypeSerializerVisitor implements Visitor
      *
      */
     const ATTR_SKIP = "generictype_skip";
-    /**
-     *
-     */
-    const ATTR_CHANGED = "generictype_changed";
 
     /**
      * @var TypeSerializer
@@ -50,6 +46,7 @@ class TypeSerializerVisitor implements Visitor
      * @var PhpNameAdapter
      */
     private $phpNameAdapter;
+
     /**
      * @var NodeNameTypeAdapter
      */
@@ -77,6 +74,11 @@ class TypeSerializerVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
+        // Remove uses that are now associated to a non-reference type
+        if ($node instanceof Node\Stmt\Use_) {
+            $this->removeTypesInUses($node);
+        }
+
         $type = $node->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
 
         if (!$type) {
@@ -88,28 +90,9 @@ class TypeSerializerVisitor implements Visitor
         $node = $this->nameTypeAdapter->withTypeName($node, $phpParserName);
 
         // Basically removes scalar typehints in PHP < 7
-        if ($typeHintField = $this->typeHintField($node)) {
-            $this->removeTypeHints($node, $typeHintField);
+        if ($this->isTypeHintNode($node)) {
+            $this->removeTypeHints($node);
         }
-
-        // Remove uses that are now associated to a non-reference type
-        if ($node instanceof Node\Stmt\Use_) {
-            $this->removeTypesInUses($node);
-        }
-
-        return new ReplaceNodeWith($node);
-
-        // Check if it is a node we have to process
-        if (!$this->isValidNode($node)) {
-            return new MaintainNode();
-        }
-
-        $type = $node->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
-
-        $name = $this->typeSerializer->serialize($type);
-        $phpParserName = $this->phpNameAdapter->toPhpName($name);
-
-        $this->setName($node, $phpParserName);
 
         return new ReplaceNodeWith($node);
     }
@@ -168,64 +151,6 @@ class TypeSerializerVisitor implements Visitor
     }
 
     /**
-     * @param Node $node
-     * @param Node\Name $name
-     * @return Node\Name|Node\Name\FullyQualified|string
-     */
-    private function setName(Node &$node, Node\Name $name)
-    {
-        if ($node instanceof Node\Name) {
-            $name->setAttribute(
-                self::ATTR_CHANGED,
-                true
-            );
-            $name->setAttribute(
-                TypeAnnotatorVisitor::ATTR_NAME,
-                $node->getAttribute(
-                    TypeAnnotatorVisitor::ATTR_NAME
-                )
-            );
-            return $node = $name;
-        }
-
-        if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_) {
-            return $node->name = $name->getLast();
-        }
-    }
-    
-    /**
-     * @param Node $node
-     */
-    private function skipChildren(Node $node)
-    {
-        if ($node instanceof Node\Stmt\Namespace_) {
-            return $this->skip($node->name);
-        }
-    }
-
-    /**
-     * @param Node $node
-     * @return bool
-     */
-    private function isValidNode(Node $node)
-    {
-        return $node->hasAttribute(TypeAnnotatorVisitor::ATTR_NAME)
-            && !$node->hasAttribute(self::ATTR_SKIP)
-        ;
-    }
-
-    /**
-     * @param Node $node
-     */
-    private function skip(Node $node)
-    {
-        $node->setAttribute(
-            self::ATTR_SKIP,
-            true
-        );
-    }
-
-    /**
      * @param Type $type
      * @return bool
      */
@@ -239,19 +164,16 @@ class TypeSerializerVisitor implements Visitor
     }
 
     /**
-     * @param $paramOrFunction
-     * @param $field
+     * @param Node $typeHintNode
+     * @internal param $paramOrFunction
+     * @internal param $field
      */
-    private function removeTypeHints($paramOrFunction, $field)
+    private function removeTypeHints(Node $typeHintNode)
     {
-        if (!$paramOrFunction->$field instanceof Node\Name) {
-            return;
-        }
-
-        $type = $paramOrFunction->$field->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+        $type = $typeHintNode->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
 
         if ($this->hasTypeToBeErased($type)) {
-            $paramOrFunction->$field = null;
+            $this->removeTypeHintSubNode($typeHintNode);
         }
     }
 
@@ -274,16 +196,27 @@ class TypeSerializerVisitor implements Visitor
      * @param Node $node
      * @return bool
      */
-    private function typeHintField(Node $node)
+    private function isTypeHintNode(Node $node)
     {
         if ($node instanceof Node\Param) {
-            return "type";
+            return true;
         }
 
         if ($node instanceof Node\FunctionLike) {
-            return "returnType";
+            return true;
         }
 
-        return null;
+        return false;
+    }
+
+    private function removeTypeHintSubNode(Node $node)
+    {
+        if ($node instanceof Node\Param) {
+            $node->type = null;
+        }
+
+        if ($node instanceof Node\FunctionLike) {
+            $node->returnType = null;
+        }
     }
 }

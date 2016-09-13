@@ -65,10 +65,10 @@ class NodeNameTypeAdapter
 
     /**
      * @param Node $node
-     * @param Name $name
+     * @param Name|null $name
      * @return Node
      */
-    public function withTypeName(Node $node, Name $name)
+    public function withTypeName(Node $node, Name $name = null)
     {
         if ($node instanceof Namespace_) {
             return $node;

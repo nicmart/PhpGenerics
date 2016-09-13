@@ -14,8 +14,6 @@ use NicMart\Generics\AST\Type\NodeNameTypeAdapter;
 use NicMart\Generics\AST\Visitor\Action\MaintainNode;
 use NicMart\Generics\Infrastructure\PhpParser\PhpNameAdapter;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Name;
-use NicMart\Generics\Name\RelativeName;
 use NicMart\Generics\Type\Parser\TypeParser;
 use PhpParser\Node;
 
@@ -71,6 +69,7 @@ class TypeAnnotatorVisitor implements Visitor
      */
     public function enterNode(Node $node)
     {
+        $this->annotateInnerNames($node);
         $name = $this->nameTypeAdapter->typeNameOf($node);
 
         if (!$name) {
@@ -78,7 +77,6 @@ class TypeAnnotatorVisitor implements Visitor
         }
 
         $this->annotateWithType($node, $name);
-        $this->annotateExtendsAndImplements($node);
 
         return new MaintainNode();
     }
@@ -112,18 +110,23 @@ class TypeAnnotatorVisitor implements Visitor
     /**
      * @param Node $node
      */
-    private function annotateExtendsAndImplements(Node $node)
+    private function annotateInnerNames(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
-            foreach ($node->implements as $implement) {
+            foreach ((array) $node->implements as $implement) {
                 $this->annotateWithType($implement, $implement);
             }
         }
 
         if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_) {
-            foreach ((array) $node->extends as $extend) {
+            $extends = is_object($node->extends) ? [$node->extends] : (array) $node->extends;
+            foreach ($extends as $extend) {
                 $this->annotateWithType($extend, $extend);
             }
+        }
+
+        if ($node instanceof Node\FunctionLike && $node->getReturnType() instanceof Node\Name) {
+            $this->annotateWithType($node->getReturnType(), $node->getReturnType());
         }
     }
 }
