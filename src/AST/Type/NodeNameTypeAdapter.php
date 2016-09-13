@@ -11,6 +11,7 @@
 namespace NicMart\Generics\AST\Type;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
@@ -34,7 +35,7 @@ class NodeNameTypeAdapter
 
     /**
      * @param Node $node
-     * @return Node\Name|null
+     * @return Name|null
      */
     public function typeNameOf(Node $node)
     {
@@ -47,7 +48,7 @@ class NodeNameTypeAdapter
         }
 
         foreach ($this->props as $prop) {
-            if (isset($node->$prop) && $node->$prop instanceof Node\Name) {
+            if (isset($node->$prop) && $node->$prop instanceof Name) {
                 return $node->$prop;
             }
         }
@@ -64,10 +65,10 @@ class NodeNameTypeAdapter
 
     /**
      * @param Node $node
-     * @param Node\Name $name
+     * @param Name $name
      * @return Node
      */
-    public function withTypeName(Node $node, Node\Name $name)
+    public function withTypeName(Node $node, Name $name)
     {
         if ($node instanceof Namespace_) {
             return $node;
@@ -83,7 +84,7 @@ class NodeNameTypeAdapter
         }
 
         foreach ($this->props as $prop) {
-            if (isset($node->$prop) && $node->$prop instanceof Node\Name) {
+            if (isset($node->$prop) && $node->$prop instanceof Name) {
                 $node->$prop = $name;
                 return $node;
             }
@@ -95,6 +96,10 @@ class NodeNameTypeAdapter
         ) {
             $node->name = $name->getLast();
             return $node;
+        }
+
+        if ($node instanceof Name) {
+            return $name;
         }
 
         return $node;

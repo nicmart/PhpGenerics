@@ -77,13 +77,8 @@ class TypeAnnotatorVisitor implements Visitor
             return new MaintainNode();
         }
 
-        $node->setAttribute(
-            self::ATTR_NAME,
-            $this->typeParser->parse(
-                $this->phpNameAdapter->fromPhpName($name),
-                $this->namespaceContext
-            )
-        );
+        $this->annotateWithType($node, $name);
+        $this->annotateExtendsAndImplements($node);
 
         return new MaintainNode();
     }
@@ -99,53 +94,36 @@ class TypeAnnotatorVisitor implements Visitor
 
     /**
      * @param Node $node
-     * @return Name
+     * @param Node\Name $typeName
      */
-    private function extractName(Node $node)
-    {
-        if ($node instanceof Node\Name) {
-            return $this->phpNameAdapter->fromPhpName($node);
-        }
-
-        if ($this->isClass($node)) {
-            /** @var Node\Stmt\Class_|Node\Stmt\Interface_ $node */
-            return RelativeName::fromString($node->name);
-        }
-    }
-
-    /**
-     * In PhpParser there can be names that are neither Relative nor FullQualified
-     *
-     * This is a workaround for when that happens (Use statements)
-     *
-     * @param Node $node
-     */
-    private function overrideChildrenNames(Node $node)
-    {
-        if ($node instanceof Node\Stmt\UseUse) {
-            $node->name = new Node\Name\FullyQualified($node->name->parts);
-        }
+    private function annotateWithType(
+        Node $node,
+        Node\Name $typeName
+    ) {
+        $node->setAttribute(
+            self::ATTR_NAME,
+            $t = $this->typeParser->parse(
+                $this->phpNameAdapter->fromPhpName($typeName),
+                $this->namespaceContext
+            )
+        );
     }
 
     /**
      * @param Node $node
-     * @return bool
      */
-    private function isClass(Node $node)
+    private function annotateExtendsAndImplements(Node $node)
     {
-        return $node instanceof Node\Stmt\Class_
-            || $node instanceof Node\Stmt\Interface_
-        ;
-    }
+        if ($node instanceof Node\Stmt\Class_) {
+            foreach ($node->implements as $implement) {
+                $this->annotateWithType($implement, $implement);
+            }
+        }
 
-    /**
-     * @param Node $node
-     * @return bool
-     */
-    private function isTypeNode(Node $node)
-    {
-        return $this->isClass($node)
-            || $node instanceof Node\Name
-        ;
+        if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_) {
+            foreach ((array) $node->extends as $extend) {
+                $this->annotateWithType($extend, $extend);
+            }
+        }
     }
 }

@@ -85,12 +85,7 @@ class TypeSerializerVisitor implements Visitor
 
         $name = $this->typeSerializer->serialize($type);
         $phpParserName = $this->phpNameAdapter->toPhpName($name);
-
-        $this->nameTypeAdapter->withTypeName($node, $phpParserName);
-
-        return new MaintainNode();
-
-        $this->skipChildren($node);
+        $node = $this->nameTypeAdapter->withTypeName($node, $phpParserName);
 
         // Basically removes scalar typehints in PHP < 7
         if ($typeHintField = $this->typeHintField($node)) {
@@ -101,6 +96,8 @@ class TypeSerializerVisitor implements Visitor
         if ($node instanceof Node\Stmt\Use_) {
             $this->removeTypesInUses($node);
         }
+
+        return new ReplaceNodeWith($node);
 
         // Check if it is a node we have to process
         if (!$this->isValidNode($node)) {
@@ -141,13 +138,12 @@ class TypeSerializerVisitor implements Visitor
      */
     private function expandUseUse(Node\Stmt\UseUse $useUse)
     {
-        if (!$useUse->name->hasAttribute(self::ATTR_CHANGED)
-            || !$useUse->name->hasAttribute(TypeAnnotatorVisitor::ATTR_NAME)
+        if (!$useUse->hasAttribute(TypeAnnotatorVisitor::ATTR_NAME)
         ) {
             return [new Node\Stmt\Use_([$useUse])];
         }
 
-        $type = $useUse->name->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+        $type = $useUse->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
 
         $subTypes = $type->bottomUpFold(
             [], function (array $z, Type $t) {
@@ -265,10 +261,12 @@ class TypeSerializerVisitor implements Visitor
     private function removeTypesInUses(Node\Stmt\Use_ $use)
     {
         foreach ($use->uses as $i => $useUse) {
-            $type = $useUse->name->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
+
+            $type = $useUse->getAttribute(TypeAnnotatorVisitor::ATTR_NAME);
             if ($type instanceof PrimitiveType || $this->hasTypeToBeErased($type)) {
                 unset($use->uses[$i]);
             }
+
         }
     }
 
