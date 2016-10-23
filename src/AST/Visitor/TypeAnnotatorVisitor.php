@@ -112,19 +112,29 @@ class TypeAnnotatorVisitor implements Visitor
      */
     private function annotateInnerNames(Node $node)
     {
+        // Class implements
         if ($node instanceof Node\Stmt\Class_) {
-            foreach ((array) $node->implements as $implement) {
+            $implements = is_object($node->implements)
+                ? [$node->implements]
+                : (array) $node->implements
+            ;
+            foreach ($implements as $implement) {
                 $this->annotateWithType($implement, $implement);
             }
         }
 
+        // Class and interface extends
         if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_) {
-            $extends = is_object($node->extends) ? [$node->extends] : (array) $node->extends;
+            $extends = is_object($node->extends)
+                ? [$node->extends]
+                : (array) $node->extends
+            ;
             foreach ($extends as $extend) {
                 $this->annotateWithType($extend, $extend);
             }
         }
 
+        // Return types
         if ($node instanceof Node\FunctionLike && $node->getReturnType() instanceof Node\Name) {
             $this->annotateWithType($node->getReturnType(), $node->getReturnType());
         }
