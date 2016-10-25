@@ -10,24 +10,29 @@
 
 namespace NicMart\Generics\Infrastructure\PhpParser\Name;
 
+
 use PhpParser\Node;
 
-/**
- * Interface NameManipulator
- * @package NicMart\Generics\Infrastructure\PhpParser\Name
- */
-interface NameManipulator
+class ReturnNameManipulator implements NameManipulator
 {
     /**
-     * @param Node $node
+     * @param Node|Node\FunctionLike $node
      * @return Node\Name
      */
-    public function readName(Node $node);
+    public function readName(Node $node)
+    {
+        return $node->getReturnType();
+    }
 
     /**
-     * @param Node $node
+     * @param Node|Node\FunctionLike $node
      * @param Node\Name $name
      * @return Node
      */
-    public function withName(Node $node, Node\Name $name);
+    public function withName(Node $node, Node\Name $name)
+    {
+        $node->returnType = $name;
+
+        return $node;
+    }
 }

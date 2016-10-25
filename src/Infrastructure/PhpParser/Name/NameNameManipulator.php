@@ -13,21 +13,28 @@ namespace NicMart\Generics\Infrastructure\PhpParser\Name;
 use PhpParser\Node;
 
 /**
- * Interface NameManipulator
+ * Class NameNameManipulator
  * @package NicMart\Generics\Infrastructure\PhpParser\Name
  */
-interface NameManipulator
+class NameNameManipulator implements NameManipulator
 {
-    /**
-     * @param Node $node
-     * @return Node\Name
-     */
-    public function readName(Node $node);
 
     /**
-     * @param Node $node
-     * @param Node\Name $name
-     * @return Node
+     * @param Node|Node\Name $nameNode
+     * @return mixed
      */
-    public function withName(Node $node, Node\Name $name);
+    public function readName(Node $nameNode)
+    {
+        return $nameNode;
+    }
+
+    /**
+     * @param Node|Node\Name $nameNode
+     * @param Node\Name $name
+     * @return mixed
+     */
+    public function withName(Node $nameNode, Node\Name $name)
+    {
+        return $name;
+    }
 }
