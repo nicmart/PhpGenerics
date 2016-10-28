@@ -44,4 +44,13 @@ class UseUseNameManipulator implements NameManipulator
 
         return $useUse;
     }
+
+    /**
+     * @param Node $node
+     * @return bool
+     */
+    public function accept(Node $node)
+    {
+        return $node instanceof Node\Stmt\UseUse;
+    }
 }

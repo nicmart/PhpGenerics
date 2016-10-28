@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Infrastructure\PhpParser\Name;
 
-
 use PhpParser\Node;
 
 class ReturnNameManipulator implements NameManipulator
@@ -34,5 +33,14 @@ class ReturnNameManipulator implements NameManipulator
         $node->returnType = $name;
 
         return $node;
+    }
+
+    /**
+     * @param Node $node
+     * @return bool
+     */
+    public function accept(Node $node)
+    {
+        return $node instanceof Node\FunctionLike;
     }
 }

@@ -37,4 +37,13 @@ class NameNameManipulator implements NameManipulator
     {
         return $name;
     }
+
+    /**
+     * @param Node $node
+     * @return bool
+     */
+    public function accept(Node $node)
+    {
+        return $node instanceof Node\Name;
+    }
 }

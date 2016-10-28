@@ -29,7 +29,7 @@ class NodeFunctor
         foreach ($node->getSubNodeNames() as $subNodeName) {
             $subNode = $node->$subNodeName;
             $node->$subNodeName = is_array($subNode)
-                ? self::map($subNode, $f)
+                ? static::mapArray($subNode, $f)
                 : $f($subNode)
             ;
         }

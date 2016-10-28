@@ -52,4 +52,13 @@ class ByPropNameManipulator implements NameManipulator
 
         return $node;
     }
+
+    /**
+     * @param Node $node
+     * @return bool
+     */
+    public function accept(Node $node)
+    {
+        return property_exists($node, $this->property);
+    }
 }

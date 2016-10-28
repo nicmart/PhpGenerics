@@ -20,6 +20,12 @@ interface NameManipulator
 {
     /**
      * @param Node $node
+     * @return bool
+     */
+    public function accept(Node $node);
+
+    /**
+     * @param Node $node
      * @return Node\Name
      */
     public function readName(Node $node);

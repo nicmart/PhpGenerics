@@ -41,4 +41,16 @@ class ClassNameManipulator implements NameManipulator
         
         return $node;
     }
+
+    /**
+     * @param Node $node
+     * @return bool
+     */
+    public function accept(Node $node)
+    {
+        return $node instanceof Node\Stmt\Class_
+            || $node instanceof Node\Stmt\Interface_
+            || $node instanceof Node\Stmt\Trait_
+        ;
+    }
 }
