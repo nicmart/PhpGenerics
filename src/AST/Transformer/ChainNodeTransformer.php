@@ -51,6 +51,20 @@ class ChainNodeTransformer implements NodeTransformer
     }
 
     /**
+     * @param Node $node
+     * @return Node
+     */
+    public function __invoke(Node $node)
+    {
+        foreach ($this->transformers as $transformer) {
+            $node = $transformer($node);
+        }
+
+        return $node;
+    }
+
+
+    /**
      * @param NodeTransformer $nodeTransformer
      */
     private function addTransformer(NodeTransformer $nodeTransformer)

@@ -15,6 +15,9 @@ use PhpParser\Node\Name\FullyQualified;
 
 /**
  * Class UseUseNameManipulator
+ *
+ * Internally the names are not fullqualified, but for us they are
+ *
  * @package NicMart\Generics\Infrastructure\PhpParser\Name
  */
 class UseUseNameManipulator implements NameManipulator
@@ -37,7 +40,7 @@ class UseUseNameManipulator implements NameManipulator
     public function withName(Node $useUse, Node\Name $name)
     {
         $oldName = $useUse->name;
-        $useUse->name = $name;
+        $useUse->name = new Node\Name($name->parts);
         if ($useUse->alias == $oldName->getLast()) {
             $useUse->alias = $name->getLast();
         }

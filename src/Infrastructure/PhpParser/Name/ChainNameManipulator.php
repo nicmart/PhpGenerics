@@ -41,6 +41,8 @@ class ChainNameManipulator implements NameManipulator
                 return true;
             }
         }
+
+        return false;
     }
 
     /**
@@ -65,7 +67,7 @@ class ChainNameManipulator implements NameManipulator
     {
         foreach ($this->manipulators as $manipulator) {
             if ($manipulator->accept($node)) {
-                return $manipulator->readName($node);
+                return $manipulator->withName($node, $name);
             }
         }
 

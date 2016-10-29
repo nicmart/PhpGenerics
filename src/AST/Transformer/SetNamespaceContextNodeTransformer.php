@@ -25,6 +25,7 @@ class SetNamespaceContextNodeTransformer implements NodeTransformer
      * @var NamespaceContext
      */
     private $namespaceContext;
+    
     /**
      * @var PhpNameAdapter
      */
@@ -53,7 +54,7 @@ class SetNamespaceContextNodeTransformer implements NodeTransformer
 
         foreach ($nodes as $node) {
             $transformed[] = $node instanceof Node
-                ? $this->transformNode($node)
+                ? $this($node)
                 : $node
             ;
         }
@@ -65,7 +66,7 @@ class SetNamespaceContextNodeTransformer implements NodeTransformer
      * @param Node $node
      * @return Node
      */
-    private function transformNode(Node $node)
+    public function __invoke(Node $node)
     {
         if (!$node instanceof Node\Stmt\Namespace_) {
             return $node;

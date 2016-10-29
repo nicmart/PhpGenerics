@@ -23,4 +23,10 @@ interface NodeTransformer
      * @return Node[]
      */
     public function transformNodes(array $nodes);
+
+    /**
+     * @param Node $node
+     * @return Node
+     */
+    public function __invoke(Node $node);
 }

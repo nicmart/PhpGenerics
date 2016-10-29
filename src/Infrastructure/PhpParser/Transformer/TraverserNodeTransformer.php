@@ -60,4 +60,13 @@ class TraverserNodeTransformer implements NodeTransformer
     {
         return $this->traverser->traverse($nodes);
     }
+
+    /**
+     * @param Node $node
+     * @return mixed
+     */
+    public function __invoke(Node $node)
+    {
+        return current($this->transformNodes([$node]));
+    }
 }

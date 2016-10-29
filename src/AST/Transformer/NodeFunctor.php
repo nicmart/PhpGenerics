@@ -28,9 +28,13 @@ class NodeFunctor
 
         foreach ($node->getSubNodeNames() as $subNodeName) {
             $subNode = $node->$subNodeName;
+
             $node->$subNodeName = is_array($subNode)
                 ? static::mapArray($subNode, $f)
-                : $f($subNode)
+                : ($subNode instanceof Node
+                    ? $f($subNode)
+                    : $subNode
+                )
             ;
         }
 
@@ -57,7 +61,8 @@ class NodeFunctor
     {
         return array_map(
             function ($n) use ($f) {
-                return $n instanceof Node ? $f($n) : $n;
+                $a = $n instanceof Node ? $f($n) : $n;
+                return $a;
             },
             $nodes
         );

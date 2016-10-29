@@ -39,6 +39,16 @@ class ContextDependentNodeTransformer implements NodeTransformer
     }
 
     /**
+     * @param Node $node
+     * @return mixed
+     */
+    public function __invoke(Node $node)
+    {
+        return current($this->transformNodes([$node]));
+    }
+
+
+    /**
      * @param Node[] $nodes
      * @return Node[]
      */
