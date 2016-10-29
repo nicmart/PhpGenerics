@@ -12,12 +12,6 @@ namespace NicMart\Generics\Autoloader;
 
 use NicMart\Generics\Infrastructure\Source\CallerFilenameResolver;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Context\NamespaceContextExtractor;
-use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Name\Generic\Factory\GenericNameFactory;
-use NicMart\Generics\Name\Generic\GenericNameResolver;
-use NicMart\Generics\Source\Compiler\DefaultGenericCompiler;
-use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
 
 /**
  * Class GenericAutoloader
@@ -26,34 +20,9 @@ use NicMart\Generics\Source\Evaluation\SourceUnitEvaluation;
 class GenericAutoloader
 {
     /**
-     * @var DefaultGenericCompiler
-     */
-    private $compiler;
-
-    /**
-     * @var SourceUnitEvaluation
-     */
-    private $evaluation;
-
-    /**
      * @var CallerFilenameResolver
      */
     private $filenameResolver;
-
-    /**
-     * @var NamespaceContextExtractor
-     */
-    private $namespaceContextExtractor;
-
-    /**
-     * @var GenericNameResolver
-     */
-    private $genericNameResolver;
-    
-    /**
-     * @var GenericNameFactory
-     */
-    private $genericNameFactory;
 
     /**
      * @var ByFileGenericAutoloader

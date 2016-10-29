@@ -11,21 +11,12 @@
 namespace NicMart\Generics\Autoloader;
 
 
-use NicMart\Generics\Infrastructure\PhpDocumentor\TypeFunctor;
-use NicMart\Generics\Name\Context\Namespace_;
 use NicMart\Generics\Name\Context\NamespaceContext;
-use NicMart\Generics\Name\Context\NamespaceContextExtractor;
-use NicMart\Generics\Name\Context\Use_;
-use NicMart\Generics\Name\Context\Uses;
 use NicMart\Generics\Name\FullName;
 use NicMart\Generics\Type\GenericType;
 use NicMart\Generics\Type\Loader\ParametrizedTypeLoader;
 use NicMart\Generics\Type\ParametrizedType;
 use NicMart\Generics\Type\Parser\TypeParser;
-use NicMart\Generics\Type\Serializer\TypeSerializer;
-use NicMart\Generics\Type\Transformer\BottomUpTransformer;
-use NicMart\Generics\Type\Transformer\ByCallableTypeTransformer;
-use NicMart\Generics\Type\Type;
 
 /**
  * Class ByContextGenericAutoloader

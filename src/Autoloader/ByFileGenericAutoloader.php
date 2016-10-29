@@ -10,14 +10,7 @@
 
 namespace NicMart\Generics\Autoloader;
 
-
-use NicMart\Generics\Name\Context\NamespaceContext;
 use NicMart\Generics\Name\Context\NamespaceContextExtractor;
-use NicMart\Generics\Name\FullName;
-use NicMart\Generics\Type\GenericType;
-use NicMart\Generics\Type\ParametrizedType;
-use NicMart\Generics\Type\Parser\TypeParser;
-use NicMart\Generics\Type\Loader\ParametrizedTypeLoader;
 
 /**
  * Class ByFileGenericAutoloader

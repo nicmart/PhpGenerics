@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\Infrastructure\PhpParser\Name;
 
-
 use PhpParser\Node;
 
 class ChainNameManipulator implements NameManipulator
@@ -27,7 +26,7 @@ class ChainNameManipulator implements NameManipulator
     public function __construct(array $nameManipulators)
     {
         foreach ($nameManipulators as $nameManipulator) {
-            $this->manipulators[] = $nameManipulator;
+            $this->addManipulator($nameManipulator);
         }
     }
 
