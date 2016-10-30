@@ -4,7 +4,22 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use NicMart\Generics\AST\Transformer\BottomUpNodeTransformer;
+use NicMart\Generics\AST\Transformer\ByCallableNodeTransformer;
+use NicMart\Generics\AST\Transformer\Name\NameManipulatorNodeTransformer;
 use NicMart\Generics\AST\Transformer\Name\NameNodeTransformerBuilder;
+use NicMart\Generics\AST\Transformer\NodeFunctor;
+use NicMart\Generics\AST\Transformer\NodeTransformer;
+use NicMart\Generics\AST\Transformer\Subnode\ConditionalSubnodeTransformer;
+use NicMart\Generics\AST\Transformer\Subnode\ExcludeSubnodesTransformer;
+use NicMart\Generics\AST\Transformer\Subnode\SubnodeTransformerCondition;
+use NicMart\Generics\AST\Transformer\TopDownNodeTransformer;
+use NicMart\Generics\Infrastructure\PhpParser\Name\ChainNameManipulator;
+use NicMart\Generics\Infrastructure\PhpParser\Name\ClassNameManipulator;
+use NicMart\Generics\Infrastructure\PhpParser\Name\NameManipulator;
+use NicMart\Generics\Infrastructure\PhpParser\Name\NameNameManipulator;
+use NicMart\Generics\Infrastructure\PhpParser\Name\UseUseNameManipulator;
+use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\ParserFactory;
 
@@ -34,9 +49,30 @@ class NameTransformationContext implements Context
     private $transformedAST;
 
     /**
-     * @var callable
+     * @var NodeTransformer
      */
     private $transformation;
+
+    /**
+     * @var callable
+     */
+    private $nameTransformation;
+
+    /**
+     * @var NameManipulator
+     */
+    private $nameManipulator;
+
+    /**
+     * @var string
+     */
+    private $recursionType;
+
+    /**
+     * NodeClass => SET of Subnode names
+     * @var SubnodeTransformerCondition[]
+     */
+    private $subnodeMapperConditions = [];
 
     /**
      * Initializes context.
@@ -49,6 +85,40 @@ class NameTransformationContext implements Context
     {
         $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
         $this->serializer = new PhpParser\PrettyPrinter\Standard();
+    }
+
+    /**
+     * @Given the default name manipulator
+     */
+    public function theDefaultNameManipulator()
+    {
+        $this->nameManipulator = new ChainNameManipulator([
+            new UseUseNameManipulator(),
+            new ClassNameManipulator(),
+            new NameNameManipulator()
+        ]);
+    }
+
+    /**
+     * @Given we recurse :recursionType
+     */
+    public function weRecurse($recursionType)
+    {
+        $this->recursionType = $recursionType;
+    }
+
+    /**
+     * @Given /^nodes of type \'([^\']*)\' do not map on subnodes \'([^\']*)\'$/
+     */
+    public function nodesOfTypeDoNotMapOnSubnodes($nodeType, $subnodesNamesCsv)
+    {
+        $nodeClass = '\\PhpParser\\Node\\' . $nodeType;
+        $subnodeNames = explode(",", $subnodesNamesCsv);
+
+        $this->subnodeMapperConditions[] = new SubnodeTransformerCondition(
+            new ExcludeSubnodesTransformer($subnodeNames),
+            $nodeClass
+        );
     }
 
     /**
@@ -72,6 +142,32 @@ class NameTransformationContext implements Context
     }
 
     /**
+     * @Given the constant name node transformation :name
+     */
+    public function theConstantNameNodeTransformation($name)
+    {
+        $this->nameTransformation = function (Node $node) use ($name) {
+            return $node instanceof Name
+                ? new Name($name)
+                : $node
+            ;
+        };
+    }
+
+    /**
+     * @Given the name transformation that appends :suffix to names
+     */
+    public function theTransformationThatAppendsToNames($suffix)
+    {
+        $this->nameTransformation = function (Node $node) use ($suffix) {
+            return $node instanceof Name
+                ? new Name($node->toString() . $suffix)
+                : $node
+            ;
+        };
+    }
+
+    /**
      * @Given /^the transformation:$/
      */
     public function theTransformation(TableNode $table)
@@ -84,7 +180,7 @@ class NameTransformationContext implements Context
             ];
         }
 
-        $this->transformation = function (Name $name) use ($names) {
+        $transformation = function (Name $name) use ($names) {
             foreach ($names as $namePair) {
                 if ($name->parts == $namePair["from"]->parts) {
                     return $namePair["to"];
@@ -93,16 +189,45 @@ class NameTransformationContext implements Context
 
             return $name;
         };
+
+        $this->nameTransformation = $transformation;
     }
 
     /**
-     * @When /^I apply the foregoing$/
+     * @When I build the node transformation
      */
-    public function iApplyTheForegoing()
+    public function iBuildTheNodeTransformation()
     {
-        $transformer = NameNodeTransformerBuilder::build($this->transformation);
+        $nonRecursiveTransformation = new NameManipulatorNodeTransformer(
+            $this->nameManipulator,
+            $this->nameTransformation
+        );
 
-        $this->transformedAST = $transformer->transformNodes($this->codeAST);
+        $subNodeTransformer = new ConditionalSubnodeTransformer(
+            $this->subnodeMapperConditions
+        );
+
+        $this->transformation = $this->recursionType == "top-down"
+            ? new TopDownNodeTransformer(
+                $subNodeTransformer,
+                $nonRecursiveTransformation
+            )
+            : new BottomUpNodeTransformer(
+                $subNodeTransformer,
+                $nonRecursiveTransformation
+            )
+        ;
+    }
+
+    /**
+     * @When I apply it to the code
+     */
+    public function iApplyItToTheCode()
+    {
+        $this->transformedAST = $this
+            ->transformation
+            ->transformNodes($this->codeAST)
+        ;
     }
 
     /**
