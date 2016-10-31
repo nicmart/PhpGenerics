@@ -39,7 +39,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "NicMart\\Generics\\": ["tests/Unit", "tests/Functional"]
+            "NicMart\\Generics\\": ["tests/Unit", "tests/Functional"],
+            "NicMart\\Generics\\Feature\\": "features/bootstrap"
         }
     }
 }

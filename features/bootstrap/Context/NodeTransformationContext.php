@@ -1,4 +1,7 @@
 <?php
+
+namespace NicMart\Generics\Feature\Context;
+
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use NicMart\Generics\AST\Transformer\BottomUpNodeTransformer;
@@ -9,6 +12,8 @@ use NicMart\Generics\AST\Transformer\Subnode\SubnodeTransformer;
 use NicMart\Generics\AST\Transformer\Subnode\SubnodeTransformerCondition;
 use NicMart\Generics\AST\Transformer\TopDownNodeTransformer;
 use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
+use PHPUnit_Framework_Assert;
 
 /**
  * This file is part of PhpStorm
@@ -26,7 +31,7 @@ class NodeTransformationContext implements Context
     private $parser;
 
     /**
-     * @var \PhpParser\PrettyPrinter\Standard
+     * @var Standard
      */
     private $serializer;
 
@@ -66,7 +71,7 @@ class NodeTransformationContext implements Context
     public function __construct()
     {
         $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
-        $this->serializer = new PhpParser\PrettyPrinter\Standard();
+        $this->serializer = new Standard();
     }
 
     /**

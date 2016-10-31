@@ -1,5 +1,7 @@
 <?php
 
+namespace NicMart\Generics\Feature\Context;
+
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
