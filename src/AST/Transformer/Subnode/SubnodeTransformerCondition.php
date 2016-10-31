@@ -10,7 +10,6 @@
 
 namespace NicMart\Generics\AST\Transformer\Subnode;
 
-
 use PhpParser\Node;
 
 /**
@@ -23,6 +22,7 @@ final class SubnodeTransformerCondition
      * @var SubnodeTransformer
      */
     private $transformer;
+
     /**
      * @var
      */

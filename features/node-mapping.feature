@@ -15,7 +15,8 @@ Feature: Node-Mapping
     Foo::bar();
     """
     And the name transformation that appends 'Transformed' to names
-    When I build the node transformation
+    When I build the non-recursive node transformer
+    And I make the transformer recursive
     And I apply it to the code
     Then the code should be transformed to:
     """
@@ -29,7 +30,8 @@ Feature: Node-Mapping
     use A\B\C as Foo;
     """
     And the name transformation that appends 'Transformed' to names
-    When I build the node transformation
+    When I build the non-recursive node transformer
+    And I make the transformer recursive
     And I apply it to the code
     Then the code should remain unchanged
 
