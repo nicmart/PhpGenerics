@@ -116,9 +116,9 @@ class NameTransformationContext implements Context
     }
 
     /**
-     * @When I build the non-recursive node transformer
+     * @When I build the non-recursive node transformer from the name transformer
      */
-    public function iBuildTheNonRecursiveNodeTransformer()
+    public function iBuildTheNonRecursiveNodeTransformerFromTheNameTransformer()
     {
         $this->nodeContext->iUseTheRawNodeTransformation(new NameManipulatorNodeTransformer(
             $this->nameManipulator,

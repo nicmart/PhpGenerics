@@ -7,7 +7,6 @@ Feature: Name Transformation
     Given the default name manipulator
     And nodes of type 'Stmt\UseUse' do not map on subnodes 'name'
     And nodes of type 'Stmt\Namespace_' do not map on subnodes 'name'
-    And we recurse 'bottom-up'
 
   Scenario: Converting a namespace
     Given the code:
@@ -15,8 +14,8 @@ Feature: Name Transformation
       namespace A\B\D;
       """
     And the name transformation 'A\B\D' -> 'C\E'
-    When I build the non-recursive node transformer
-    And I make the transformer recursive
+    When I build the non-recursive node transformer from the name transformer
+    And I make the transformer 'bottom-up'-recursive
     And I apply it to the code
     Then the code should remain unchanged
 
@@ -27,8 +26,8 @@ Feature: Name Transformation
       use A\B\E;
       """
     And the name transformation 'A\B\D' -> 'C\E'
-    When I build the non-recursive node transformer
-    And I make the transformer recursive
+    When I build the non-recursive node transformer from the name transformer
+    And I make the transformer 'bottom-up'-recursive
     And I apply it to the code
     Then the code should be transformed to:
     """
@@ -46,8 +45,8 @@ Feature: Name Transformation
     | from    | to       |
     | A\B\D   | C\E      |
     | D       | E        |
-    When I build the non-recursive node transformer
-    And I make the transformer recursive
+    When I build the non-recursive node transformer from the name transformer
+    And I make the transformer 'bottom-up'-recursive
     And I apply it to the code
     Then the code should be transformed to:
     """
@@ -61,8 +60,8 @@ Feature: Name Transformation
     class MyClass extends BaseClass implements Interface1, Interface2 {}
     """
     And the name transformation that appends 'Transformed' to names
-    When I build the non-recursive node transformer
-    And I make the transformer recursive
+    When I build the non-recursive node transformer from the name transformer
+    And I make the transformer 'bottom-up'-recursive
     And I apply it to the code
     Then the code should be transformed to:
     """

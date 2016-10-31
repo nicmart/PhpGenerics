@@ -7,7 +7,6 @@ Feature: Node-Mapping
     Given the default name manipulator
     And nodes of type 'Stmt\UseUse' do not map on subnodes 'name'
     And nodes of type 'Stmt\Namespace_' do not map on subnodes 'name'
-    And we recurse 'top-down'
 
   Scenario: Mapping a node
     Given the code:
@@ -15,8 +14,8 @@ Feature: Node-Mapping
     Foo::bar();
     """
     And the name transformation that appends 'Transformed' to names
-    When I build the non-recursive node transformer
-    And I make the transformer recursive
+    When I build the non-recursive node transformer from the name transformer
+    And I make the transformer 'top-down'-recursive
     And I apply it to the code
     Then the code should be transformed to:
     """
@@ -30,8 +29,28 @@ Feature: Node-Mapping
     use A\B\C as Foo;
     """
     And the name transformation that appends 'Transformed' to names
-    When I build the non-recursive node transformer
-    And I make the transformer recursive
+    When I build the non-recursive node transformer from the name transformer
+    And I make the transformer 'top-down'-recursive
+    And I apply it to the code
+    Then the code should remain unchanged
+
+  Scenario: Identity tranformation
+    Given the code:
+    """
+    namespace MyNamespace;
+    use A\B\C as Foo;
+    class A extends B implements C, D {}
+    """
+    And the raw node transformation:
+    """
+    use \NicMart\Generics\AST\Transformer\ByCallableNodeTransformer;
+    use \PhpParser\Node\Name;
+
+    return new ByCallableNodeTransformer(function($n) {
+      return $n;
+    });
+    """
+    And I make the transformer 'top-down'-recursive
     And I apply it to the code
     Then the code should remain unchanged
 

@@ -51,11 +51,6 @@ class NodeTransformationContext implements Context
     private $subNodeTransformer;
 
     /**
-     * @var string
-     */
-    private $recursionType;
-
-    /**
      * NodeClass => SET of Subnode names
      * @var SubnodeTransformerCondition[]
      */
@@ -72,14 +67,6 @@ class NodeTransformationContext implements Context
     {
         $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
         $this->serializer = new PhpParser\PrettyPrinter\Standard();
-    }
-
-    /**
-     * @Given we recurse :recursionType
-     */
-    public function weRecurse($recursionType)
-    {
-        $this->recursionType = $recursionType;
     }
 
     /**
@@ -109,11 +96,11 @@ class NodeTransformationContext implements Context
     }
 
     /**
-     * @When I make the transformer recursive
+     * @When I make the transformer :type-recursive
      */
-    public function iMakeTheTransformerRecursive()
+    public function iMakeTheTransformerRecursive2($recursionType)
     {
-        $this->transformation = $this->recursionType == "top-down"
+        $this->transformation = $recursionType == "top-down"
             ? new TopDownNodeTransformer(
                 $this->subNodeTransformer,
                 $this->transformation
@@ -154,6 +141,21 @@ class NodeTransformationContext implements Context
 
         $this->assertSameAST($expectedAST, $this->transformedAST);
     }
+
+
+    /**
+     * @Given the raw node transformation:
+     */
+    public function theRawNodeTransformation(PyStringNode $pyStringNode)
+    {
+        $this->setNodeTransformer(eval($pyStringNode->getRaw()));
+    }
+
+    private function setNodeTransformer(NodeTransformer $transformer)
+    {
+        $this->transformation = $transformer;
+    }
+
 
     /**
      * @param NodeTransformer $nodeTransformer
