@@ -4,3 +4,4 @@ default:
             contexts:
                 - NicMart\Generics\Feature\Context\NameTransformationContext
                 - NicMart\Generics\Feature\Context\NodeTransformationContext
+                - NicMart\Generics\Feature\Context\TypeTransformationContext

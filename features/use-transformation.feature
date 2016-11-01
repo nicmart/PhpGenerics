@@ -14,8 +14,9 @@ Feature:
     use Foo\Bar;
     echo "bye";
     """
-    And the constant name transformation 'string'
-    When I build the non-recursive node transformer from the name transformer
+    And the constant type transformation 'string'
+    When I build the name transformer from the type transformer
+    And I build the non-recursive node transformer from the name transformer
     And I make the transformer 'top-down'-recursive
     And I apply it to the code
     Then the code should be transformed to:

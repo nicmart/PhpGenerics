@@ -118,6 +118,14 @@ class NameTransformationContext implements Context
     }
 
     /**
+     * @param callable $nameTrannformation
+     */
+    public function theRawNameTransformation(callable $nameTrannformation)
+    {
+        $this->nameTransformation = $nameTrannformation;
+    }
+
+    /**
      * @When I build the non-recursive node transformer from the name transformer
      */
     public function iBuildTheNonRecursiveNodeTransformerFromTheNameTransformer()
