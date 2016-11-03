@@ -1,7 +1,15 @@
 default:
     suites:
         default:
+            paths:
+                - %paths.base%/features/name-transformation.feature
+                - %paths.base%/features/node-transformation.feature
             contexts:
                 - NicMart\Generics\Feature\Context\NameTransformationContext
+                - NicMart\Generics\Feature\Context\NodeTransformationContext
+        name-context-dependent:
+            paths:
+                - %paths.base%/features/use-transformation.feature
+            contexts:
                 - NicMart\Generics\Feature\Context\NodeTransformationContext
                 - NicMart\Generics\Feature\Context\TypeTransformationContext

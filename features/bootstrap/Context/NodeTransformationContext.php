@@ -48,7 +48,7 @@ class NodeTransformationContext implements Context
     /**
      * @var NodeTransformer
      */
-    protected $transformation;
+    private $transformation;
 
     /**
      * @var SubnodeTransformer
@@ -103,7 +103,7 @@ class NodeTransformationContext implements Context
     /**
      * @When I make the transformer :type-recursive
      */
-    public function iMakeTheTransformerRecursive2($recursionType)
+    public function iMakeTheTransformerRecursive($recursionType)
     {
         $this->transformation = $recursionType == "top-down"
             ? new TopDownNodeTransformer(
@@ -153,14 +153,8 @@ class NodeTransformationContext implements Context
      */
     public function theRawNodeTransformation(PyStringNode $pyStringNode)
     {
-        $this->setNodeTransformer(eval($pyStringNode->getRaw()));
+        $this->iUseTheRawNodeTransformation(eval($pyStringNode->getRaw()));
     }
-
-    private function setNodeTransformer(NodeTransformer $transformer)
-    {
-        $this->transformation = $transformer;
-    }
-
 
     /**
      * @param NodeTransformer $nodeTransformer
@@ -171,6 +165,14 @@ class NodeTransformationContext implements Context
         $this->transformation = $nodeTransformer;
 
         return $this;
+    }
+
+    /**
+     * @return SubnodeTransformer
+     */
+    public function subNodeTransformer()
+    {
+        return $this->subNodeTransformer;
     }
 
     private function assertSameAST($nodes1, $nodes2)

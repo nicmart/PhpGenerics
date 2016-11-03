@@ -135,4 +135,9 @@ class NameTransformationContext implements Context
             $this->nameTransformation
         ));
     }
+
+    public function nameManipulator()
+    {
+        return $this->nameManipulator;
+    }
 }
